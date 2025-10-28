@@ -20,7 +20,7 @@ const CategoryList = () => {
   };
 
   return (
-    <View>
+    <View style={styles.listContainer}>
       <View style={styles.section}>
         {categories.map((item) => (
           <TouchableOpacity
@@ -61,6 +61,12 @@ const CategoryList = () => {
 export default CategoryList;
 
 const styles = StyleSheet.create({
+  listContainer: {
+    padding: 20,
+  },
+  section: {
+    paddingHorizontal: 10,
+  },
   checkboxContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -69,7 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    padding: 10,
+    paddingTop: 20,
   },
   tag: {
     flexDirection: "row",

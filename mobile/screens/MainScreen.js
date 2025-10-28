@@ -15,7 +15,7 @@ import PostTypeSelector from "../components/PostTypeSelector";
 
 const MainScreen = () => {
   const [selectType, setSelectType] = useState("category"); // category location status
-  const [postType, setPostType] = useState("all"); // acquired lost all
+  const [postType, setPostType] = useState("acquired"); // acquired lost all
 
   return (
     <SafeAreaView>
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   filterResetBtn: {
     flexDirection: "row",
     alignSelf: "flex-start",
+    alignItems: "center",
     marginLeft: 25,
     padding: 4,
   },

@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import MainScreen from "./screens/MainScreen";
+import PostListScreen from "./screens/PostListScreen";
 
 export default function App() {
-  return <MainScreen />;
+  return <PostListScreen />;
 }
 
 const styles = StyleSheet.create({
