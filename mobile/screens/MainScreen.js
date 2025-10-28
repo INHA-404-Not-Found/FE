@@ -11,10 +11,11 @@ import {
 import React, { useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
 import CategoryList from "../components/CategoryList";
+import PostTypeSelector from "../components/PostTypeSelector";
 
 const MainScreen = () => {
   const [selectType, setSelectType] = useState("category"); // category location status
-  const [postType, setPostType] = useState("acquired"); // acquired lost all
+  const [postType, setPostType] = useState("all"); // acquired lost all
 
   return (
     <SafeAreaView>
@@ -37,44 +38,7 @@ const MainScreen = () => {
             ></Image>
           </View>
           <View style={styles.selectView}>
-            <View style={styles.postTypeSelector}>
-              <Pressable
-                style={[
-                  styles.postTypeBtn,
-                  {
-                    borderBottomWidth: postType === "acquired" ? 1 : 0,
-                    borderColor: "black",
-                    borderStyle: "solid",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>습득</Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.postTypeBtn,
-                  {
-                    borderBottomWidth: postType === "lost" ? 1 : 0,
-                    borderColor: "black",
-                    borderStyle: "solid",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>분실</Text>
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.postTypeBtn,
-                  {
-                    borderBottomWidth: postType === "all" ? 1 : 0,
-                    borderColor: "black",
-                    borderStyle: "solid",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>전체</Text>
-              </Pressable>
-            </View>
+            <PostTypeSelector postType={postType} setPostType={setPostType} />
             <View>
               <Pressable style={[styles.filterResetBtn]}>
                 <Image
@@ -165,18 +129,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 5,
   },
-  postTypeSelector: {
-    flexDirection: "row",
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    justifyContent: "space-between",
-  },
-  postTypeBtn: {
-    alignItems: "center",
-    textAlign: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
+
   filterResetBtn: {
     flexDirection: "row",
     alignSelf: "flex-start",
