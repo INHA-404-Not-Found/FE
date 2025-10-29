@@ -30,7 +30,7 @@ const BottomBar = () => {
         
         {/* 모든 게시글 리스트 */}
         <Pressable
-            onPress={() => navigation.navigate("NotificationList")}
+            onPress={() => navigation.navigate("PostListScreen")}
         >
             <Image
                 source={require("../assets/postList.png")}
