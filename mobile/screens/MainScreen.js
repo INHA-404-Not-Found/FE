@@ -10,9 +10,13 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
+import CategoryList from "../components/CategoryList";
+import PostTypeSelector from "../components/PostTypeSelector";
 
 const MainScreen = () => {
-  const [selectType, setSelectType] = useState("category");
+  const [selectType, setSelectType] = useState("category"); // category location status
+  const [postType, setPostType] = useState("acquired"); // acquired lost all
+
   return (
     <SafeAreaView>
       <DefaultHeader />
@@ -34,6 +38,18 @@ const MainScreen = () => {
             ></Image>
           </View>
           <View style={styles.selectView}>
+            <PostTypeSelector postType={postType} setPostType={setPostType} />
+            <View>
+              <Pressable style={[styles.filterResetBtn]}>
+                <Image
+                  source={require("../assets/filterReset.png")}
+                  style={styles.resetImg}
+                ></Image>
+                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                  필터 초기화
+                </Text>
+              </Pressable>
+            </View>
             <View style={styles.selectBtnRow}>
               <Pressable
                 style={[
@@ -68,6 +84,9 @@ const MainScreen = () => {
               >
                 <Text style={styles.BtnText}>완료 여부</Text>
               </Pressable>
+            </View>
+            <View>
+              <CategoryList />
             </View>
           </View>
         </View>
@@ -108,6 +127,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBlockColor: "#DADEE7",
     marginTop: 25,
+    padding: 5,
+  },
+
+  filterResetBtn: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    alignItems: "center",
+    marginLeft: 25,
+    padding: 4,
+  },
+  resetImg: {
+    width: 15,
+    height: 15,
   },
   selectBtnRow: {
     flexDirection: "row",
