@@ -43,7 +43,7 @@ const DefaultHeader = () => {
             { route.name == "Notification" ? "알림함" : "" }
             { route.name == "SettingScreen" ? "설정" : "" }
             { route.name == "UserScreen" ? "마이페이지" : "" }
-            { route.name == "PostScreen" ? "게시글 목록" : "" }
+            { route.name == "PostListScreen" ? "게시글 목록" : "" }
             { route.name == "PostScreen" ? "내 게시글 목록" : "" }  
           </Text>
         </View>
