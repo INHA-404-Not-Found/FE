@@ -5,20 +5,25 @@ import {
   View,
   StatusBar,
   Image,
+  Pressable,
 } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+
 
 const DefaultHeader = () => {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
       <View style={styles.headerContainer}>
-        <View>
+        <Pressable onPress={() => navigation.goBack()}>
           <Image
             source={require("../assets/prev.png")}
             style={styles.headerPrevImg}
           ></Image>
-        </View>
+        </Pressable>
         <View>
           <Text style={styles.headerText}>게시글 목록</Text>
         </View>
