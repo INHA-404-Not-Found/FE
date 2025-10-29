@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -12,13 +11,15 @@ import React, { useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
 import CategoryList from "../components/CategoryList";
 import PostTypeSelector from "../components/PostTypeSelector";
+import BottomBar from "../components/BottomBar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const MainScreen = () => {
   const [selectType, setSelectType] = useState("category"); // category location status
   const [postType, setPostType] = useState("acquired"); // acquired lost all
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }} edge={['top']}>
       <DefaultHeader />
       <ScrollView>
         <View style={styles.contentTop}>
@@ -90,8 +91,12 @@ const MainScreen = () => {
             </View>
           </View>
         </View>
-        <View style={styles.contentBottom}></View>
+
       </ScrollView>
+      {/* 하단 바 */}
+      <View style={styles.contentBottom}>
+        <BottomBar />
+      </View>
     </SafeAreaView>
   );
 };
