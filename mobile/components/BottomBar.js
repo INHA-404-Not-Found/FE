@@ -9,7 +9,7 @@ const BottomBar = () => {
     <View style={styles.bar}>
         {/* 내가 올린 글 */}
         <Pressable
-            onPress={() => navigation.navigate("NotificationList")}
+            onPress={() => navigation.navigate("MyPostListScreen")}
         >
             <Image
             source={require("../assets/myPost.png")}

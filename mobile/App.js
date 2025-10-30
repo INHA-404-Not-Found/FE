@@ -9,6 +9,7 @@ import NotificationListScreen from "./screens/NotificationListScreen";
 import UserScreen from "./screens/UserScreen";
 import SettingScreen from "./screens/SettingScreen";
 import Login from "./screens/Login";
+import MyPostListScreen from "./screens/MyPostListScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +22,7 @@ export default function App() {
           headerShown: false,
         }}
       >
-        {/* 메인 화면 */}
+        {/* 로그인 화면 */}
         <Stack.Screen name="LoginScreen" component={Login} />
         {/* 메인 화면 */}
         <Stack.Screen name="MainScreen" component={MainScreen} />
@@ -38,6 +39,8 @@ export default function App() {
         <Stack.Screen name="SettingScreen" component={SettingScreen} />
         {/* 유저 화면 */}
         <Stack.Screen name="UserScreen" component={UserScreen} />
+        {/* 내 게시물 리스트 화면*/}
+        <Stack.Screen name="MyPostListScreen" component={MyPostListScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
