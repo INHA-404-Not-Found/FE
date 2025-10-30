@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: 30,
     position: "absolute",
-    bottom: 30,
+    bottom: 60,
   },
   loginBtn: {
     backgroundColor: "#215294",
