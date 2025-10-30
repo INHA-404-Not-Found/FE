@@ -7,6 +7,8 @@ import {
   Image,
   ScrollView,
   FlatList,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
@@ -93,8 +95,10 @@ const MyPostListScreen = () => {
   const handleSheetChanges = useCallback((index) => {
     console.log("bottomSheetChanges", index);
   }, []);
+  const closeModal = () => setDelVisible(false);
 
   const [postType, setPostType] = useState("acquired"); // acquired lost all
+  const [delVisible, setDelVisible] = useState(false); // 삭제 모달 열림/닫힘 상태
 
   return (
     <GestureHandlerRootView>
@@ -142,7 +146,10 @@ const MyPostListScreen = () => {
                 <Pressable style={styles.bottomModalBtn}>
                   <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
                 </Pressable>
-                <Pressable style={styles.bottomModalBtn}>
+                <Pressable
+                  onPress={() => setDelVisible(true)}
+                  style={styles.bottomModalBtn}
+                >
                   <Text style={styles.bottomModalBtnText}>삭제하기</Text>
                 </Pressable>
                 <Pressable style={styles.bottomModalBtn}>
@@ -150,6 +157,38 @@ const MyPostListScreen = () => {
                 </Pressable>
               </BottomSheetView>
             </BottomSheetModal>
+            <Modal
+              visible={delVisible}
+              transparent
+              animationType="fade"
+              onRequestClose={() => setDelVisible(false)}
+            >
+              <TouchableWithoutFeedback onPress={closeModal}>
+                <View style={styles.overlay}>
+                  <TouchableWithoutFeedback>
+                    <View style={styles.modalBox}>
+                      <Text style={styles.modalTitleText}>
+                        게시글을 삭제하시겠어요?
+                      </Text>
+                      <Text style={styles.modalContentText}>
+                        삭제한 게시글은 복구할 수 없습니다.
+                      </Text>
+                      <View style={styles.modalBtnContainer}>
+                        <Pressable
+                          onPress={closeModal}
+                          style={styles.modalCancelBtn}
+                        >
+                          <Text style={styles.modalBtnText}>취소</Text>
+                        </Pressable>
+                        <Pressable style={styles.modalSubmitBtn}>
+                          <Text style={styles.modalBtnWhiteText}>삭제</Text>
+                        </Pressable>
+                      </View>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+              </TouchableWithoutFeedback>
+            </Modal>
           </View>
         </SafeAreaView>
       </BottomSheetModalProvider>
@@ -264,5 +303,50 @@ const styles = StyleSheet.create({
   bottomModalBtnText: {
     fontSize: 18,
     fontWeight: 600,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBox: {
+    backgroundColor: "white",
+    paddingVertical: 25,
+    paddingHorizontal: 45,
+    borderRadius: 25,
+  },
+  modalCancelBtn: {
+    borderRadius: 10,
+    backgroundColor: "#e9e9e9",
+    padding: 8,
+    alignItems: "center",
+    flex: 1,
+  },
+  modalSubmitBtn: {
+    borderRadius: 10,
+    backgroundColor: "#2165A6",
+    padding: 8,
+    alignItems: "center",
+    flex: 1,
+  },
+  modalBtnText: {
+    fontSize: 16,
+  },
+  modalBtnWhiteText: {
+    fontSize: 16,
+    color: "white",
+  },
+  modalBtnContainer: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  modalTitleText: {
+    fontSize: 18,
+    fontWeight: 600,
+  },
+  modalContentText: {
+    paddingVertical: 23,
+    fontSize: 13,
   },
 });

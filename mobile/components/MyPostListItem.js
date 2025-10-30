@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     color: "#EA580C",
   },
   postMenuBtn: {
-    backgroundColor: "black",
+    alignItems: "center",
     width: 30,
     height: 30,
   },
