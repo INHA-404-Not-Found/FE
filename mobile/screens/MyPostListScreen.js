@@ -22,6 +22,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import CategoryList from "../components/CategoryList";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 const POSTS = [
   {
@@ -96,11 +97,14 @@ const MyPostListScreen = () => {
     console.log("bottomSheetChanges", index);
   }, []);
   const closeModal = () => setDelVisible(false);
-
+  
   const [postType, setPostType] = useState("acquired"); // acquired lost all
   const [delVisible, setDelVisible] = useState(false); // 삭제 모달 열림/닫힘 상태
+  
+  const navigation = useNavigation(); 
 
   return (
+
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <SafeAreaView style={{ flex: 1 }} edge={['top']}>
@@ -143,7 +147,10 @@ const MyPostListScreen = () => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <Pressable style={styles.bottomModalBtn}>
+                <Pressable 
+                  style={styles.bottomModalBtn}
+                  onPress={() => navigation.navigate("EditPostScreen")}
+                >
                   <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
                 </Pressable>
                 <Pressable
