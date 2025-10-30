@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   Image,
   ScrollView,
   Dimensions,
@@ -10,38 +9,14 @@ import {
 import React from "react";
 import StatusLabel from "../components/StatusLabel";
 import DefaultHeader from "../components/DefaultHeader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SettingScreen = () => {
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edge={['top']}>
       <DefaultHeader />
       <ScrollView contentContainerStyle={styles.PostContainer}>
-        <Image
-          source={require("../assets/INHA.png")}
-          style={styles.UploadedImg}
-        ></Image>
-        <View style={styles.ContentContainer}>
-          <View style={styles.headerRow}>
-            <View style={{ flexShrink: 1, paddingRight: 12 }}>
-              <Text style={styles.categoryText}>지갑(카드, 현금)</Text>
-              <Text style={styles.titleText}>검정색 카드지갑 습득</Text>
-            </View>
-            <StatusLabel />
-          </View>
-          <Text style={styles.categoryText}>2025.10.10</Text>
-          <View style={styles.infoList}>
-            <Text style={styles.infoItem}>
-              {"\u2022"} 습득 장소: 하이테크 1층 해동 카페
-            </Text>
-            <Text style={styles.infoItem}>
-              {"\u2022"} 보관 위치: 하텍 2층 사무실
-            </Text>
-          </View>
-          <Text style={styles.bodyText}>
-            검정색 카드 지갑 하텍 1층 해동 카페에서 주웠습니다. 2층 사무실에
-            맡겨놨으니까 알아서 찾아가세요.
-          </Text>
-        </View>
+        
       </ScrollView>
     </SafeAreaView>
   );

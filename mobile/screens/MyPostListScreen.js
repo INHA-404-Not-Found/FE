@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  SafeAreaView,
   View,
   Pressable,
   Image,
@@ -22,6 +21,7 @@ import {
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import CategoryList from "../components/CategoryList";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const POSTS = [
   {
@@ -103,7 +103,7 @@ const MyPostListScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edge={['top']}>
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />

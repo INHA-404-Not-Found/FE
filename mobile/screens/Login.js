@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   Image,
@@ -10,31 +9,34 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = () => {
   return (
-    <KeyboardAvoidingView
-      style={styles.loginContainer}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <Image
-        source={require("../assets/INHA.png")}
-        style={styles.INHAImg}
-      ></Image>
-      <View style={styles.loginInputView}>
-        <Text>학번</Text>
-        <TextInput placeholder="학번 8자리" style={styles.textInput} />
-        <Text>비밀번호</Text>
-        <TextInput
-          placeholder="비밀번호를 입력해주세요."
-          secureTextEntry
-          style={styles.textInput}
-        />
-        <Pressable style={styles.loginBtn}>
-          <Text style={styles.loginText}>Log In</Text>
-        </Pressable>
-      </View>
-    </KeyboardAvoidingView>
+    <SafeAreaView edge={['top']}>
+      <KeyboardAvoidingView
+        style={styles.loginContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <Image
+          source={require("../assets/INHA.png")}
+          style={styles.INHAImg}
+        ></Image>
+        <View style={styles.loginInputView}>
+          <Text>학번</Text>
+          <TextInput placeholder="학번 8자리" style={styles.textInput} />
+          <Text>비밀번호</Text>
+          <TextInput
+            placeholder="비밀번호를 입력해주세요."
+            secureTextEntry
+            style={styles.textInput}
+          />
+          <Pressable style={styles.loginBtn}>
+            <Text style={styles.loginText}>Log In</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

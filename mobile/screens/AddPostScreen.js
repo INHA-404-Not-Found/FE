@@ -4,18 +4,18 @@ import {
   Text,
   TextInput,
   View,
-  SafeAreaView,
   Switch,
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const AddPostScreen = () => {
   const [isSN, setIsSN] = useState(false);
   const toggleSwitch = () => setIsSN((prev) => !prev);
   return (
-    <SafeAreaView style={{ height: "100%" }}>
+    <SafeAreaView style={{ flex: 1 }} edge={['top']}>
       <DefaultHeader />
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>

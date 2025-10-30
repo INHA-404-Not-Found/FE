@@ -2,13 +2,13 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   FlatList,
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import DefaultHeader from "../components/DefaultHeader";
 import Notification from "../components/Notification";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const NOTIFICATIONS = [
   {
@@ -94,7 +94,7 @@ const NotificationListScreen = () => {
   const [filter, setFilter] = useState("all"); // all read yet
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edge={['top']}>
       <DefaultHeader />
       <View style={styles.filterBtnContainer}>
         <Pressable

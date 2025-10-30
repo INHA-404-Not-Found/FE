@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  SafeAreaView,
   View,
   Pressable,
   Image,
@@ -19,6 +18,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import CategoryList from "../components/CategoryList";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // 위치 선택 맵 구역 좌표
 export const CAMPUS_ZONES = [
@@ -146,7 +146,7 @@ const PostListScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edge={['top']}>
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
