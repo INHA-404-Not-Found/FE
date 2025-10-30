@@ -1,37 +1,44 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const PostListItem = ({ post }) => {
+  const navigation = useNavigation(); 
+
   return (
-    <View style={styles.postContainer}>
-      <View style={styles.postImgWrapper}>
-        <Image
-          source={require("../assets/defaultPostImg.png")}
-          style={styles.postImg}
-        ></Image>
-      </View>
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.postTitle}>{post.title}</Text>
-          <View style={styles.postState}>
-            <Text style={styles.postStateText}>{post.state}</Text>
+    <Pressable 
+       onPress={() => navigation.navigate("PostScreen")}
+    >
+      <View style={styles.postContainer}>
+        <View style={styles.postImgWrapper}>
+          <Image
+            source={require("../assets/defaultPostImg.png")}
+            style={styles.postImg}
+          ></Image>
+        </View>
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.postTitle}>{post.title}</Text>
+            <View style={styles.postState}>
+              <Text style={styles.postStateText}>{post.state}</Text>
+            </View>
           </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 4,
+            }}
+          >
+            <Text style={styles.LocationText}>{post.location}</Text>
+            <Text style={styles.LocationText}>{post.date}</Text>
+          </View>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.postContent}>
+            {post.content}
+          </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginVertical: 4,
-          }}
-        >
-          <Text style={styles.LocationText}>{post.location}</Text>
-          <Text style={styles.LocationText}>{post.date}</Text>
-        </View>
-        <Text numberOfLines={2} ellipsizeMode="tail" style={styles.postContent}>
-          {post.content}
-        </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

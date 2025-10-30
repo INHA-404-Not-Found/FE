@@ -1,43 +1,50 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const MyPostListItem = ({ post, handleModalPress }) => {
+  const navigation = useNavigation(); 
+  
   return (
-    <View style={styles.postContainer}>
-      <View style={styles.postImgWrapper}>
-        <Image
-          source={require("../assets/defaultPostImg.png")}
-          style={styles.postImg}
-        ></Image>
-      </View>
-      <View style={{ paddingHorizontal: 20, flex: 1 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.postTitle}>{post.title}</Text>
-          <View style={styles.postState}>
-            <Text style={styles.postStateText}>{post.state}</Text>
+    <Pressable
+        onPress={() => navigation.navigate("PostScreen")}
+    >
+      <View style={styles.postContainer}>
+        <View style={styles.postImgWrapper}>
+          <Image
+            source={require("../assets/defaultPostImg.png")}
+            style={styles.postImg}
+          ></Image>
+        </View>
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.postTitle}>{post.title}</Text>
+            <View style={styles.postState}>
+              <Text style={styles.postStateText}>{post.state}</Text>
+            </View>
           </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 4,
+            }}
+          >
+            <Text style={styles.LocationText}>{post.location}</Text>
+            <Text style={styles.LocationText}>{post.date}</Text>
+          </View>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.postContent}>
+            {post.content}
+          </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginVertical: 4,
-          }}
-        >
-          <Text style={styles.LocationText}>{post.location}</Text>
-          <Text style={styles.LocationText}>{post.date}</Text>
-        </View>
-        <Text numberOfLines={2} ellipsizeMode="tail" style={styles.postContent}>
-          {post.content}
-        </Text>
+        <Pressable onPress={handleModalPress} style={styles.postMenuBtn}>
+          <Image
+            source={require("../assets/postMenu.png")}
+            style={styles.postMenuImg}
+          ></Image>
+        </Pressable>
       </View>
-      <Pressable onPress={handleModalPress} style={styles.postMenuBtn}>
-        <Image
-          source={require("../assets/postMenu.png")}
-          style={styles.postMenuImg}
-        ></Image>
-      </Pressable>
-    </View>
+    </Pressable>
   );
 };
 
