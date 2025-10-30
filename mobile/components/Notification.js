@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 
-const Notification = () => {
+const Notification = ({ notification }) => {
   return (
     <View style={styles.container}>
       <Image
         source={require("../assets/walletF.png")}
         style={styles.categoryImg}
       ></Image>
-      <View>
-        <Text>올리신 분실물과 유사한 습득물을 발견하였습니다!</Text>
+      <View style={styles.contentContainer}>
+        <Text>{notification.title}</Text>
         <Text numberOfLines={2} style={styles.contentText}>
-          게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기
+          {notification.message}
         </Text>
       </View>
       <View>
@@ -29,7 +29,7 @@ export default Notification;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    padding: 5,
+    padding: 15,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -44,5 +44,8 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 9,
     fontWeight: "regular",
+  },
+  contentContainer: {
+    paddingHorizontal: 8,
   },
 });
