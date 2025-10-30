@@ -5,27 +5,55 @@ import {
   View,
   StatusBar,
   Image,
+  Pressable,
 } from "react-native";
 import React from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+
 
 const DefaultHeader = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  console.log(route.name);
+
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
       <View style={styles.headerContainer}>
-        <View>
+        <Pressable
+          onPress={() => {
+            if (route.name != "MainScreen") {
+              navigation.goBack();
+            } else {
+              navigation.navigate("UserScreen")
+            }
+          }}
+        >
           <Image
-            source={require("../assets/prev.png")}
+            source={
+              route.name != "MainScreen" ? require("../assets/prev.png") : require("../assets/user.png")
+            }
             style={styles.headerPrevImg}
           ></Image>
-        </View>
+        </Pressable>
         <View>
-          <Text style={styles.headerText}>게시글 목록</Text>
+          <Text style={styles.headerText}>
+            { route.name == "MainScreen" ? "분실물 찾기" : "" }
+            { route.name == "AddPostScreen" ? "게시글 등록" : "" }
+            { route.name == "Notification" ? "알림함" : "" }
+            { route.name == "SettingScreen" ? "설정" : "" }
+            { route.name == "UserScreen" ? "마이페이지" : "" }
+            { route.name == "PostListScreen" ? "게시글 목록" : "" }
+            { route.name == "PostScreen" ? "내 게시글 목록" : "" }  
+          </Text>
         </View>
         <View>
           <Image
             source={require("../assets/search.png")}
-            style={styles.headerSearchImg}
+            style={[
+              styles.headerSearchImg,
+              route.name === "UserScreen" && { opacity: 0 },
+            ]}
           ></Image>
         </View>
       </View>
