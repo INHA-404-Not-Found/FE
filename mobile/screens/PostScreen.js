@@ -1,19 +1,12 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Dimensions,
-} from "react-native";
 import React from "react";
-import StatusLabel from "../components/StatusLabel";
-import DefaultHeader from "../components/DefaultHeader";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DefaultHeader from "../components/DefaultHeader";
+import StatusLabel from "../components/StatusLabel";
 
 const PostScreen = () => {
   return (
-    <SafeAreaView style={styles.safe} edge={['top']}>
+    <SafeAreaView style={styles.safe} edge={["top"]}>
       <DefaultHeader />
       <ScrollView contentContainerStyle={styles.PostContainer}>
         <Image

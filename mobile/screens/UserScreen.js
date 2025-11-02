@@ -1,26 +1,29 @@
+import React from "react";
 import {
+  Image,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  Image,
-  ScrollView,
-  Dimensions,
 } from "react-native";
-import React from "react";
-import StatusLabel from "../components/StatusLabel";
-import DefaultHeader from "../components/DefaultHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useSelector } from "react-redux";
+import DefaultHeader from "../components/DefaultHeader";
+import { useAuth } from "../hooks/useAuth";
 const UserScreen = () => {
+  const myInfo = useSelector((state) => state.my.info);
+  const { logout } = useAuth();
+
   return (
-    <SafeAreaView style={styles.safe} edge={['top']}>
+    <SafeAreaView style={styles.safe} edge={["top"]}>
       <DefaultHeader />
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={{
-          flexGrow: 1,          // 컨텐츠가 화면보다 작아도 flex 적용
-          justifyContent: 'center', // 수직 중앙
-          alignItems: 'center',     // 수평 중앙
-          paddingHorizontal: 20,    // 좌우 여백
+          flexGrow: 1, // 컨텐츠가 화면보다 작아도 flex 적용
+          justifyContent: "center", // 수직 중앙
+          alignItems: "center", // 수평 중앙
+          paddingHorizontal: 20, // 좌우 여백
           marginBottom: 70,
         }}
       >
@@ -37,7 +40,13 @@ const UserScreen = () => {
                 <Text style={styles.ProfileDetailTitle}>학부/학과</Text>
                 <Text style={styles.ProfileDetailSubTitle}>Major/Dept.</Text>
               </View>
-              <Text style={styles.ProfileDetailContent}>컴퓨터공학과</Text>
+              {myInfo ? (
+                <Text style={styles.ProfileDetailContent}>
+                  {myInfo.department}
+                </Text>
+              ) : (
+                <text>로그인 해주세요.</text>
+              )}
             </View>
 
             <View style={styles.ProfileDetail}>
@@ -45,7 +54,9 @@ const UserScreen = () => {
                 <Text style={styles.ProfileDetailTitle}>학번</Text>
                 <Text style={styles.ProfileDetailSubTitle}>Student ID</Text>
               </View>
-              <Text style={styles.ProfileDetailContent}>12234069</Text>
+              <Text style={styles.ProfileDetailContent}>
+                {myInfo.studentId}
+              </Text>
             </View>
 
             <View style={styles.ProfileDetail}>
@@ -53,7 +64,7 @@ const UserScreen = () => {
                 <Text style={styles.ProfileDetailTitle}>성명</Text>
                 <Text style={styles.ProfileDetailSubTitle}>Name</Text>
               </View>
-              <Text style={styles.ProfileDetailContent}>김도담</Text>
+              <Text style={styles.ProfileDetailContent}>{myInfo.name}</Text>
             </View>
 
             <View style={styles.ProfileDetail}>
@@ -61,7 +72,12 @@ const UserScreen = () => {
                 <Text style={styles.ProfileDetailTitle}>이메일</Text>
                 <Text style={styles.ProfileDetailSubTitle}>E-mail</Text>
               </View>
-              <Text style={styles.ProfileDetailContent}>gemddkim22@gmail.com</Text>
+              <Text style={styles.ProfileDetailContent}>{myInfo.email}</Text>
+            </View>
+            <View style={styles.ProfileDetail}>
+              <Pressable onPress={() => logout()} style={styles.loginBtn}>
+                <Text style={styles.loginText}>Log out</Text>
+              </Pressable>
             </View>
           </View>
         </View>
@@ -87,7 +103,7 @@ const styles = StyleSheet.create({
     gap: 40,
   },
   ProfileDetailContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 20,
   },
   ProfileDetail: {
@@ -105,7 +121,7 @@ const styles = StyleSheet.create({
   ProfileDetailSubTitle: {
     fontSize: 10,
     color: "#666",
-    textDecoration : 'underline',
+    textDecoration: "underline",
   },
   ProfileDetailContent: {
     marginTop: 4,
@@ -121,7 +137,7 @@ const styles = StyleSheet.create({
   InhaImg: {
     marginTop: 50,
     height: undefined,
-    alignSelf: 'center',
+    alignSelf: "center",
     opacity: 0.2,
   },
 });
