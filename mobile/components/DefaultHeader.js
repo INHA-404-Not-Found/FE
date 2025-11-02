@@ -16,6 +16,22 @@ const DefaultHeader = () => {
   const route = useRoute();
   console.log(route.name);
 
+  let imageSource;
+  let imageStyle;
+  switch (route.name) {
+    case "MainScreen":
+      imageSource = require("../assets/alert.png");
+      imageStyle = styles.headerAlertImg;
+      break;
+    case "NotificationListScreen":
+      imageSource = require("../assets/search.png");
+      imageStyle = styles.headerSearchImg;
+    default:
+      imageSource = require("../assets/search.png");
+      imageStyle = styles.headerSearchImg;
+      break;
+  }
+
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -53,16 +69,26 @@ const DefaultHeader = () => {
             {route.name == "MyPostListScreen" ? "내 게시글 목록" : ""}
             {route.name == "PostScreen" ? "게시물" : ""}
             {route.name == "EditPostScreen" ? "게시글 수정" : ""}
+            {route.name == "NotificationListScreen" ? "알림창" : ""}
           </Text>
         </View>
         <View>
-          <Image
-            source={require("../assets/search.png")}
-            style={[
-              styles.headerSearchImg,
-              route.name === "UserScreen" && { opacity: 0 },
-            ]}
-          ></Image>
+          <Pressable
+            onPress={() => {
+              if (route.name == "MainScreen") {
+                navigation.navigate("NotificationListScreen");
+              } else {
+              }
+            }}
+          >
+            <Image
+              source={imageSource}
+              style={[
+                { imageStyle },
+                route.name === "UserScreen" && { opacity: 0 },
+              ]}
+            ></Image>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -94,5 +120,9 @@ const styles = StyleSheet.create({
   headerSearchImg: {
     width: 48,
     height: 48,
+  },
+  headerAlertImg: {
+    width: 25,
+    height: 25,
   },
 });
