@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet } from "react-native";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
+import { setLocation } from "./Redux/slices/locationSlice";
 import AddPostScreen from "./screens/AddPostScreen";
 import EditPostScreen from "./screens/EditPostScreen";
 import Login from "./screens/Login";
@@ -108,7 +109,19 @@ function AppContent() {
       }
     };
 
+    const fetchLocations = async () => {
+      try {
+        const res = await api.get("/locations");
+
+        dispatch(setLocation(res.data)); // ✅ Redux에 저장
+        console.log("장소 목록 불러오기 성공:", res.data);
+      } catch (err) {
+        console.error("장소 목록 불러오기 실패:", err);
+      }
+    };
+
     fetchCategories(); // 앱 실행 시 1회 호출
+    fetchLocations();
   }, [dispatch]);
 
   return (
@@ -153,9 +166,9 @@ function AppContent() {
 }
 
 export default function App() {
-  const [Notification, setNotification] = useState(null);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  const [notification, setNotification] = useState(null);
+  const notificationListener = useRef(null);
+  const responseListener = useRef(null);
 
   useEffect(() => {
     // 1. 알림 권한 요청 -> 허용시 토큰 발급, 서버에 저장
@@ -178,16 +191,10 @@ export default function App() {
         // 알림에 포함된 데이터에 접근하고 특정 화면으로 이동하는 등의 로직 처리 추가하기
       });
 
-    // 컴포넌트 unmount 시 리스너 해제
+    // 컴포넌트 unmount 시 구독 객체에서 remove() 호출
     return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
+      notificationListener.current?.remove();
+      responseListener.current?.remove();
     };
   }, []);
 
