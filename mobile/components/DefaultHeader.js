@@ -1,15 +1,15 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React from "react";
 import {
+  Image,
+  Pressable,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
-  StatusBar,
-  Image,
-  Pressable,
 } from "react-native";
-import React from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-
+import { TokenStore } from "../TokenStore.js";
 
 const DefaultHeader = () => {
   const navigation = useNavigation();
@@ -25,28 +25,34 @@ const DefaultHeader = () => {
             if (route.name != "MainScreen") {
               navigation.goBack();
             } else {
-              navigation.navigate("UserScreen")
+              if (TokenStore.getToken() == null) {
+                navigation.navigate("LoginScreen");
+              } else {
+                navigation.navigate("UserScreen");
+              }
             }
           }}
         >
           <Image
             source={
-              route.name != "MainScreen" ? require("../assets/prev.png") : require("../assets/user.png")
+              route.name != "MainScreen"
+                ? require("../assets/prev.png")
+                : require("../assets/user.png")
             }
             style={styles.headerPrevImg}
           ></Image>
         </Pressable>
         <View>
           <Text style={styles.headerText}>
-            { route.name == "MainScreen" ? "분실물 찾기" : "" }
-            { route.name == "AddPostScreen" ? "게시글 등록" : "" }
-            { route.name == "Notification" ? "알림함" : "" }
-            { route.name == "SettingScreen" ? "설정" : "" }
-            { route.name == "UserScreen" ? "마이페이지" : "" }
-            { route.name == "PostListScreen" ? "게시글 목록" : "" }
-            { route.name == "MyPostListScreen" ? "내 게시글 목록" : "" }  
-            { route.name == "PostScreen" ? "게시물" : "" }   
-            { route.name == "EditPostScreen" ? "게시글 수정" : "" }  
+            {route.name == "MainScreen" ? "분실물 찾기" : ""}
+            {route.name == "AddPostScreen" ? "게시글 등록" : ""}
+            {route.name == "Notification" ? "알림함" : ""}
+            {route.name == "SettingScreen" ? "설정" : ""}
+            {route.name == "UserScreen" ? "마이페이지" : ""}
+            {route.name == "PostListScreen" ? "게시글 목록" : ""}
+            {route.name == "MyPostListScreen" ? "내 게시글 목록" : ""}
+            {route.name == "PostScreen" ? "게시물" : ""}
+            {route.name == "EditPostScreen" ? "게시글 수정" : ""}
           </Text>
         </View>
         <View>

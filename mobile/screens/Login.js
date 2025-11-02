@@ -1,19 +1,27 @@
+import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+
 import {
-  StyleSheet,
-  Text,
   Image,
-  View,
   KeyboardAvoidingView,
   Platform,
-  TextInput,
   Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
+  const { login } = useAuth();
+  const navigation = useNavigation();
+  const [studentId, setStudentId] = useState("");
+  const [pwd, setPwd] = useState("");
+
   return (
-    <SafeAreaView edge={['top']}>
+    <SafeAreaView edge={["top"]}>
       <KeyboardAvoidingView
         style={styles.loginContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -24,14 +32,24 @@ const Login = () => {
         ></Image>
         <View style={styles.loginInputView}>
           <Text>학번</Text>
-          <TextInput placeholder="학번 8자리" style={styles.textInput} />
+          <TextInput
+            placeholder="학번 8자리"
+            value={studentId}
+            onChangeText={(text) => setStudentId(text)}
+            style={styles.textInput}
+          />
           <Text>비밀번호</Text>
           <TextInput
             placeholder="비밀번호를 입력해주세요."
+            value={pwd}
+            onChangeText={(text) => setPwd(text)}
             secureTextEntry
             style={styles.textInput}
           />
-          <Pressable style={styles.loginBtn}>
+          <Pressable
+            onPress={() => login(studentId, pwd)}
+            style={styles.loginBtn}
+          >
             <Text style={styles.loginText}>Log In</Text>
           </Pressable>
         </View>

@@ -11,15 +11,27 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
+    "plugins": [
+      "expo-notifications",
+      "expo-secure-store"
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "useNextNotificationsApi": true,
+      "notification": {
+        "icon": "./assets/notification-icon.png",
+        "color": "#ffffff"
+      },
+      "package": "com.anonymous.next_campus"
     },
     "web": {
       "favicon": "./assets/favicon.png"
