@@ -1,5 +1,5 @@
-import Picker from "@react-native-picker/picker";
-import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import { useState } from "react";
 import {
   Pressable,
   ScrollView,
