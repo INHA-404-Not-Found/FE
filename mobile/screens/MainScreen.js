@@ -1,25 +1,26 @@
+import React, { useState } from "react";
 import {
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
   Image,
   Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
+  TextInput,
+  View,
 } from "react-native";
-import React, { useState } from "react";
-import DefaultHeader from "../components/DefaultHeader";
-import CategoryList from "../components/CategoryList";
-import PostTypeSelector from "../components/PostTypeSelector";
-import BottomBar from "../components/BottomBar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BottomBar from "../components/BottomBar";
+import CategoryList from "../components/CategoryList";
+import DefaultHeader from "../components/DefaultHeader";
+import PostTypeSelector from "../components/PostTypeSelector";
 
 const MainScreen = () => {
   const [selectType, setSelectType] = useState("category"); // category location status
-  const [postType, setPostType] = useState("acquired"); // acquired lost all
+  const [postType, setPostType] = useState("acquired"); // ALL FIND LOST
+  const [selectedCate, setSelectedCate] = useState(null);
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edge={['top']}>
+    <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
       <DefaultHeader />
       <ScrollView>
         <View style={styles.contentTop}>
@@ -87,11 +88,13 @@ const MainScreen = () => {
               </Pressable>
             </View>
             <View>
-              <CategoryList />
+              <CategoryList
+                selected={selectedCate}
+                setSelected={setSelectedCate}
+              />
             </View>
           </View>
         </View>
-
       </ScrollView>
       {/* 하단 바 */}
       <View style={styles.contentBottom}>

@@ -1,25 +1,31 @@
 import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  Pressable,
-  Image,
-  ScrollView,
-  FlatList,
 } from "react-native";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import DefaultHeader from "../components/DefaultHeader";
-import PostTypeSelector from "../components/PostTypeSelector";
-import PostListItem from "../components/PostListItem";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import CategoryList from "../components/CategoryList";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { getAllPosts, getPostsByTags } from "../api/post";
+import CategoryList from "../components/CategoryList";
+import DefaultHeader from "../components/DefaultHeader";
+import PostListItem from "../components/PostListItem";
+import PostTypeSelector from "../components/PostTypeSelector";
 // 위치 선택 맵 구역 좌표
 export const CAMPUS_ZONES = [
   { id: 1, name: "1호관(본관)", points: "180,300 310,300 320,380 170,380" },
@@ -60,71 +66,9 @@ export const CAMPUS_ZONES = [
   { id: 24, name: "제1생활관", points: "480,310 580,300 600,380 490,390" },
   { id: 25, name: "제2,3생활관", points: "480,310 580,300 600,380 490,390" },
 ];
-
-const POSTS = [
-  {
-    id: "1",
-    title: "검정색 카드지갑 습득",
-    content:
-      "하이테크 1층 해동 카페에서 검정색 카드 지갑을 주웠습니다. 2층 사무실에 맡겨놨습니다.",
-    location: "하이테크 1층 해동 카페",
-    date: "2025.10.07",
-    state: "미완료",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "2",
-    title: "지갑 분실했습니다",
-    content:
-      "학생회관 2층에서 지갑을 잃어버렸습니다. 안에는 학생증과 카드가 들어 있습니다.",
-    location: "학생회관 2층",
-    date: "2025.10.06",
-    state: "완료",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "3",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "4",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "5",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "6",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-];
-
 const PostListScreen = () => {
+  const [posts, setPosts] = useState([]);
+  const [pageNo, setPageNo] = useState(1); // 게시물 조회 페이징
   // bottomSheet
   const bottomSheetCategoryModalRef = useRef(null);
   const handleCategoryModalPress = useCallback(() => {
@@ -140,13 +84,67 @@ const PostListScreen = () => {
   const handleLocationSheetChanges = useCallback((index) => {
     console.log("bottomSheetLocationChanges", index);
   }, []);
-
-  const [postType, setPostType] = useState("acquired"); // acquired lost all
+  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
+  const [category, setCategory] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const onEndReached = () => {
+    if (loading || !hasNext) return; // 중복/무한루프 방지
+    setPageNo((p) => p + 1);
+  };
+  // 필터들을 하나로 묶어 의존성/비교 단순화
+  const filters = useMemo(
+    () => ({ postType, state, location, category }),
+    [postType, state, location, category]
+  );
+  // 필터 바꿀때마다 페이지넘버 1로 초기화
+  useEffect(() => {
+    setPageNo(1);
+    setHasNext(true);
+  }, [filters]);
+  // 페이징넘버 바뀔 때 마다 호출.
+  useEffect(() => {
+    if (pageNo > 1 && !hasNext) return;
+    console.log("페이징넘버:", pageNo);
+    let cancelled = false;
+    const isDefault =
+      !filters.state &&
+      !filters.location &&
+      !filters.category &&
+      filters.postType === "ALL";
+    (async () => {
+      setLoading(true);
+      try {
+        if (isDefault) {
+          getAllPosts(setPosts, pageNo, hasNext, setHasNext);
+        } else {
+          getPostsByTags(
+            setPosts,
+            pageNo,
+            filters.state,
+            filters.postType,
+            filters.location,
+            filters.category,
+            hasNext,
+            setHasNext
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [pageNo, filters]);
+  // 필터링 초기화
 
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }} edge={['top']}>
+        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
@@ -189,25 +187,36 @@ const PostListScreen = () => {
                   style={styles.filterDownImg}
                 ></Image>
               </Pressable>
-              <Pressable style={[styles.filterBtn]}>
+              <Pressable
+                onPress={() => setState("UNCOMPLETED")}
+                style={[styles.filterBtn]}
+              >
                 <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
                   미완료
                 </Text>
               </Pressable>
-              <Pressable style={[styles.filterBtn]}>
+              <Pressable
+                onPress={() => setState("COMPLETED")}
+                style={[styles.filterBtn]}
+              >
                 <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>완료</Text>
               </Pressable>
-              <Pressable style={[styles.filterBtn]}>
+              <Pressable
+                onPress={() => setState("POLICE")}
+                style={[styles.filterBtn]}
+              >
                 <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
                   인계됨
                 </Text>
               </Pressable>
             </ScrollView>
             <FlatList
-              data={POSTS}
-              keyExtractor={(item) => item.id}
+              data={posts}
+              keyExtractor={(item) => item.postId}
               renderItem={({ item }) => <PostListItem post={item} />}
               showsVerticalScrollIndicator={false}
+              onEndReached={onEndReached}
+              onEndReachedThreshold={0.4}
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
@@ -222,15 +231,7 @@ const PostListScreen = () => {
                     물품 카테고리
                   </Text>
                 </View>
-                <CategoryList />
-                <View style={styles.bottomModalBtnContainer}>
-                  <Pressable style={styles.bottomModalResetBtn}>
-                    <Text>초기화</Text>
-                  </Pressable>
-                  <Pressable style={styles.bottomModalSubmitBtn}>
-                    <Text style={styles.submitBtnText}>적용</Text>
-                  </Pressable>
-                </View>
+                <CategoryList selected={category} setSelected={setCategory} />
               </BottomSheetView>
             </BottomSheetModal>
             <BottomSheetModal
