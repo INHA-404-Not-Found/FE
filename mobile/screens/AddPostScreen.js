@@ -311,11 +311,11 @@ const AddPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable style={styles.loginBtn}>
-          <Text style={styles.loginText}>취소하기</Text>
+        <Pressable style={styles.btn}>
+          <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
-        <Pressable onPress={handleUpload} style={styles.loginBtn}>
-          <Text style={styles.loginText}>등록하기</Text>
+        <Pressable onPress={handleUpload} style={styles.btn}>
+          <Text style={styles.btnText}>등록하기</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 60,
   },
-  loginBtn: {
+  btn: {
     backgroundColor: "#215294",
     width: 170,
     paddingVertical: 10,
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  loginText: {
+  btnText: {
     color: "white",
     fontSize: 16,
   },
