@@ -7,7 +7,7 @@ import StatusLabel from "../components/StatusLabel";
 import { toImageSource } from "../utils/imageSource";
 
 const PostScreen = (route) => {
-  console.log(route.route.params);
+  console.log("PostScreen의 route.route.params = postId: " + route.route.params);
   const postId = route.route.params;
   const [post, setPost] = useState([]);
 
