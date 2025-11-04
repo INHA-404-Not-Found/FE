@@ -349,7 +349,10 @@ const AddPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable style={styles.btn}>
+        <Pressable
+          style={styles.btn}  
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
