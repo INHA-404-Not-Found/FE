@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
@@ -15,8 +16,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import api from "../api/api";
 import DefaultHeader from "../components/DefaultHeader";
-import { useNavigation } from "@react-navigation/native";
-import { TokenStore } from "../TokenStore";
 
 const AddPostScreen = () => {
   const navigation = useNavigation();
@@ -120,9 +119,8 @@ const AddPostScreen = () => {
     const formData = new FormData();
 
     for (let i = 0; i < files.length; i++) {
-      const img = files[i];
-
       // 용량 줄이기
+      // const img = files[i];
       // const resized = await ImageManipulator.manipulateAsync(
       //   img.uri,
       //   [{ resize: { width: 1024 } }],
@@ -130,28 +128,19 @@ const AddPostScreen = () => {
       // );
 
       files.forEach((img, i) => {
-        const cleanUri = img.uri.startsWith("file://")
-          ? img.uri
-          : `file:${img.uri}`;
-          console.log(cleanUri);
-
         formData.append("file", {
-          uri: cleanUri,
+          uri: img.uri,
           name: img.fileName || `image_${i}.jpg`,
           type: img.mimeType || "image/jpeg",
         });
       });
     }
+    console.log(formData);
 
-    const response = await api.post(`/posts/${targetPostId}/images`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.post(`/posts/${targetPostId}/images`, formData);
 
-    const result = await response;
-    console.log("Upload result:", result);
-    return result;
+    console.log("Upload result:", response.data);
+    return response.data;
   };
 
   // const registerPostImage = async (post_id, files) => {

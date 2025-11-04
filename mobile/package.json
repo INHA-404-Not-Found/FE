@@ -18,7 +18,6 @@
     "babel-preset-expo": "~54.0.0",
     "expo": "~54.0.0",
     "expo-checkbox": "~5.0.7",
-    "expo-dev-client": "~6.0.16",
     "expo-device": "^8.0.9",
     "expo-image-picker": "~17.0.8",
     "expo-notifications": "~0.32.12",
