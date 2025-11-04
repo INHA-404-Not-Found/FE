@@ -21,7 +21,7 @@ const Login = () => {
   const [pwd, setPwd] = useState("");
 
   return (
-    <SafeAreaView edge={["top"]}>
+    <SafeAreaView edge={["top"]} style={{ flex: 1 }}>
       <KeyboardAvoidingView
         style={styles.loginContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

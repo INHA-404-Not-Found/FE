@@ -17,7 +17,7 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import { getMyPosts } from "../api/post";
+import { getMyPosts, removePost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
 import MyPostListItem from "../components/MyPostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
@@ -26,23 +26,36 @@ const MyPostListScreen = () => {
   const myInfo = useSelector((state) => state.my.info);
   const [posts, setPosts] = useState([]);
   const [pageNo, setPageNo] = useState(1);
-  // bottomSheet
+  const [postType, setPostType] = useState("acquired");
+  const [delVisible, setDelVisible] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+
   const bottomSheetModalRef = useRef(null);
-  const handleModalPress = useCallback(() => {
+  const navigation = useNavigation();
+
+  const handleModalPress = useCallback((postId) => {
+    setSelectedPostId(postId);
     bottomSheetModalRef.current?.present();
   }, []);
-  const handleSheetChanges = useCallback((index) => {
-    console.log("bottomSheetChanges", index);
-  }, []);
+
+  const handleSheetChanges = useCallback(
+    (index) => {
+      console.log("bottomSheetChanges", index);
+      if (index === -1) {
+        getMyPosts(setPosts, 1); // 1페이지부터 다시 불러오기
+        setPageNo(1);
+      }
+    },
+    [setPosts]
+  );
+
   const closeModal = () => setDelVisible(false);
 
-  const [postType, setPostType] = useState("acquired"); // acquired lost all
-  const [delVisible, setDelVisible] = useState(false); // 삭제 모달 열림/닫힘 상태
-
-  const navigation = useNavigation();
   useEffect(() => {
     getMyPosts(setPosts, pageNo);
   }, [pageNo]);
+
+
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
@@ -68,11 +81,11 @@ const MyPostListScreen = () => {
             </View>
             <FlatList
               data={posts}
-              keyExtractor={(item) => item.postId}
+              keyExtractor={(item) => item.postId.toString()}
               renderItem={({ item }) => (
                 <MyPostListItem
                   post={item}
-                  handleModalPress={handleModalPress}
+                  handleModalPress={() => handleModalPress(item.postId)}
                 />
               )}
               showsVerticalScrollIndicator={false}
@@ -90,7 +103,11 @@ const MyPostListScreen = () => {
               <BottomSheetView style={styles.contentContainer}>
                 <Pressable
                   style={styles.bottomModalBtn}
-                  onPress={() => navigation.navigate("EditPostScreen")}
+                  onPress={() =>
+                    navigation.navigate("EditPostScreen", {
+                      postId: selectedPostId,
+                    })
+                  }
                 >
                   <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
                 </Pressable>
@@ -128,7 +145,16 @@ const MyPostListScreen = () => {
                         >
                           <Text style={styles.modalBtnText}>취소</Text>
                         </Pressable>
-                        <Pressable style={styles.modalSubmitBtn}>
+                        <Pressable
+                          onPress={async () => {
+                            await removePost(selectedPostId);
+                            closeModal();
+                            setPosts((prev) =>
+                              prev.filter((p) => p.postId !== selectedPostId)
+                            );
+                          }}
+                          style={styles.modalSubmitBtn}
+                        >
                           <Text style={styles.modalBtnWhiteText}>삭제</Text>
                         </Pressable>
                       </View>

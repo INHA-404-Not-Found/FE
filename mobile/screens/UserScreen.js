@@ -74,9 +74,9 @@ const UserScreen = () => {
               </View>
               <Text style={styles.ProfileDetailContent}>{myInfo.email}</Text>
             </View>
-            <View style={styles.ProfileDetail}>
-              <Pressable onPress={() => logout()} style={styles.loginBtn}>
-                <Text style={styles.loginText}>Log out</Text>
+            <View>
+              <Pressable onPress={() => logout()}>
+                <Text style={styles.logoutText}>Log out</Text>
               </Pressable>
             </View>
           </View>
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 40,
+    marginTop: 40, 
   },
   ProfileDetailContainer: {
     flexDirection: "column",
@@ -134,9 +135,16 @@ const styles = StyleSheet.create({
     width: 120,
     height: 150,
   },
+  logoutText: {
+    color: "#215294",
+    textDecorationLine: "underline",
+    textDecorationColor: "#215294",
+    fontSize: 16,
+  },
   InhaImg: {
-    marginTop: 50,
-    height: undefined,
+    marginTop: 30,
+    width: 200,
+    resizeMode: "contain",
     alignSelf: "center",
     opacity: 0.2,
   },

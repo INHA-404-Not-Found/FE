@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getPost } from "../api/post";
@@ -6,13 +6,19 @@ import DefaultHeader from "../components/DefaultHeader";
 import StatusLabel from "../components/StatusLabel";
 import { toImageSource } from "../utils/imageSource";
 
-const PostScreen = ({ route }) => {
-  const postId = route.params;
+const PostScreen = (route) => {
+  console.log(route.route.params);
+  const postId = route.route.params;
   const [post, setPost] = useState([]);
+
   useEffect(() => {
+    if (!postId) return;
+    console.log("postId: " + postId);
     getPost(setPost, postId);
-  }, []);
+  }, [postId]);
+
   const imageSource = toImageSource(post?.imagePath);
+  
   return (
     <SafeAreaView style={styles.safe} edge={["top"]}>
       <DefaultHeader />

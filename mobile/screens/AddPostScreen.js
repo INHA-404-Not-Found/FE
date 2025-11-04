@@ -15,8 +15,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import api from "../api/api";
 import DefaultHeader from "../components/DefaultHeader";
+import { useNavigation } from "@react-navigation/native";
+import { TokenStore } from "../TokenStore";
 
 const AddPostScreen = () => {
+  const navigation = useNavigation();
   const myInfo = useSelector((state) => state.my.info);
   // DropDownPicker 상태 관리
   const [open, setOpen] = useState(false);
@@ -74,9 +77,9 @@ const AddPostScreen = () => {
 
     // 이미지 선택
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsMultipleSelection: true, // 여러장 선택 가능
-      allowEditing: true,
+      allowsEditing: true,
       quality: 1,
     });
 
@@ -113,60 +116,89 @@ const AddPostScreen = () => {
   };
 
   // 이미지 업로드
-  const uploadImages = async (targetPostId, files) => {
+  const registerPostImage = async (targetPostId, files) => {
     const formData = new FormData();
-    files.forEach((img, i) => {
-      formData.append("file", {
-        uri: img.uri,
-        name: img.fileName || `image_${i}.jpg`,
-        type: img.mimeType || "image/jpeg",
-      });
-    });
 
-    // multipart 전송
-    await api.post(`/posts/${targetPostId}/images`, formData);
-  };
+    for (let i = 0; i < files.length; i++) {
+      const img = files[i];
 
-  const registerPostImage = async (post_id, files) => {
-    try {
-      const formData = new FormData();
+      // 용량 줄이기
+      // const resized = await ImageManipulator.manipulateAsync(
+      //   img.uri,
+      //   [{ resize: { width: 1024 } }],
+      //   { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      // );
 
       files.forEach((img, i) => {
+        const cleanUri = img.uri.startsWith("file://")
+          ? img.uri
+          : `file:${img.uri}`;
+          console.log(cleanUri);
+
         formData.append("file", {
-          uri: img.uri,
+          uri: cleanUri,
           name: img.fileName || `image_${i}.jpg`,
           type: img.mimeType || "image/jpeg",
         });
       });
-
-      console.log("FormData: ");
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      const res = await api.post(`/posts/${post_id}/images`, formData);
-
-      console.log("registerPostImage 성공:", res.data);
-    } catch (err) {
-      console.error("registerPostImage 에러:", err);
-      alert("registerPostImage 실패");
     }
+
+    const response = await api.post(`/posts/${targetPostId}/images`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const result = await response;
+    console.log("Upload result:", result);
+    return result;
   };
+
+  // const registerPostImage = async (post_id, files) => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     files.forEach((img, i) => {
+  //       formData.append("file", {
+  //         uri: img.uri,
+  //         name: img.fileName  `image_${i}.jpg`,
+  //         type: img.mimeType  "image/jpeg",
+  //       });
+  //     });
+
+  //     console.log("FormData: ");
+  //     for (const pair of formData.entries()) {
+  //       console.log(pair[0], pair[1]);
+  //     }
+
+  //     const res = await api.post(/posts/${post_id}/images, formData);
+
+  //     console.log("registerPostImage 성공:", res.data);
+  //   } catch (err) {
+  //     console.error("registerPostImage 에러:", err);
+  //     alert("registerPostImage 실패");
+  //   }
+  // };
 
   const handleUpload = async () => {
     try {
       const id = await uploadPost(); // 대기해서 postId 확보
       console.log("post업로드성공");
+      console.log(file, file.length);
+
       if (file.length > 0 && file) {
         await registerPostImage(id, file); // id를 명시적으로 전달
       }
-      console.log("업로드 전체 완료");
+      console.log("사진 업로드 전체 완료");
+
       // 네비게이션 이동
-      navigation.navigate("PostScreen", { postId });
+      console.log("postId" + id);
+      navigation.navigate("PostScreen", id);
     } catch (e) {
-      console.error("업로드 실패:", e?.response?.status, e?.message);
+      console.error("업로드 실패:", e);
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
       <DefaultHeader />

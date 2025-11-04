@@ -6,7 +6,7 @@ const MyPostListItem = ({ post, handleModalPress }) => {
   const navigation = useNavigation();
 
   return (
-    <Pressable onPress={() => navigation.navigate("PostScreen")}>
+    <Pressable onPress={() => navigation.navigate("PostScreen", post.postId)}>
       <View style={styles.postContainer}>
         <View style={styles.postImgWrapper}>
           <Image source={post.imagePath} style={styles.postImg}></Image>

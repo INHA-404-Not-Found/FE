@@ -31,6 +31,9 @@
         "icon": "./assets/notification-icon.png",
         "color": "#ffffff"
       },
+      "android": {
+        "permissions": ["NOTIFICATIONS"]
+      },
       "package": "com.anonymous.next_campus"
     },
     "web": {
