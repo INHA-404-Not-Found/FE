@@ -195,8 +195,8 @@ const AddPostScreen = () => {
         <View style={styles.content}>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.textLabel}>제목</Text>
-              <Text style={styles.star}> *</Text>
+              <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
             </View>
             <TextInput
               value={title}
@@ -207,7 +207,7 @@ const AddPostScreen = () => {
           <View style={styles.flexRow}>
             <Text style={styles.textLabel}>학번 정보{"\n"}포함 유무</Text>
             <Switch
-              trackColor={{ false: "#767577", true: "#4fda61ff" }}
+              trackColor={{ false: "#767577", true: "#04bb1cff" }}
               thumbColor={"#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
@@ -217,7 +217,11 @@ const AddPostScreen = () => {
               placeholder="학번 8자리"
               style={[
                 styles.inputText,
-                { width: 200, backgroundColor: isSN ? "#ffffff" : "#f0ededff" },
+                { 
+                  width: 200,
+                  backgroundColor: isSN ? "#ffffff" : "#f0ededff",
+                  marginTop: 5,
+                },
               ]}
               editable={isSN}
               value={studentId}
@@ -226,7 +230,11 @@ const AddPostScreen = () => {
           </View>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.textLabel}>물품 카테고리</Text>
+              <Text 
+                style={[styles.textLabel, { alignItems:"center" }]}
+              >
+                물품 카테고리
+              </Text>
               <Text style={styles.star}> *</Text>
             </View>
             <View style={styles.dropdownContainer}>
@@ -277,15 +285,15 @@ const AddPostScreen = () => {
             </View>
           </View>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>보관 위치</Text>
+            <Text style={[styles.textLabel, { marginTop: 13, }]}>보관 위치</Text>
             <TextInput
               value={storedLocation}
               onChangeText={(text) => setStoredLocation(text)}
               style={styles.inputText}
             ></TextInput>
           </View>
-          <View style={[styles.flexRow, { alignItems: "flex-start" }]}>
-            <Text style={[styles.textLabel, { marginTop: 15 }]}>내용</Text>
+          <View style={styles.flexRow}>
+            <Text style={[styles.textLabel, { marginTop: 13, }]}>내용</Text>
             <TextInput
               value={content}
               numberOfLines={5}
@@ -302,11 +310,14 @@ const AddPostScreen = () => {
               ]}
             />
           </View>
-          <View style={styles.flexRow}>
+          <View style={[styles.flexRow, { alignItems: "center", }]}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable onPress={pickImages} style={styles.imageUploadBtn}>
+            <Pressable 
+              onPress={pickImages}
+              style={[styles.imageUploadBtn, { marginLeft: 50, }]}
+            >
               <Image
-                source={require("../assets/uploadImage.png")}
+                source={require("../assets/uploadImage2.png")}
                 style={{
                   width: 15,
                   height: 15,
@@ -365,6 +376,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 10,
+    alignItems: "flex-start",
   },
   textLabel: {
     fontSize: 13.5,
@@ -411,18 +423,22 @@ const styles = StyleSheet.create({
     borderColor: "#d9d9d9",
   },
   imageUploadBtn: {
-    backgroundColor: "#215294",
-    width: 90,
-    height: 20,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5,
-    alignItems: "center",
     flexDirection: "row",
+    width: 244,
+    height: 40,
+    paddingVertical: 0,
+    fontSize: 12.5,
+    borderWidth: 2,
+    backgroundColor: "#fff",
+    borderColor: "#215294",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginVertical: 15,
   },
   imageUploadText: {
-    color: "white",
-    fontSize: 10,
-    fontWeight: "light",
+    color: "#215294",
+    fontSize: 13,
   },
 });
