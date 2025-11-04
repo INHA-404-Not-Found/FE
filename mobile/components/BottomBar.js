@@ -12,8 +12,8 @@ const BottomBar = () => {
             onPress={() => navigation.navigate("MyPostListScreen")}
         >
             <Image
-            source={require("../assets/myPost.png")}
-            style={styles.image}
+                source={require("../assets/myPost.png")}
+                style={styles.image}
             ></Image>
         </Pressable>
 
@@ -34,16 +34,6 @@ const BottomBar = () => {
         >
             <Image
                 source={require("../assets/postList.png")}
-                style={styles.image}
-            />
-        </Pressable>
-
-        {/* 설정 */}
-        <Pressable
-            onPress={() => navigation.navigate("SettingScreen")}
-        >
-            <Image
-                source={require("../assets/setting.png")}
                 style={styles.image}
             />
         </Pressable>
@@ -70,8 +60,10 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   image: {
-    width: 50,
-    height: 50,
-    marginHorizontal: 20,
-  },
+    width: 40,
+    height: 40,
+    marginHorizontal: 35,
+    marginVertical: 10,
+    resizeMode: "contain",
+  }
 });
