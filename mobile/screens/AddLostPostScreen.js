@@ -326,18 +326,20 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center", // 가운데 정렬
+    alignItems: "center",
     marginHorizontal: 30,
     position: "absolute",
     bottom: 60,
   },
   btn: {
     backgroundColor: "#215294",
-    width: 170,
+    width: 160,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
+    marginHorizontal: 10, // 버튼 사이 간격
   },
   btnText: {
     color: "white",
