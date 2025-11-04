@@ -10,6 +10,7 @@ import { Platform, StyleSheet } from "react-native";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
 import { setLocation } from "./Redux/slices/locationSlice";
+import AddLostPostScreen from "./screens/AddLostPostScreen";
 import AddPostScreen from "./screens/AddPostScreen";
 import EditPostScreen from "./screens/EditPostScreen";
 import Login from "./screens/Login";
@@ -143,8 +144,10 @@ function AppContent() {
         />
         {/* 게시글 리스트 화면 */}
         <Stack.Screen name="PostListScreen" component={PostListScreen} />
-        {/* 게시글 등록 화면 */}
+        {/* 습득 게시글 등록 화면 */}
         <Stack.Screen name="AddPostScreen" component={AddPostScreen} />
+        {/* 분실 게시글 등록 화면 */}
+        <Stack.Screen name="AddLostPostScreen" component={AddLostPostScreen} />
         {/* 설정 화면 */}
         <Stack.Screen name="SettingScreen" component={SettingScreen} />
         {/* 유저 화면 */}

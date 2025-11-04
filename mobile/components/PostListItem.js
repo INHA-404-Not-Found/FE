@@ -7,7 +7,7 @@ const PostListItem = ({ post }) => {
   const navigation = useNavigation();
   const imageSource = toImageSource(post?.imagePath);
   return (
-    <Pressable onPress={() => navigation.navigate("PostScreen", postId)}>
+    <Pressable onPress={() => navigation.navigate("PostScreen", post.postId)}>
       <View style={styles.postContainer}>
         <View style={styles.postImgWrapper}>
           <Image source={imageSource} style={styles.postImg}></Image>

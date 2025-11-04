@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Image,
   Pressable,
@@ -8,112 +14,150 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
 import LocationMap from "../components/LocationMap";
 import PostTypeSelector from "../components/PostTypeSelector";
-
 const MainScreen = () => {
+  const navigation = useNavigation();
   const [selectType, setSelectType] = useState("category"); // category location status
   const [postType, setPostType] = useState("acquired"); // ALL FIND LOST
   const [selectedCate, setSelectedCate] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-
+  // bottomSheet
+  const bottomSheetModalRef = useRef(null);
+  const handleModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    console.log("bottomSheetChanges", index);
+  }, []);
   return (
-    <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
-      <DefaultHeader />
-      <ScrollView>
-        <View style={styles.contentTop}>
-          <View style={styles.searchBar}>
-            <Image
-              source={require("../assets/menu.png")}
-              style={styles.barImg}
-            ></Image>
-            <TextInput
-              placeholder="검색어 없음"
-              placeholderTextColor="#ffffffff"
-              style={styles.textInput}
-            />
-            <Image
-              source={require("../assets/searchWhite.png")}
-              style={styles.barImg}
-            ></Image>
-          </View>
-          <View style={styles.selectView}>
-            <PostTypeSelector postType={postType} setPostType={setPostType} />
-            <View>
-              <Pressable style={[styles.filterResetBtn]}>
+    <GestureHandlerRootView>
+      <BottomSheetModalProvider>
+        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+          <DefaultHeader />
+          <ScrollView>
+            <View style={styles.contentTop}>
+              <View style={styles.searchBar}>
                 <Image
-                  source={require("../assets/filterReset.png")}
-                  style={styles.resetImg}
+                  source={require("../assets/menu.png")}
+                  style={styles.barImg}
                 ></Image>
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
-                  필터 초기화
-                </Text>
-              </Pressable>
-            </View>
-            <View style={styles.selectBtnRow}>
-              <Pressable
-                onPress={() => setSelectType("category")}
-                style={[
-                  styles.selectBtn,
-                  {
-                    backgroundColor:
-                      selectType === "category" ? "#D9D9D9" : "#ffffff",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>물품 카테고리</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setSelectType("location")}
-                style={[
-                  styles.selectBtn,
-                  {
-                    backgroundColor:
-                      selectType === "location" ? "#D9D9D9" : "#ffffff",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>습득/분실 위치</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => setSelectType("status")}
-                style={[
-                  styles.selectBtn,
-                  {
-                    backgroundColor:
-                      selectType === "status" ? "#D9D9D9" : "#ffffff",
-                  },
-                ]}
-              >
-                <Text style={styles.BtnText}>완료 여부</Text>
-              </Pressable>
-            </View>
-            <View>
-              {selectType === "category" && (
-                <CategoryList
-                  selected={selectedCate}
-                  setSelected={setSelectedCate}
+                <TextInput
+                  placeholder="검색어 없음"
+                  placeholderTextColor="#ffffffff"
+                  style={styles.textInput}
                 />
-              )}
-              {selectType === "location" && (
-                <LocationMap
-                  selected={selectedLocation}
-                  setSelected={setSelectedLocation}
+                <Image
+                  source={require("../assets/searchWhite.png")}
+                  style={styles.barImg}
+                ></Image>
+              </View>
+              <View style={styles.selectView}>
+                <PostTypeSelector
+                  postType={postType}
+                  setPostType={setPostType}
                 />
-              )}
+                <View>
+                  <Pressable style={[styles.filterResetBtn]}>
+                    <Image
+                      source={require("../assets/filterReset.png")}
+                      style={styles.resetImg}
+                    ></Image>
+                    <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                      필터 초기화
+                    </Text>
+                  </Pressable>
+                </View>
+                <View style={styles.selectBtnRow}>
+                  <Pressable
+                    onPress={() => setSelectType("category")}
+                    style={[
+                      styles.selectBtn,
+                      {
+                        backgroundColor:
+                          selectType === "category" ? "#D9D9D9" : "#ffffff",
+                      },
+                    ]}
+                  >
+                    <Text style={styles.BtnText}>물품 카테고리</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setSelectType("location")}
+                    style={[
+                      styles.selectBtn,
+                      {
+                        backgroundColor:
+                          selectType === "location" ? "#D9D9D9" : "#ffffff",
+                      },
+                    ]}
+                  >
+                    <Text style={styles.BtnText}>습득/분실 위치</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setSelectType("status")}
+                    style={[
+                      styles.selectBtn,
+                      {
+                        backgroundColor:
+                          selectType === "status" ? "#D9D9D9" : "#ffffff",
+                      },
+                    ]}
+                  >
+                    <Text style={styles.BtnText}>완료 여부</Text>
+                  </Pressable>
+                </View>
+                <View>
+                  {selectType === "category" && (
+                    <CategoryList
+                      selected={selectedCate}
+                      setSelected={setSelectedCate}
+                    />
+                  )}
+                  {selectType === "location" && (
+                    <LocationMap
+                      selected={selectedLocation}
+                      setSelected={setSelectedLocation}
+                    />
+                  )}
+                </View>
+              </View>
             </View>
+          </ScrollView>
+          {/* 하단 바 */}
+          <View style={styles.contentBottom}>
+            <BottomBar handleModalPress={handleModalPress} />
           </View>
-        </View>
-      </ScrollView>
-      {/* 하단 바 */}
-      <View style={styles.contentBottom}>
-        <BottomBar />
-      </View>
-    </SafeAreaView>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            onChange={handleSheetChanges}
+            style={styles.bottomSheetModal}
+          >
+            <BottomSheetView style={styles.contentContainer}>
+              <View style={styles.bottomModalContentTitle}>
+                <Pressable onPress={() => navigation.navigate("AddPostScreen")}>
+                  <Text style={styles.bottomModalContentTitleText}>
+                    습득 게시글 등록
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => navigation.navigate("AddLostPostScreen")}
+                >
+                  <Text style={styles.bottomModalContentTitleText}>
+                    분실 게시글 등록
+                  </Text>
+                </Pressable>
+              </View>
+            </BottomSheetView>
+          </BottomSheetModal>
+        </SafeAreaView>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -177,5 +221,21 @@ const styles = StyleSheet.create({
   },
   BtnText: {
     fontSize: 13,
+  },
+  bottomSheetModal: {
+    borderRadius: 25,
+  },
+  contentContainer: {
+    padding: 20,
+    paddingTop: 10,
+  },
+  bottomModalContentTitle: {
+    alignItem: "center",
+    padding: 10,
+  },
+  bottomModalContentTitleText: {
+    fontSize: 18,
+    fontWeight: 600,
+    paddingBottom: 20,
   },
 });
