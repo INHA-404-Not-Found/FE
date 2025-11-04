@@ -18,7 +18,7 @@ const PostScreen = (route) => {
   }, [postId]);
 
   const imageSource = toImageSource(post?.imagePath);
-  
+
   return (
     <SafeAreaView style={styles.safe} edge={["top"]}>
       <DefaultHeader />
@@ -33,14 +33,31 @@ const PostScreen = (route) => {
             <StatusLabel status={post.status} />
           </View>
           <Text style={styles.categoryText}>{post.createdAt}</Text>
-          <View style={styles.infoList}>
-            <Text style={styles.infoItem}>
-              {"\u2022"} 습득 장소: {post.locationName} {post.locationDetail}
-            </Text>
-            <Text style={styles.infoItem}>
-              {"\u2022"} 보관 위치: {post.storedLocation}
-            </Text>
-          </View>
+          {post.type === "FIND" ? (
+            <View style={styles.infoList}>
+              {post.locationName && (
+                <Text style={styles.infoItem}>
+                  {"\u2022"} 습득 장소: {post.locationName}{" "}
+                  {post.locationDetail}
+                </Text>
+              )}
+              {post.storedLocation && (
+                <Text style={styles.infoItem}>
+                  {"\u2022"} 보관 위치: {post.storedLocation}
+                </Text>
+              )}
+            </View>
+          ) : (
+            <View style={styles.infoList}>
+              {post.locationName && (
+                <Text style={styles.infoItem}>
+                  {"\u2022"} 분실 장소: {post.locationName}{" "}
+                  {post.locationDetail}
+                </Text>
+              )}
+            </View>
+          )}
+
           <Text style={styles.bodyText}>{post.content}</Text>
         </View>
       </ScrollView>
