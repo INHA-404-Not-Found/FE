@@ -190,7 +190,10 @@ const AddLostPostScreen = () => {
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>제목</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.textLabel}>제목</Text>
+              <Text style={styles.star}> *</Text>
+            </View>
             <TextInput
               value={title}
               onChangeText={(text) => setTitle(text)}
@@ -199,51 +202,75 @@ const AddLostPostScreen = () => {
           </View>
 
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>물품 카테고리</Text>
-            <DropDownPicker
-              open={open}
-              value={categories}
-              items={items}
-              setItems={setItems}
-              setOpen={setOpen}
-              setValue={setCategories}
-              multiple={true} // 여러 개 선택 가능
-              min={0}
-              max={5} // 최대 5개 선택
-              placeholder="카테고리를 선택하세요"
-              mode="BADGE"
-              style={styles.dropdownPicker}
-            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.textLabel}>물품 카테고리</Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={open}
+                value={categories}
+                items={items}
+                setItems={setItems}
+                setOpen={setOpen}
+                setValue={setCategories}
+                multiple={true}
+                min={0}
+                max={5}
+                placeholder="카테고리를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={3000}
+                zIndexInverse={1000}
+              />
+            </View>
           </View>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>분실 장소</Text>
-            <DropDownPicker
-              open={locationOpen}
-              value={locationId}
-              items={locationItems}
-              setItems={setLocationItems}
-              setOpen={setLocationOpen}
-              setValue={setLocationId}
-              multiple={false}
-              placeholder="장소를 선택하세요"
-              mode="BADGE"
-              style={styles.dropdownPicker}
-            />
-            <TextInput
-              placeholder="(선택)세부 장소를 입력하세요"
-              style={[styles.inputText, { width: 100 }]}
-              value={locationDetail}
-              onChangeText={(text) => setLocationDetail(text)}
-            ></TextInput>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.textLabel}>분실 장소</Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={locationOpen}
+                value={locationId}
+                items={locationItems}
+                setItems={setLocationItems}
+                setOpen={setLocationOpen}
+                setValue={setLocationId}
+                multiple={false}
+                placeholder="장소를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={2000}
+                zIndexInverse={900}
+              />
+              <TextInput
+                placeholder="(선택) 세부 장소를 입력하세요"
+                style={[styles.inputText]}
+                value={locationDetail}
+                onChangeText={(text) => setLocationDetail(text)}
+              ></TextInput>
+            </View>
           </View>
 
           <View style={[styles.flexRow, { alignItems: "flex-start" }]}>
             <Text style={[styles.textLabel, { marginTop: 15 }]}>내용</Text>
             <TextInput
               value={content}
+              numberOfLines={5}
+              multiline={true}
               onChangeText={(text) => setContent(text)}
-              style={[styles.inputText, { height: 150 }]}
-            ></TextInput>
+              style={[
+                styles.inputText,
+                {
+                  minHeight: 5 * 24,
+                  height: "auto",
+                  paddingTop: 10,
+                  textAlignVertical: "top",
+                },
+              ]}
+            />
           </View>
           <View style={styles.flexRow}>
             <Text style={styles.textLabel}>사진 등록</Text>
@@ -307,17 +334,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   textLabel: {
     fontSize: 13.5,
   },
+  star: {
+    color: "#fe2828ff",
+    fontSize: 13.5,
+  },
   inputText: {
     width: 244,
-    height: 27,
+    height: 40,
     paddingVertical: 0,
     lineHeight: 15,
     fontSize: 12.5,
-    textAlignVertical: "center",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
