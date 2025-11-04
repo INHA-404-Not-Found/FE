@@ -12,12 +12,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
+import LocationMap from "../components/LocationMap";
 import PostTypeSelector from "../components/PostTypeSelector";
 
 const MainScreen = () => {
   const [selectType, setSelectType] = useState("category"); // category location status
   const [postType, setPostType] = useState("acquired"); // ALL FIND LOST
   const [selectedCate, setSelectedCate] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
@@ -54,6 +56,7 @@ const MainScreen = () => {
             </View>
             <View style={styles.selectBtnRow}>
               <Pressable
+                onPress={() => setSelectType("category")}
                 style={[
                   styles.selectBtn,
                   {
@@ -65,6 +68,7 @@ const MainScreen = () => {
                 <Text style={styles.BtnText}>물품 카테고리</Text>
               </Pressable>
               <Pressable
+                onPress={() => setSelectType("location")}
                 style={[
                   styles.selectBtn,
                   {
@@ -76,6 +80,7 @@ const MainScreen = () => {
                 <Text style={styles.BtnText}>습득/분실 위치</Text>
               </Pressable>
               <Pressable
+                onPress={() => setSelectType("status")}
                 style={[
                   styles.selectBtn,
                   {
@@ -88,10 +93,18 @@ const MainScreen = () => {
               </Pressable>
             </View>
             <View>
-              <CategoryList
-                selected={selectedCate}
-                setSelected={setSelectedCate}
-              />
+              {selectType === "category" && (
+                <CategoryList
+                  selected={selectedCate}
+                  setSelected={setSelectedCate}
+                />
+              )}
+              {selectType === "location" && (
+                <LocationMap
+                  selected={selectedLocation}
+                  setSelected={setSelectedLocation}
+                />
+              )}
             </View>
           </View>
         </View>
