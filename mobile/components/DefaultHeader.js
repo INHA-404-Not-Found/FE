@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -9,16 +9,42 @@ import {
   View,
 } from "react-native";
 import { TokenStore } from "../TokenStore.js";
+import api from "../api/api.js";
 
 const DefaultHeader = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const token = TokenStore.getToken();
+  const [isNotificationUnread, setIsNotificationUnread] = useState(true);  // 안 읽으면 true, 읽으면 false 
+
+
+  useEffect(() => {
+    const fetchNotificationList = async () => {
+      const res = await api.get(`/notifications`, {
+        params: { page: 1 },
+      });
+
+      if(res.data[0].isRead) setIsNotificationUnread(false);
+      else setIsNotificationUnread(true);
+    };
+
+    fetchNotificationList();
+  }, [token]);
+
+  useEffect(() => {
+    console.log(isNotificationUnread);
+  }, [isNotificationUnread])
+
 
   // 오른쪽 아이콘
   let imageSource = null;
   switch (route.name) {
     case "MainScreen":
-      imageSource = require("../assets/alert.png");
+      if(isNotificationUnread){  // 안 읽음
+        imageSource = require("../assets/alert_exist.png");
+      } else {  // 읽음
+        imageSource = require("../assets/alert.png");
+      }
       break;
     case "NotificationListScreen":
       imageSource = require("../assets/search.png");
