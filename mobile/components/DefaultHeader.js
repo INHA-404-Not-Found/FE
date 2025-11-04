@@ -31,7 +31,10 @@ const DefaultHeader = () => {
 
   // 오른쪽 아이콘 투명 처리할 화면
   const hideRightImage =
-    route.name === "UserScreen" || route.name === "AddPostScreen";
+    route.name === "UserScreen" || route.name === "AddPostScreen"
+    || route.name === "AddLostPostScreen" || route.name === "MyPostListScreen"
+    || route.name === "PostScreen" || route.name === "EditPostScreen"
+    || route.name === "NotificationListScreen";
 
   return (
     <View>
@@ -64,7 +67,8 @@ const DefaultHeader = () => {
         {/* 가운데 텍스트 */}
         <Text style={styles.headerText}>
           {route.name === "MainScreen" && "분실물 찾기"}
-          {route.name === "AddPostScreen" && "게시글 등록"}
+          {route.name === "AddPostScreen" && "습득 게시글 등록"}
+          {route.name === "AddLostPostScreen" && "분실 게시글 등록"}
           {route.name === "Notification" && "알림함"}
           {route.name === "SettingScreen" && "설정"}
           {route.name === "UserScreen" && "마이페이지"}
