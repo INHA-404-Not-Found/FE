@@ -4,85 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../api/api.js";
 import DefaultHeader from "../components/DefaultHeader";
 import Notification from "../components/Notification";
-const NOTIFICATIONS = [
-  {
-    id: "1",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "2",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "3",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "4",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "5",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "6",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "7",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "8",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "9",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "10",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-  {
-    id: "11",
-    title: "올리신 분실물과 유사한 습득물을 발견하였습니다!",
-    message: "게시글 ‘검정색 지갑 분실하였습니다.’에 대한 유사 습득물 보러가기",
-    link: "",
-    isRead: "",
-  },
-];
 
 const NotificationListScreen = () => {
   const [filter, setFilter] = useState("all"); // all read yet
@@ -92,7 +13,9 @@ const NotificationListScreen = () => {
   useEffect(() => {
     const fetchNotificationList = async () => {
       try {
-        const res = await api.get(`/notifications?page=${pageNo}`);
+        const res = await api.get(`/notifications`, {
+          params: { page: pageNo },
+        });
         setNotifications((prev) => [...prev, ...res.data]);
         console.log("알림목록 조회 성공: ", notifications);
       } catch (e) {
@@ -101,7 +24,7 @@ const NotificationListScreen = () => {
     };
 
     fetchNotificationList();
-  }, []);
+  }, [pageNo]);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
