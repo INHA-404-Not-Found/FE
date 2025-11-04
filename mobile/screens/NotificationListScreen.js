@@ -57,7 +57,7 @@ const NotificationListScreen = () => {
       </View>
       <FlatList
         data={notifications}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Notification notification={item} />}
         onEndReached={() => setPageNo((prev) => prev + 1)}
         showsVerticalScrollIndicator={false}
