@@ -1,4 +1,4 @@
-import api from "./api.ts";
+import api from "./api.js";
 
 // 게시물 등록
 export const registerPost = async (
@@ -72,52 +72,79 @@ export const registerPost = async (
     alert("registerPost 실패");
   }
 };
-
 // 이미지 등록
 export const registerPostImage = async (post_id, files) => {
   try {
-    const res = await api.post("/posts/" + post_id + "/images", {
-      files,
+    const formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append("files", file);
     });
-    console.log("registerPostImage: ", res.data);
+
+    console.log("FormData: ");
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const res = await api.post(`/posts/${post_id}/images`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("registerPostImage 성공:", res.data);
   } catch (err) {
-    console.error("에러 발생: ", err);
+    console.error("registerPostImage 에러:", err);
     alert("registerPostImage 실패");
   }
 };
-
 // 게시글 수정
-// export const modifyPost = async (post_id) => {
-//     try {
-//         const res = await api.patch('/posts/'+ post_id, {
-//             locationId,
-//             locationDetail,
-//             title,
-//             content,
-//             storedLocation,
-//             status,
-//             type,
-//             isPersonal,
-//             studentId,
-//             categories
-//         });
-//         console.log("modifyPost: ", res.data);
-//     } catch (err) {
-//         console.error('에러 발생: ', err);
-//         alert("modifyPost 실패");
-//     }
-// };
+export const modifyPost = async (post_id, postDetail, images) => {
+  console.log("modifyPost start");
+  console.log(postDetail);
 
-// 게시글 수정
-export const modifyPostImage = async (post_id, files) => {
+  delete postDetail.imagePath;
+
   try {
-    const res = await api.patch("/posts/" + post_id + "/images", {
-      files,
-    });
-    console.log("modifyPostImage: ", res.data);
+    const res = await api.patch("/posts/" + post_id, postDetail);
+
+    console.log("modifyPost: ", res.data);
+    alert("『" + postDetail.title + " 』을 수정하였습니다.");
+
+    // 이미지 등록
+    if (images.length > 0 && images) {
+      console.log("이미지 등록: ", post_id, images);
+      await modifyPostImage(post_id, images);
+    }
   } catch (err) {
     console.error("에러 발생: ", err);
-    alert("modifyPostImage 실패");
+    alert("modifyPost 실패");
+  }
+};
+
+// 게시글->이미지 수정
+export const modifyPostImage = async (post_id, files) => {
+  console.log("modifyPostImage start");
+  console.log(post_id, files);
+
+  try {
+    const formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    console.log("FormData: ");
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const res = await api.patch(`/posts/${post_id}/images`, formData);
+
+    console.log("registerPostImage 성공:", res.data);
+  } catch (err) {
+    console.error("registerPostImage 에러:", err);
+    alert("registerPostImage 실패");
   }
 };
 
@@ -176,16 +203,22 @@ export const getPost = async (setPostDetail, post_id) => {
     alert("getPost 실패");
   }
 };
-
+const PAGE_SIZE = 10;
 // 모든 게시물 리스트 가져오기
-export const getAllPosts = async (setPostList, page = 1) => {
+export const getAllPosts = async (
+  setPostList,
+  page = 1,
+  hasNext,
+  setHasNext
+) => {
   try {
     const res = await api.get("/posts", {
       params: { page: page },
     });
     console.log(res.data);
     console.log("getAllPosts: ", "성공");
-    setPostList(res.data);
+    setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
+    setHasNext(res.data === PAGE_SIZE);
   } catch (err) {
     console.error("에러 발생: ", err);
     alert("getAllPosts 실패");
@@ -199,7 +232,9 @@ export const getPostsByTags = async (
   status,
   type,
   locationId,
-  categoryId
+  categoryId,
+  hasNext,
+  setHasNext
 ) => {
   console.log("getPostsByTags start");
   console.log(status, type);
@@ -226,7 +261,8 @@ export const getPostsByTags = async (
       params: FilterData,
     });
 
-    setPostList(res.data);
+    setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
+    setHasNext(res.data === PAGE_SIZE);
     console.log(res.data);
     console.log("getAllPosts: ", "성공");
   } catch (err) {
@@ -255,10 +291,25 @@ export const getPostsByKeyword = async (setPostList, keyword, page = 1) => {
     console.log("getPostsByKeyword: " + res.data);
     console.log(res.data);
 
-    setPostList(res.data);
+    setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
   } catch (err) {
     console.error("에러 발생: ", err);
     alert("getPostsByKeyword 실패");
     return null;
+  }
+};
+
+// 내 게시물 목록 조회
+export const getMyPosts = async (setPostList, page = 1) => {
+  try {
+    const res = await api.get("/posts/my", {
+      params: { page: page },
+    });
+    console.log(res.data);
+    console.log("getMyPosts: ", "성공");
+    setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
+  } catch (err) {
+    console.error("에러 발생: ", err);
+    alert("getMyPosts 실패");
   }
 };

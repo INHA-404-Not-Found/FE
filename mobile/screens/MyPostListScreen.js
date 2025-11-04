@@ -1,93 +1,31 @@
 import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Image,
-  ScrollView,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
   FlatList,
   Modal,
+  Pressable,
+  StyleSheet,
+  Text,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import DefaultHeader from "../components/DefaultHeader";
-import PostTypeSelector from "../components/PostTypeSelector";
-import MyPostListItem from "../components/MyPostListItem";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetModalProvider,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
-import CategoryList from "../components/CategoryList";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-
-const POSTS = [
-  {
-    id: "1",
-    title: "검정색 카드지갑 습득",
-    content:
-      "하이테크 1층 해동 카페에서 검정색 카드 지갑을 주웠습니다. 2층 사무실에 맡겨놨습니다.",
-    location: "하이테크 1층 해동 카페",
-    date: "2025.10.07",
-    state: "미완료",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "2",
-    title: "지갑 분실했습니다",
-    content:
-      "학생회관 2층에서 지갑을 잃어버렸습니다. 안에는 학생증과 카드가 들어 있습니다.",
-    location: "학생회관 2층",
-    date: "2025.10.06",
-    state: "완료",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "3",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "4",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "5",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-  {
-    id: "6",
-    title: "아이패드 습득",
-    content:
-      "하이테크 4층 복도에서 아이패드 프로를 주웠습니다. 화면에 '홍길동'이라는 메모가 있습니다.",
-    location: "하이테크 4층 복도",
-    date: "2025.10.05",
-    state: "인계됨",
-    image: require("../assets/defaultPostImg.png"),
-  },
-];
+import { useSelector } from "react-redux";
+import { getMyPosts } from "../api/post";
+import DefaultHeader from "../components/DefaultHeader";
+import MyPostListItem from "../components/MyPostListItem";
+import PostTypeSelector from "../components/PostTypeSelector";
 
 const MyPostListScreen = () => {
+  const myInfo = useSelector((state) => state.my.info);
+  const [posts, setPosts] = useState([]);
+  const [pageNo, setPageNo] = useState(1);
   // bottomSheet
   const bottomSheetModalRef = useRef(null);
   const handleModalPress = useCallback(() => {
@@ -97,17 +35,18 @@ const MyPostListScreen = () => {
     console.log("bottomSheetChanges", index);
   }, []);
   const closeModal = () => setDelVisible(false);
-  
+
   const [postType, setPostType] = useState("acquired"); // acquired lost all
   const [delVisible, setDelVisible] = useState(false); // 삭제 모달 열림/닫힘 상태
-  
-  const navigation = useNavigation(); 
 
+  const navigation = useNavigation();
+  useEffect(() => {
+    getMyPosts(setPosts, pageNo);
+  }, [pageNo]);
   return (
-
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }} edge={['top']}>
+        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
@@ -128,8 +67,8 @@ const MyPostListScreen = () => {
               </Pressable>
             </View>
             <FlatList
-              data={POSTS}
-              keyExtractor={(item) => item.id}
+              data={posts}
+              keyExtractor={(item) => item.postId}
               renderItem={({ item }) => (
                 <MyPostListItem
                   post={item}
@@ -137,6 +76,8 @@ const MyPostListScreen = () => {
                 />
               )}
               showsVerticalScrollIndicator={false}
+              onEndReached={() => setPageNo((prev) => prev + 1)}
+              onEndReachedThreshold={0.8}
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
@@ -147,7 +88,7 @@ const MyPostListScreen = () => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <Pressable 
+                <Pressable
                   style={styles.bottomModalBtn}
                   onPress={() => navigation.navigate("EditPostScreen")}
                 >

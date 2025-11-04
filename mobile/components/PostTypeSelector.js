@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 const PostTypeSelector = ({ postType, setPostType }) => {
   return (
@@ -8,12 +8,25 @@ const PostTypeSelector = ({ postType, setPostType }) => {
         style={[
           styles.postTypeBtn,
           {
-            borderBottomWidth: postType === "acquired" ? 1 : 0,
+            borderBottomWidth: postType === "ALL" ? 1 : 0,
             borderColor: "black",
             borderStyle: "solid",
           },
         ]}
-        onPress={() => setPostType("acquired")}
+        onPress={() => setPostType("ALL")}
+      >
+        <Text style={styles.BtnText}>전체</Text>
+      </Pressable>
+      <Pressable
+        style={[
+          styles.postTypeBtn,
+          {
+            borderBottomWidth: postType === "FIND" ? 1 : 0,
+            borderColor: "black",
+            borderStyle: "solid",
+          },
+        ]}
+        onPress={() => setPostType("FIND")}
       >
         <Text style={styles.BtnText}>습득</Text>
       </Pressable>
@@ -21,27 +34,14 @@ const PostTypeSelector = ({ postType, setPostType }) => {
         style={[
           styles.postTypeBtn,
           {
-            borderBottomWidth: postType === "lost" ? 1 : 0,
+            borderBottomWidth: postType === "LOST" ? 1 : 0,
             borderColor: "black",
             borderStyle: "solid",
           },
         ]}
-        onPress={() => setPostType("lost")}
+        onPress={() => setPostType("LOST")}
       >
         <Text style={styles.BtnText}>분실</Text>
-      </Pressable>
-      <Pressable
-        style={[
-          styles.postTypeBtn,
-          {
-            borderBottomWidth: postType === "all" ? 1 : 0,
-            borderColor: "black",
-            borderStyle: "solid",
-          },
-        ]}
-        onPress={() => setPostType("all")}
-      >
-        <Text style={styles.BtnText}>전체</Text>
       </Pressable>
     </View>
   );

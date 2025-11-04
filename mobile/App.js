@@ -21,7 +21,7 @@ import PostScreen from "./screens/PostScreen";
 import SettingScreen from "./screens/SettingScreen";
 import UserScreen from "./screens/UserScreen";
 
-// 앱 실행중에 알림이 도착하면(Foreground 알림) 어떻게 처리할 지 설정
+// 앱이 꺼져있을때 알림이 도착하면(Background 알림) 어떻게 처리할 지 설정
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: true, // 소리 재생 여부
