@@ -1,23 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Checkbox } from "expo-checkbox";
-import React, { useState } from "react";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 
-const categories = [
-  { id: "elec", label: "전자기기" },
-  { id: "book", label: "도서" },
-  { id: "cloth", label: "의류" },
-  { id: "bag", label: "가방" },
-  { id: "acc", label: "악세서리" },
-  { id: "etc", label: "기타" },
-];
-const CategoryList = () => {
-  const [selected, setSelected] = useState([]);
-
-  const toggle = (id) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
-    );
-  };
+const CategoryList = ({ selected, setSelected }) => {
+  const categories = useSelector((state) => state.category.categories);
 
   return (
     <View style={styles.listContainer}>
@@ -25,34 +12,16 @@ const CategoryList = () => {
         {categories.map((item) => (
           <TouchableOpacity
             key={item.id}
-            onPress={() => toggle(item.id)}
+            onPress={() => setSelected(item.id)}
             style={styles.checkboxContainer}
           >
             <Checkbox
-              value={selected.includes(item.id)}
-              onValueChange={() => toggle(item.id)}
+              value={item.id === selected ? true : false}
+              onValueChange={() => setSelected(item.id)}
             />
-            <Text style={styles.label}>{item.label}</Text>
+            <Text style={styles.label}>{item.name}</Text>
           </TouchableOpacity>
         ))}
-      </View>
-      <View style={styles.tagWrap}>
-        {selected.length > 0 ? (
-          selected.map((id) => {
-            const label = categories.find((c) => c.id === id)?.label;
-            return (
-              <View key={id} style={styles.tag}>
-                <Image
-                  source={require("../assets/check.png")}
-                  style={styles.checkImg}
-                ></Image>
-                <Text style={styles.tagText}>{label}</Text>
-              </View>
-            );
-          })
-        ) : (
-          <Text style={styles.noneText}>없음</Text>
-        )}
       </View>
     </View>
   );

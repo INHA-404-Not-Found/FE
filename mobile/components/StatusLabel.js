@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-const StatusLabel = () => {
+const StatusLabel = ({ status }) => {
   return (
     <View style={styles.roundBorder}>
-      <Text style={styles.statusText}>미완료</Text>
+      <Text style={styles.statusText}>{status}</Text>
     </View>
   );
 };

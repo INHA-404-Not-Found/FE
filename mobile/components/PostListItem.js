@@ -1,26 +1,22 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { toImageSource } from "../utils/imageSource";
 
 const PostListItem = ({ post }) => {
-  const navigation = useNavigation(); 
-
+  const navigation = useNavigation();
+  const imageSource = toImageSource(post?.imagePath);
   return (
-    <Pressable 
-       onPress={() => navigation.navigate("PostScreen")}
-    >
+    <Pressable onPress={() => navigation.navigate("PostScreen", postId)}>
       <View style={styles.postContainer}>
         <View style={styles.postImgWrapper}>
-          <Image
-            source={require("../assets/defaultPostImg.png")}
-            style={styles.postImg}
-          ></Image>
+          <Image source={imageSource} style={styles.postImg}></Image>
         </View>
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <View style={styles.postState}>
-              <Text style={styles.postStateText}>{post.state}</Text>
+              <Text style={styles.postStateText}>{post.status}</Text>
             </View>
           </View>
           <View
@@ -30,10 +26,16 @@ const PostListItem = ({ post }) => {
               marginVertical: 4,
             }}
           >
-            <Text style={styles.LocationText}>{post.location}</Text>
-            <Text style={styles.LocationText}>{post.date}</Text>
+            <Text style={styles.LocationText}>
+              {post.locationName} {post.locationDetail}
+            </Text>
+            <Text style={styles.LocationText}>{post.createdAt}</Text>
           </View>
-          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.postContent}>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={styles.postContent}
+          >
             {post.content}
           </Text>
         </View>

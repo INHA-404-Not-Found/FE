@@ -1,39 +1,41 @@
 import React from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getPost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
 import StatusLabel from "../components/StatusLabel";
+import { toImageSource } from "../utils/imageSource";
 
-const PostScreen = () => {
+const PostScreen = ({ route }) => {
+  const postId = route.params;
+  const [post, setPost] = useState([]);
+  useEffect(() => {
+    getPost(setPost, postId);
+  }, []);
+  const imageSource = toImageSource(post?.imagePath);
   return (
     <SafeAreaView style={styles.safe} edge={["top"]}>
       <DefaultHeader />
       <ScrollView contentContainerStyle={styles.PostContainer}>
-        <Image
-          source={require("../assets/INHA.png")}
-          style={styles.UploadedImg}
-        ></Image>
+        <Image source={imageSource} style={styles.UploadedImg}></Image>
         <View style={styles.ContentContainer}>
           <View style={styles.headerRow}>
             <View style={{ flexShrink: 1, paddingRight: 12 }}>
-              <Text style={styles.categoryText}>지갑(카드, 현금)</Text>
-              <Text style={styles.titleText}>검정색 카드지갑 습득</Text>
+              <Text style={styles.categoryText}>{post.categories}</Text>
+              <Text style={styles.titleText}>{post.title}</Text>
             </View>
-            <StatusLabel />
+            <StatusLabel status={post.status} />
           </View>
-          <Text style={styles.categoryText}>2025.10.10</Text>
+          <Text style={styles.categoryText}>{post.createdAt}</Text>
           <View style={styles.infoList}>
             <Text style={styles.infoItem}>
-              {"\u2022"} 습득 장소: 하이테크 1층 해동 카페
+              {"\u2022"} 습득 장소: {post.locationName} {post.locationDetail}
             </Text>
             <Text style={styles.infoItem}>
-              {"\u2022"} 보관 위치: 하텍 2층 사무실
+              {"\u2022"} 보관 위치: {post.storedLocation}
             </Text>
           </View>
-          <Text style={styles.bodyText}>
-            검정색 카드 지갑 하텍 1층 해동 카페에서 주웠습니다. 2층 사무실에
-            맡겨놨으니까 알아서 찾아가세요.
-          </Text>
+          <Text style={styles.bodyText}>{post.content}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -51,6 +53,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   UploadedImg: {
+    height: "100%",
     width: "100%",
 
     borderRadius: 0,
