@@ -1,14 +1,28 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
+import { TokenStore } from "../TokenStore";
 
 const BottomBar = ({ handleModalPress }) => {
   const navigation = useNavigation();
 
+  // 로그인 여부 확인
+  const checkLogin = async (onSuccess) => {
+    const token = await TokenStore.getToken();
+    console.log("token: " + token);
+
+    if (!token) {
+      navigation.navigate("LoginScreen");
+    } else {
+      onSuccess();
+    }
+  };
+  
+
   return (
     <View style={styles.bar}>
       {/* 내가 올린 글 */}
-      <Pressable onPress={() => navigation.navigate("MyPostListScreen")}>
+      <Pressable onPress={() => checkLogin(() => navigation.navigate("MyPostListScreen"))}>
         <Image
           source={require("../assets/myPost.png")}
           style={styles.image}
@@ -16,7 +30,7 @@ const BottomBar = ({ handleModalPress }) => {
       </Pressable>
 
       {/* 게시글 등록 */}
-      <Pressable onPress={handleModalPress}>
+      <Pressable onPress={() => checkLogin(() => handleModalPress())}>
         <Image
           source={require("../assets/addPost.png")}
           style={styles.image}
