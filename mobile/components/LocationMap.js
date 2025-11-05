@@ -205,7 +205,7 @@ const LocationMap = ({ selected, setSelected }) => {
   }));
 
   const handlePress = (z) => {
-    setSelected(z.id === selected.id ? null : z);
+    setSelected(z.id === selected?.id ? null : z);
   };
 
   return (
@@ -232,7 +232,7 @@ const LocationMap = ({ selected, setSelected }) => {
                 preserveAspectRatio="xMidYMid meet"
               />
               {CAMPUS_ZONES.map((z) => {
-                const active = z.id === selected;
+                const active = z.id === selected?.id;
                 return z.d ? (
                   <G key={z.id} onPress={() => handlePress(z)}>
                     <Path

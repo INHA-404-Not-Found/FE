@@ -30,13 +30,14 @@ import {
 } from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
+import LocationMap from "../components/LocationMap";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
 import SearchHeader from "../components/SearchHeader";
 const PostListScreen = ({ route }) => {
   const {
-    category: initialCategory = [],
-    location: initialLocation = [],
+    category: initialCategory = null,
+    location: initialLocation = null,
     state: initialStatus = "", // "" | "UNCOMPLETED" | "COMPLETED" | "POLICE"
     postType: initialPostType = "ALL", // "ALL" | "FIND" | "LOST"
   } = route?.params ?? {};
@@ -124,8 +125,8 @@ const PostListScreen = ({ route }) => {
     if (pageNo > 1 && !hasNext) return;
     const isDefault =
       (state === "" || state == null) &&
-      isEmptyArr(location) &&
-      isEmptyArr(category) &&
+      location == null &&
+      category == null &&
       postType === "ALL";
     (async () => {
       setLoading(true);
@@ -166,8 +167,8 @@ const PostListScreen = ({ route }) => {
   };
   // 필터링 초기화
   const resetFilter = () => {
-    setCategory([]);
-    setLocation([]);
+    setCategory(null);
+    setLocation(null);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
   // state 토글, 업데이트
@@ -182,7 +183,10 @@ const PostListScreen = ({ route }) => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor:"white", }} edge={["top"]}>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: "white" }}
+          edge={["top"]}
+        >
           {isSearching ? (
             <SearchHeader onSubmit={handleSearch} resetPageNo={resetPageNo} />
           ) : (
@@ -357,12 +361,7 @@ const PostListScreen = ({ route }) => {
                 <View style={styles.bottomModalContentTitle}>
                   <Text style={styles.bottomModalContentTitleText}>위치</Text>
                 </View>
-                <View style={styles.locationSelectMask}>
-                  <Image
-                    source={require("../assets/inhaMap.png")}
-                    style={styles.locationMapImg}
-                  ></Image>
-                </View>
+                <LocationMap selected={location} setSelected={setLocation} />
                 <View style={styles.bottomModalBtnContainer}>
                   <Pressable style={styles.bottomModalResetBtn}>
                     <Text>초기화</Text>

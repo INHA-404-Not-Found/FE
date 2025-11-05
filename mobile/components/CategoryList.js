@@ -16,7 +16,7 @@ const CategoryList = ({ selected, setSelected }) => {
             style={styles.checkboxContainer}
           >
             <Checkbox
-              value={item.id === selected.id ? true : false}
+              value={item.id === selected?.id ? true : false}
               onValueChange={() => setSelected(item)}
             />
             <Text style={styles.label}>{item.name}</Text>
