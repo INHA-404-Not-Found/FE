@@ -11,22 +11,31 @@ const NotificationListScreen = () => {
   const [notifications, setNotifications] = useState([]);
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
+  const PAGE_SIZE = 10;
   useEffect(() => {
     const fetchNotificationList = async () => {
+      if (pageNo > 1 && !hasNext) return;
+      setLoading(true);
       try {
         const res = await api.get(`/notifications`, {
           params: { page: pageNo },
         });
         setNotifications((prev) => [...prev, ...res.data]);
-        console.log("알림목록 조회 성공: ", notifications);
+        setHasNext(res.data.length === PAGE_SIZE);
+        console.log("알림목록 조회 성공: ", res.data);
       } catch (e) {
         console.error("알림 목록 불러오기 실패: ", e);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchNotificationList();
   }, [pageNo]);
-
+  const onEndReached = () => {
+    if (loading || !hasNext) return; // 중복/무한루프 방지
+    setPageNo((p) => p + 1);
+  };
   return (
     <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
       <DefaultHeader />
@@ -63,7 +72,7 @@ const NotificationListScreen = () => {
         data={notifications}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Notification notification={item} />}
-        onEndReached={() => setPageNo((prev) => prev + 1)} // 스크롤 끝 -> 다음 페이지
+        onEndReached={onEndReached}
         showsVerticalScrollIndicator={false}
         onEndReachedThreshold={0.3}
         style={{ flex: 1 }}
