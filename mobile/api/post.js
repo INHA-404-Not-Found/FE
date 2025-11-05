@@ -250,11 +250,11 @@ export const getPostsByTags = async (
     FilterData.type = "";
   }
   if (locationId != null) {
-    FilterData.location = locationId;
+    FilterData.location_id = locationId;
     console.log("필터링 위치ID: ", locationId);
   }
   if (categoryId != null) {
-    FilterData.category = categoryId;
+    FilterData.category_id = categoryId;
     console.log("필터링 카테고리ID: ", categoryId);
   }
 
