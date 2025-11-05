@@ -132,7 +132,7 @@ const PostListScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor:"white", }} edge={["top"]}>
           {isSearching ? (
             <SearchHeader onSubmit={handleSearch} />
           ) : (

@@ -93,7 +93,7 @@ const MyPostListScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor:"white", }} edge={["top"]}>
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
@@ -106,7 +106,7 @@ const MyPostListScreen = () => {
                   {
                     borderColor:
                       state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
-                    backgroundColor: state === "UNCOMPLETED" ? "#d9d9d9" : "",
+                    backgroundColor: state === "UNCOMPLETED" ? "#d9d9d9" : "white",
                   },
                 ]}
               >
@@ -127,7 +127,7 @@ const MyPostListScreen = () => {
                   styles.filterBtn,
                   {
                     borderColor: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
-                    backgroundColor: state === "COMPLETED" ? "#d9d9d9" : "",
+                    backgroundColor: state === "COMPLETED" ? "#d9d9d9" : "white",
                   },
                 ]}
               >
@@ -148,7 +148,7 @@ const MyPostListScreen = () => {
                   styles.filterBtn,
                   {
                     borderColor: state === "POLICE" ? "darkGray" : "#a8a8a8",
-                    backgroundColor: state === "POLICE" ? "#d9d9d9" : "",
+                    backgroundColor: state === "POLICE" ? "#d9d9d9" : "white",
                   },
                 ]}
               >
@@ -164,6 +164,7 @@ const MyPostListScreen = () => {
                 </Text>
               </Pressable>
             </View>
+
             <FlatList
               data={filteredPosts}
               keyExtractor={(item) => item.postId.toString()}
@@ -307,6 +308,7 @@ const styles = StyleSheet.create({
   filterBtnContent: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 5,
   },
   bottomSheetModal: {
     borderRadius: 25,
