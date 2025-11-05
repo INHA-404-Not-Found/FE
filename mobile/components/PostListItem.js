@@ -32,9 +32,12 @@ const PostListItem = ({ post }) => {
               marginVertical: 4,
             }}
           >
-            <Text style={styles.LocationText}>
-              {post.locationName} {post.locationDetail}
-            </Text>
+            {
+            post.locationName && 
+                <Text style={styles.LocationText}>
+                {post.locationName} {post.locationDetail}
+              </Text>
+            }
             <Text style={styles.LocationText}>{post.createdAt}</Text>
           </View>
           <Text
