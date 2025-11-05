@@ -21,9 +21,12 @@ const Notification = ({ notification }) => {
         try {
           const res = await api.get(notification.link);
 
-          // 알림 읽음 처리
-          // const res2 = await api.patch(`notifications/${notification.id}/read`);
-          // console.log(res.data);
+          // 알림 읽음 처리 -> 안 읽은 것에 대해서만
+          if(!notification.isRead){
+            const res2 = await api.patch(`notifications/${notification.notificationId}/read`);
+            console.log("res2.data" + res2.data);
+          }
+          
 
           console.log("getPost: ", res.data);
           navigation.navigate("PostScreen", res.data.postId );
