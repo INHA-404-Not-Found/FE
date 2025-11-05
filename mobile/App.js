@@ -1,10 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as Notifications from "expo-notifications";
 import { Provider, useDispatch } from "react-redux";
 import { store } from "./Redux/store";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
@@ -161,6 +160,7 @@ function AppContent() {
 }
 
 export default function App() {
+  /*
   const [notification, setNotification] = useState(null);
   const notificationListener = useRef(null);
   const responseListener = useRef(null);
@@ -192,6 +192,7 @@ export default function App() {
       responseListener.current?.remove();
     };
   }, []);
+  */
 
   return (
     <Provider store={store}>

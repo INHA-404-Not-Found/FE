@@ -33,7 +33,19 @@ import DefaultHeader from "../components/DefaultHeader";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
 import SearchHeader from "../components/SearchHeader";
-const PostListScreen = () => {
+const PostListScreen = ({ route }) => {
+  const {
+    category: initialCategory = [],
+    location: initialLocation = [],
+    state: initialStatus = "", // "" | "UNCOMPLETED" | "COMPLETED" | "POLICE"
+    postType: initialPostType = "ALL", // "ALL" | "FIND" | "LOST"
+  } = route?.params ?? {};
+
+  // 화면 내부 상태에 반영(필요하면)
+  const [category, setCategory] = useState(initialCategory);
+  const [location, setLocation] = useState(initialLocation);
+  const [state, setState] = useState(initialStatus);
+  const [postType, setPostType] = useState(initialPostType);
   const dispatch = useDispatch();
   const keyword = useSelector((s) => s.search.keyword);
   const isSearching = useSelector((s) => s.search.isSearching);
@@ -54,10 +66,7 @@ const PostListScreen = () => {
   const handleLocationSheetChanges = useCallback((index) => {
     console.log("bottomSheetLocationChanges", index);
   }, []);
-  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
-  const [category, setCategory] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
+
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -115,8 +124,8 @@ const PostListScreen = () => {
     if (pageNo > 1 && !hasNext) return;
     const isDefault =
       !filters.state &&
-      !filters.location &&
-      !filters.category &&
+      !filters.location == [] &&
+      !filters.category == [] &&
       filters.postType === "ALL";
     (async () => {
       setLoading(true);
@@ -204,8 +213,9 @@ const PostListScreen = () => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: category ? "darkGray" : "#a8a8a8",
-                    backgroundColor: category ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: category != [] ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      category != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
@@ -227,15 +237,16 @@ const PostListScreen = () => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: location ? "darkGray" : "#a8a8a8",
-                    backgroundColor: location ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: location != [] ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      location != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: location ? "darkGray" : "#a8a8a8" },
+                    { color: location != [] ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
                   위치

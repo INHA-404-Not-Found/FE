@@ -231,8 +231,8 @@ export const getPostsByTags = async (
   page,
   status,
   type,
-  locationId,
-  categoryId,
+  location,
+  category,
   hasNext,
   setHasNext
 ) => {
@@ -249,13 +249,13 @@ export const getPostsByTags = async (
   } else {
     FilterData.type = "";
   }
-  if (locationId != null) {
-    FilterData.location_id = locationId;
-    console.log("필터링 위치ID: ", locationId);
+  if (location != []) {
+    FilterData.location_id = location.id;
+    console.log("필터링 위치ID: ", location.id);
   }
-  if (categoryId != null) {
-    FilterData.category_id = categoryId;
-    console.log("필터링 카테고리ID: ", categoryId);
+  if (category != []) {
+    FilterData.category_id = category.id;
+    console.log("필터링 카테고리ID: ", category.id);
   }
 
   try {
@@ -320,8 +320,8 @@ export const getPostsByKeywordFilter = async (
   page = 1,
   status,
   type,
-  locationId,
-  categoryId,
+  location,
+  category,
   setHasNext
 ) => {
   console.log("getPostsByKeywordFilter start: " + keyword);
@@ -344,13 +344,13 @@ export const getPostsByKeywordFilter = async (
   } else {
     FilterData.type = "";
   }
-  if (locationId != null) {
-    FilterData.location_id = locationId;
-    console.log("필터링 위치ID: ", locationId);
+  if (location != []) {
+    FilterData.location_id = location.id;
+    console.log("필터링 위치ID: ", location.id);
   }
-  if (categoryId != null) {
-    FilterData.category_id = categoryId;
-    console.log("필터링 카테고리ID: ", categoryId);
+  if (category != []) {
+    FilterData.category_id = category.id;
+    console.log("필터링 카테고리ID: ", category.id);
   }
 
   try {

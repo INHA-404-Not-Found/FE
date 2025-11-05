@@ -16,18 +16,22 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
 import LocationMap from "../components/LocationMap";
 import PostTypeSelector from "../components/PostTypeSelector";
+import { setKeyword } from "../Redux/slices/keywordSlice";
 const MainScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const keyword = useSelector((s) => s.search.keyword);
   const [selectType, setSelectType] = useState("category"); // category location status
-  const [postType, setPostType] = useState("acquired"); // ALL FIND LOST
-  const [selectedCate, setSelectedCate] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [searchText, setSearchText] = useState("");
+  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
+  const [selectedCate, setSelectedCate] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState([]);
+  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
   // bottomSheet
   const bottomSheetModalRef = useRef(null);
   const handleModalPress = useCallback(() => {
@@ -36,6 +40,20 @@ const MainScreen = () => {
   const handleSheetChanges = useCallback((index) => {
     console.log("bottomSheetChanges", index);
   }, []);
+  // 필터링 초기화
+  const resetFilter = () => {
+    setSelectedCate([]);
+    setSelectedLocation([]);
+    setState(""); // "" UNCOMPLETED COMPLETED POLICE
+  };
+  // state 토글, 업데이트
+  const handleState = (v) => {
+    if (state == "") {
+      setState(v);
+    } else {
+      setState(state === v ? "" : v);
+    }
+  };
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
@@ -45,13 +63,22 @@ const MainScreen = () => {
             <View style={styles.contentTop}>
               <View style={styles.searchBar}>
                 <TextInput
-                  value={searchText}
-                  onChangeText={(text) => setSearchText(text)}
+                  value={keyword}
+                  onChangeText={(text) => dispatch(setKeyword(text))}
                   placeholder="검색어 없음"
                   placeholderTextColor="#ffffffff"
                   style={styles.textInput}
                 />
-                <Pressable>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("PostListScreen", {
+                      category: selectedCate,
+                      location: selectedLocation,
+                      state: state,
+                      postType: postType,
+                    })
+                  }
+                >
                   <Image
                     source={require("../assets/searchWhite.png")}
                     style={styles.barImg}
@@ -64,7 +91,10 @@ const MainScreen = () => {
                   setPostType={setPostType}
                 />
                 <View>
-                  <Pressable style={[styles.filterResetBtn]}>
+                  <Pressable
+                    onPress={resetFilter}
+                    style={[styles.filterResetBtn]}
+                  >
                     <Image
                       source={require("../assets/filterReset.png")}
                       style={styles.resetImg}
@@ -124,6 +154,114 @@ const MainScreen = () => {
                       selected={selectedLocation}
                       setSelected={setSelectedLocation}
                     />
+                  )}
+                  {selectType === "status" && (
+                    <View>
+                      <Pressable
+                        onPress={() => handleState("UNCOMPLETED")}
+                        style={[
+                          styles.filterBtn,
+                          {
+                            borderColor:
+                              state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                            backgroundColor:
+                              state === "UNCOMPLETED"
+                                ? "#d9d9d9"
+                                : "rgba(0,0,0,0)",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.BtnText,
+                            {
+                              color:
+                                state === "UNCOMPLETED"
+                                  ? "darkGray"
+                                  : "#a8a8a8",
+                            },
+                          ]}
+                        >
+                          미완료
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => handleState("COMPLETED")}
+                        style={[
+                          styles.filterBtn,
+                          {
+                            borderColor:
+                              state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                            backgroundColor:
+                              state === "COMPLETED"
+                                ? "#d9d9d9"
+                                : "rgba(0,0,0,0)",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.BtnText,
+                            {
+                              color:
+                                state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                            },
+                          ]}
+                        >
+                          완료
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => handleState("POLICE")}
+                        style={[
+                          styles.filterBtn,
+                          {
+                            borderColor:
+                              state === "POLICE" ? "darkGray" : "#a8a8a8",
+                            backgroundColor:
+                              state === "POLICE" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.BtnText,
+                            {
+                              color:
+                                state === "POLICE" ? "darkGray" : "#a8a8a8",
+                            },
+                          ]}
+                        >
+                          인계됨
+                        </Text>
+                      </Pressable>
+                    </View>
+                  )}
+                </View>
+                <View style={styles.tagWrap}>
+                  {selectedCate != [] ? (
+                    <View key={selectedCate.id} style={styles.tag}>
+                      <Image
+                        source={require("../assets/check.png")}
+                        style={styles.checkImg}
+                      ></Image>
+                      <Text style={styles.tagText}>{selectedCate.name}</Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.noneText}></Text>
+                  )}
+                  {selectedLocation != [] ? (
+                    <View key={selectedLocation.id} style={styles.tag}>
+                      <Image
+                        source={require("../assets/check.png")}
+                        style={styles.checkImg}
+                      ></Image>
+                      <Text style={styles.tagText}>
+                        {selectedLocation.name}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text style={styles.noneText}></Text>
                   )}
                 </View>
               </View>
@@ -240,5 +378,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
     paddingBottom: 20,
+  },
+  tagWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    paddingTop: 20,
+  },
+  tag: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#d9d9d9",
+    borderRadius: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+  },
+  checkImg: {
+    width: 15,
+    height: 10,
+    marginRight: 5,
   },
 });
