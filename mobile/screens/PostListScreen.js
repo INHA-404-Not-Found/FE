@@ -51,25 +51,23 @@ const PostListScreen = () => {
   const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
-  const onEndReached = () => {
-    if (loading || !hasNext) return; // 중복/무한루프 방지
-    setPageNo((p) => p + 1);
-  };
+
   // 필터들을 하나로 묶어 의존성/비교 단순화
   const filters = useMemo(
     () => ({ postType, state, location, category }),
     [postType, state, location, category]
   );
+
   // 필터 바꿀때마다 페이지넘버 1로 초기화
   useEffect(() => {
     setPageNo(1);
     setHasNext(true);
+    setPosts([]);
   }, [filters]);
   // 페이징넘버 바뀔 때 마다 호출.
-  useEffect(() => {
+  const fetchPostList = () => {
+    console.log("fetchPostList 호출됨 (페이징: ", pageNo, ")");
     if (pageNo > 1 && !hasNext) return;
-    console.log("페이징넘버:", pageNo);
-    let cancelled = false;
     const isDefault =
       !filters.state &&
       !filters.location &&
@@ -79,9 +77,9 @@ const PostListScreen = () => {
       setLoading(true);
       try {
         if (isDefault) {
-          getAllPosts(setPosts, pageNo, hasNext, setHasNext);
+          await getAllPosts(setPosts, pageNo, hasNext, setHasNext);
         } else {
-          getPostsByTags(
+          await getPostsByTags(
             setPosts,
             pageNo,
             filters.state,
@@ -92,16 +90,26 @@ const PostListScreen = () => {
             setHasNext
           );
         }
+      } catch (e) {
+        console.error("게시글 목록 조회 오류:", e.message);
       } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+  };
+  useEffect(() => {
+    fetchPostList();
   }, [pageNo, filters]);
+  const onEndReached = () => {
+    if (!hasNext) return; // 중복/무한루프 방지
+    setPageNo((p) => p + 1);
+  };
   // 필터링 초기화
-
+  const resetFilter = () => {
+    setCategory(null);
+    setLocation(null);
+    setState(""); // "" UNCOMPLETED COMPLETED POLICE
+  };
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
@@ -110,7 +118,7 @@ const PostListScreen = () => {
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
             <View>
-              <Pressable style={[styles.filterResetBtn]}>
+              <Pressable onPress={resetFilter} style={[styles.filterResetBtn]}>
                 <Image
                   source={require("../assets/filterReset.png")}
                   style={styles.resetImg}
