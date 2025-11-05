@@ -150,10 +150,12 @@ const MainScreen = () => {
                   />
                 )}
                 {selectType === "location" && (
-                  <LocationMap
-                    selected={selectedLocation}
-                    setSelected={setSelectedLocation}
-                  />
+                  <View style={{ height: 250 }}>
+                    <LocationMap
+                      selected={selectedLocation}
+                      setSelected={setSelectedLocation}
+                    />
+                  </View>
                 )}
                 {selectType === "status" && (
                   <View
@@ -272,21 +274,6 @@ const MainScreen = () => {
                   </View>
                 ) : (
                   <Text style={styles.noneText}></Text>
-                )}
-              </View>
-
-              <View>
-                {selectType === "category" && (
-                  <CategoryList
-                    selected={selectedCate}
-                    setSelected={setSelectedCate}
-                  />
-                )}
-                {selectType === "location" && (
-                  <LocationMap
-                    selected={selectedLocation}
-                    setSelected={setSelectedLocation}
-                  />
                 )}
               </View>
             </View>
