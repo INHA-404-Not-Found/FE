@@ -22,7 +22,12 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPosts, getPostsByKeyword, getPostsByTags } from "../api/post";
+import {
+  getAllPosts,
+  getPostsByKeyword,
+  getPostsByKeywordFilter,
+  getPostsByTags,
+} from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
 import PostListItem from "../components/PostListItem";
@@ -61,12 +66,16 @@ const PostListScreen = () => {
     () => ({ postType, state, location, category }),
     [postType, state, location, category]
   );
-
-  // 필터 바꿀때마다 페이지넘버 1로 초기화
-  useEffect(() => {
+  // 페이지넘버 1로 초기화
+  const resetPageNo = () => {
     setPageNo(1);
     setHasNext(true);
     setPosts([]);
+  };
+
+  // 필터 바꿀때마다 페이지넘버 1로 초기화
+  useEffect(() => {
+    resetPageNo();
   }, [filters]);
 
   // 키워드 검색
@@ -74,6 +83,26 @@ const PostListScreen = () => {
     setLoading(true);
     try {
       await getPostsByKeyword(setPosts, keyword, pageNo, setHasNext);
+    } catch (e) {
+      console.error("키워드 게시물 목록 조회 오류:", e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // 키워드+필터 검색
+  const handleSearchFilter = async () => {
+    setLoading(true);
+    try {
+      await getPostsByKeywordFilter(
+        setPosts,
+        keyword,
+        pageNo,
+        state,
+        postType,
+        location,
+        category,
+        setHasNext
+      );
     } catch (e) {
       console.error("키워드 게시물 목록 조회 오류:", e.message);
     } finally {
@@ -93,7 +122,11 @@ const PostListScreen = () => {
       setLoading(true);
       try {
         if (isSearching) {
-          await handleSearch();
+          if (isDefault) {
+            await handleSearch();
+          } else {
+            await handleSearchFilter();
+          }
         } else if (isDefault) {
           await getAllPosts(setPosts, pageNo, hasNext, setHasNext);
         } else {
@@ -134,7 +167,7 @@ const PostListScreen = () => {
       <BottomSheetModalProvider>
         <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
           {isSearching ? (
-            <SearchHeader onSubmit={handleSearch} />
+            <SearchHeader onSubmit={handleSearch} resetPageNo={resetPageNo} />
           ) : (
             <DefaultHeader />
           )}

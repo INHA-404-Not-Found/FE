@@ -10,7 +10,7 @@ import {
 import { useDispatch } from "react-redux";
 import { clearKeyword, setKeyword } from "../Redux/slices/keywordSlice";
 
-const SearchHeader = ({ onSubmit }) => {
+const SearchHeader = ({ onSubmit, resetPageNo }) => {
   const dispatch = useDispatch();
 
   return (
@@ -32,7 +32,12 @@ const SearchHeader = ({ onSubmit }) => {
         ></TextInput>
 
         {/* 오른쪽 아이콘 */}
-        <Pressable onPress={() => onSubmit()}>
+        <Pressable
+          onPress={() => {
+            onSubmit();
+            resetPageNo();
+          }}
+        >
           <Image
             source={require("../assets/search.png")}
             style={styles.headerImg}
