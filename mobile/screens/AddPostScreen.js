@@ -198,7 +198,7 @@ const registerPostImage = async (targetPostId, files) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edge={["top"]}>
       <DefaultHeader />
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
@@ -323,7 +323,14 @@ const registerPostImage = async (targetPostId, files) => {
             <Text style={styles.textLabel}>사진 등록</Text>
             <Pressable 
               onPress={pickImages}
-              style={[styles.imageUploadBtn, { marginLeft: 50, }]}
+              style={({ pressed }) => [
+                styles.imageUploadBtn,
+                { 
+                  marginLeft: 50,
+                  backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
+                  transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
+                },
+              ]}
             >
               <Image
                 source={require("../assets/uploadImage2.png")}
@@ -379,7 +386,7 @@ export default AddPostScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
-    marginBottom: 100,
+    marginBottom: 70,
   },
   content: {
     marginHorizontal: 30,
