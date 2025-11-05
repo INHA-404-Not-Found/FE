@@ -228,7 +228,7 @@ export const getAllPosts = async (
 // 게시물 목록 필터링 조회
 export const getPostsByTags = async (
   setPostList,
-  page = 1,
+  page,
   status,
   type,
   locationId,
@@ -237,16 +237,25 @@ export const getPostsByTags = async (
   setHasNext
 ) => {
   console.log("getPostsByTags start");
-  console.log(status, type);
-
-  var FilterData = {
-    page: 1,
-  };
-  if (type != "ALL") {
-    FilterData.type = type;
-  }
+  var FilterData = { page: page };
+  console.log("필터링 페이지: ", page);
   if (status != "") {
     FilterData.status = status;
+    console.log("필터링 상태: ", status);
+  }
+  if (type != "ALL") {
+    FilterData.type = type;
+    console.log("필터링 타입: ", type);
+  } else {
+    FilterData.type = "";
+  }
+  if (locationId != null) {
+    FilterData.location = locationId;
+    console.log("필터링 위치ID: ", locationId);
+  }
+  if (categoryId != null) {
+    FilterData.category = categoryId;
+    console.log("필터링 카테고리ID: ", categoryId);
   }
 
   try {
@@ -264,7 +273,7 @@ export const getPostsByTags = async (
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
     setHasNext(res.data === PAGE_SIZE);
     console.log(res.data);
-    console.log("getAllPosts: ", "성공");
+    console.log("getPostsByTags: ", "성공");
   } catch (err) {
     console.error("에러 발생: ", err);
     alert("getPostsByTags 실패");
