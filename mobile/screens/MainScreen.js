@@ -157,7 +157,13 @@ const MainScreen = () => {
                   />
                 )}
                 {selectType === "status" && (
-                  <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      paddingVertical: 10,
+                      paddingHorizontal: 30,
+                    }}
+                  >
                     <Pressable
                       onPress={() => handleState("UNCOMPLETED")}
                       style={[
@@ -416,5 +422,16 @@ const styles = StyleSheet.create({
   contentBottom: {
     backgroundColor: "#fff",
     paddingBottom: 10, // 하단 안전 여백 추가
+  },
+  filterBtn: {
+    borderWidth: 1,
+    borderRadius: 16,
+    borderColor: "#dbdbdb",
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 13,
+    marginRight: 8,
   },
 });
