@@ -2,21 +2,29 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { DateFormat } from "../utils/DateFormat";
+import { toImageSource } from "../utils/imageSource";
 
 const MyPostListItem = ({ post, handleModalPress }) => {
   const navigation = useNavigation();
+  const imageSource = toImageSource(post?.imagePath);
 
   return (
     <Pressable onPress={() => navigation.navigate("PostScreen", post.postId)}>
       <View style={styles.postContainer}>
         <View style={styles.postImgWrapper}>
-          <Image source={post.imagePath} style={styles.postImg}></Image>
+          <Image source={imageSource} style={styles.postImg}></Image>
         </View>
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.postType}>({post.type === "FIND" ? "습득" : "분실"})</Text>
             <Text style={styles.postTitle}> {post.title}</Text>
-            <View style={styles.postState}>
+            <View
+              style={[
+                styles.postState,
+                post.status === "COMPLETED" && { borderColor: "#2563EB" }, 
+                post.status === "POLICE" && { borderColor: "#A10CF2" }, 
+              ]}
+            >
               { post.status === "UNCOMPLETED" && 
                 <Text style={styles.postStateText}>미완료</Text> }
               { post.status === "COMPLETED" && 

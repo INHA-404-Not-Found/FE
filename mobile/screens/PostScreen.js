@@ -28,7 +28,7 @@ const PostScreen = (route) => {
         <View style={styles.ContentContainer}>
           <View style={styles.headerRow}>
             <View style={{ flexShrink: 1, paddingRight: 12 }}>
-              <Text style={styles.categoryText}>{post.categories}</Text>
+              <Text style={styles.categoryText}>{post.categories?.join(",  ") || "카테고리 없음"}</Text>
               <Text style={styles.titleText}>{post.title}</Text>
             </View>
             <StatusLabel status={post.status} />

@@ -67,7 +67,7 @@ const DefaultHeader = () => {
     route.name === "NotificationListScreen";
 
   return (
-    <View>
+    <View style={{backgroundColor:"white"}}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
       <View style={styles.headerContainer}>
         {/* 왼쪽 아이콘 */}

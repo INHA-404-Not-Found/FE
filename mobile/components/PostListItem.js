@@ -17,7 +17,13 @@ const PostListItem = ({ post }) => {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.postType}>({post.type === "FIND" ? "습득" : "분실"})</Text>
             <Text style={styles.postTitle}> {post.title}</Text>
-            <View style={styles.postState}>
+            <View
+              style={[
+                styles.postState,
+                post.status === "COMPLETED" && { borderColor: "#2563EB" }, 
+                post.status === "POLICE" && { borderColor: "#A10CF2" }, 
+              ]}
+            >
               { post.status === "UNCOMPLETED" && 
                 <Text style={styles.postStateText}>미완료</Text> }
               { post.status === "COMPLETED" && 

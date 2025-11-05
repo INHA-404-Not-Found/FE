@@ -15,6 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import api from "../api/api";
 import DefaultHeader from "../components/DefaultHeader";
+import mime from "react-native-mime-types";
+import { TokenStore } from "../TokenStore";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const AddLostPostScreen = () => {
   const navigation = useNavigation();
@@ -29,16 +32,7 @@ const AddLostPostScreen = () => {
       value: c.id,
     }))
   );
-  const [locationOpen, setLocationOpen] = useState(false);
-  const locationList = useSelector((state) => state.location.locations);
-  const [locationItems, setLocationItems] = useState(
-    locationList.map((l) => ({
-      label: l.name,
-      value: l.id,
-    }))
-  );
-  const [locationId, setLocationId] = useState(null);
-  const [locationDetail, setLocationDetail] = useState("");
+
 
   const [title, setTitle] = useState("");
   const [storedLocation, setStoredLocation] = useState("");
@@ -77,28 +71,37 @@ const AddLostPostScreen = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsMultipleSelection: true, // 여러장 선택 가능
-      allowsEditing: true,
+      allowsEditing: false,
       quality: 1,
     });
+    console.log(result);
 
-    if (!result.canceled) {
-      // assets: { uri, fileName?, mimeType? }
-      const next = result.assets.map((a, idx) => {
+  if (!result.canceled) {
+      let selected = result.assets;
+
+      // 2장까지만 허용
+      if (selected.length > 2) {
+        alert("최대 2장까지만 선택할 수 있습니다.");
+        selected = selected.slice(0, 2);
+      }
+
+      const next = selected.map((a, idx) => {
         const fileName =
           a.fileName ??
           `photo_${Date.now()}_${idx}.${a.uri.split(".").pop() || "jpg"}`;
         const mimeType = a.mimeType ?? guessMime(a.uri);
         return { uri: a.uri, fileName, mimeType };
       });
+
       setFile(next);
     }
   };
+
+
   // 폼 데이터 업로드
   const [postId, setPostId] = useState(null);
   const uploadPost = async () => {
     const res = await api.post(`/posts`, {
-      locationId,
-      locationDetail,
       title,
       content,
       status: "UNCOMPLETED",
@@ -110,65 +113,61 @@ const AddLostPostScreen = () => {
     return newPostId; // 호출자에게 즉시 id를 반환
   };
 
-  // 이미지 업로드
   const registerPostImage = async (targetPostId, files) => {
-    const formData = new FormData();
+    console.log("targetPostId:", targetPostId);
 
-    for (let i = 0; i < files.length; i++) {
-      // 용량 줄이기
-      // const img = files[i];
-      // const resized = await ImageManipulator.manipulateAsync(
-      //   img.uri,
-      //   [{ resize: { width: 1024 } }],
-      //   { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
-      // );
+    try {
+      const formData = new FormData();
 
-      files.forEach((img, i) => {
-        formData.append("file", {
-          uri: img.uri,
-          name: img.fileName || `image_${i}.jpg`,
-          type: img.mimeType || "image/jpeg",
+      // 백엔드 @RequestParam("files") → key 이름 반드시 "files"
+      for (const img of files) {
+        const compressedUri = await compressImage(img.uri);
+
+        formData.append("files", {
+          uri: compressedUri,
+          name: img.fileName || "photo.jpg",
+          type: img.mimeType || mime.getType(img.uri) || "image/jpeg",
         });
+      }
+
+      const tok = TokenStore.getToken();
+      console.log("token:", tok);
+
+      const res = await api.post(`/posts/${targetPostId}/images`, formData, {
+        headers: {
+          Authorization: `Bearer ${tok}`,
+          "Content-Type": "multipart/form-data",
+        },
+        timeout: 20000, // (선택) 업로드 시간이 길면 timeout 추가
       });
+
+      console.log("HTTP status:", res.status);
+      console.log("서버 응답:", res.data);
+    } catch (err) {
+      console.log("에러:", err);
     }
-    console.log(formData);
-
-    const response = await api.post(`/posts/${targetPostId}/images`, formData);
-
-    console.log("Upload result:", response.data);
-    return response.data;
   };
 
-  // const registerPostImage = async (post_id, files) => {
-  //   try {
-  //     const formData = new FormData();
-
-  //     files.forEach((img, i) => {
-  //       formData.append("file", {
-  //         uri: img.uri,
-  //         name: img.fileName  `image_${i}.jpg`,
-  //         type: img.mimeType  "image/jpeg",
-  //       });
-  //     });
-
-  //     console.log("FormData: ");
-  //     for (const pair of formData.entries()) {
-  //       console.log(pair[0], pair[1]);
-  //     }
-
-  //     const res = await api.post(/posts/${post_id}/images, formData);
-
-  //     console.log("registerPostImage 성공:", res.data);
-  //   } catch (err) {
-  //     console.error("registerPostImage 에러:", err);
-  //     alert("registerPostImage 실패");
-  //   }
-  // };
+  // 이미지 압축 함수 (이미 있는 함수 그대로 재사용 가능)
+  const compressImage = async (uri) => {
+    try {
+      const result = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      return result.uri;
+    } catch (error) {
+      console.log("이미지 압축 중 오류:", error);
+      return uri;
+    }
+  };
 
   const handleUpload = async () => {
     try {
       const id = await uploadPost(); // 대기해서 postId 확보
       console.log("post업로드성공");
+
       console.log(file, file.length);
 
       if (file.length > 0 && file) {
@@ -185,7 +184,7 @@ const AddLostPostScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white", }} edge={["top"]}>
       <DefaultHeader />
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
@@ -206,7 +205,7 @@ const AddLostPostScreen = () => {
               <Text style={styles.textLabel}>물품 카테고리</Text>
               <Text style={styles.star}> *</Text>
             </View>
-            <View style={styles.dropdownContainer}>
+            <View style={[styles.dropdownContainer, {zIndex: 3000}]}>
               <DropDownPicker
                 open={open}
                 value={categories}
@@ -220,39 +219,10 @@ const AddLostPostScreen = () => {
                 placeholder="카테고리를 선택하세요"
                 mode="BADGE"
                 style={styles.dropdownPicker}
-                zIndex={3000}
-                zIndexInverse={1000}
               />
             </View>
           </View>
-          <View style={styles.flexRow}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.textLabel}>분실 장소</Text>
-              <Text style={styles.star}> *</Text>
-            </View>
-            <View style={styles.dropdownContainer}>
-              <DropDownPicker
-                open={locationOpen}
-                value={locationId}
-                items={locationItems}
-                setItems={setLocationItems}
-                setOpen={setLocationOpen}
-                setValue={setLocationId}
-                multiple={false}
-                placeholder="장소를 선택하세요"
-                mode="BADGE"
-                style={styles.dropdownPicker}
-                zIndex={2000}
-                zIndexInverse={900}
-              />
-              <TextInput
-                placeholder="(선택) 세부 장소를 입력하세요"
-                style={[styles.inputText]}
-                value={locationDetail}
-                onChangeText={(text) => setLocationDetail(text)}
-              ></TextInput>
-            </View>
-          </View>
+          
 
           <View style={styles.flexRow}>
             <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
@@ -276,7 +246,14 @@ const AddLostPostScreen = () => {
             <Text style={styles.textLabel}>사진 등록</Text>
             <Pressable 
               onPress={pickImages}
-              style={[styles.imageUploadBtn, { marginLeft: 50, }]}
+              style={({ pressed }) => [
+                styles.imageUploadBtn,
+                { 
+                  marginLeft: 50,
+                  backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
+                  transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
+                },
+              ]}
             >
               <Image
                 source={require("../assets/uploadImage2.png")}
@@ -288,9 +265,12 @@ const AddLostPostScreen = () => {
               />
               <Text style={styles.imageUploadText}>upload</Text>
             </Pressable>
+          </View>
 
+          {file.length > 0 && (
             <ScrollView
               horizontal
+              nestedScrollEnabled={true}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingVertical: 8 }}
             >
@@ -307,7 +287,7 @@ const AddLostPostScreen = () => {
                 />
               ))}
             </ScrollView>
-          </View>
+            )}
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
@@ -329,7 +309,7 @@ export default AddLostPostScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
-    marginBottom: 100,
+    marginBottom: 70,
   },
   content: {
     marginHorizontal: 30,
