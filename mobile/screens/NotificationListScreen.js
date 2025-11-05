@@ -4,15 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../api/api.js";
 import DefaultHeader from "../components/DefaultHeader";
 import Notification from "../components/Notification";
+import { useIsFocused } from "@react-navigation/native";
 
 const NotificationListScreen = () => {
   const [filter, setFilter] = useState("all"); // all read yet
   const [pageNo, setPageNo] = useState(1);
   const [notifications, setNotifications] = useState([]);
+  const isFocused = useIsFocused();
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    const fetchNotificationList = async () => {
+    const fetchNotificationList1 = async () => {
       try {
         const res = await api.get(`/notifications`, {
           params: { page: pageNo },
@@ -24,44 +26,34 @@ const NotificationListScreen = () => {
       }
     };
 
-    fetchNotificationList();
+    fetchNotificationList1();
   }, [pageNo]);
+
+  // useEffect(() => {
+  //   console.log("isFocused test");
+  //   const fetchNotificationList2 = async () => {
+  //     try {
+  //       const res = await api.get(`/notifications`, {
+  //         params: { page: pageNo },
+  //       });
+  //       setNotifications(res.data);
+  //       console.log("알림목록 조회 성공: ", notifications);
+  //     } catch (e) {
+  //       console.error("알림 목록 불러오기 실패: ", e);
+  //     }
+  //   }
+
+  //   fetchNotificationList2();
+
+  // }, [isFocused])
 
   return (
     <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
       <DefaultHeader />
-      <View style={styles.filterBtnContainer}>
-        <Pressable
-          onPress={() => setFilter("all")}
-          style={[
-            styles.filterBtn,
-            { backgroundColor: filter === "all" ? "#d9d9d9" : "white" },
-          ]}
-        >
-          <Text style={[styles.BtnText]}>전체</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setFilter("read")}
-          style={[
-            styles.filterBtn,
-            { backgroundColor: filter === "read" ? "#d9d9d9" : "white" },
-          ]}
-        >
-          <Text style={[styles.BtnText, {}]}>읽음</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setFilter("yet")}
-          style={[
-            styles.filterBtn,
-            { backgroundColor: filter === "yet" ? "#d9d9d9" : "white" },
-          ]}
-        >
-          <Text style={[styles.BtnText, {}]}>안 읽음</Text>
-        </Pressable>
-      </View>
+      
       <FlatList
         data={notifications}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => `${index}-{item.notificationId}` }
         renderItem={({ item }) => <Notification notification={item} />}
         onEndReached={() => setPageNo((prev) => prev + 1)} // 스크롤 끝 -> 다음 페이지
         showsVerticalScrollIndicator={false}
