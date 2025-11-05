@@ -191,8 +191,8 @@ const AddLostPostScreen = () => {
         <View style={styles.content}>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
-              <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
+              <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
             </View>
             <TextInput
               value={title}
@@ -272,11 +272,11 @@ const AddLostPostScreen = () => {
               ]}
             />
           </View>
-          <View style={[styles.flexRow, { alignItems: "center", }]}>
+          <View style={[styles.flexRow, { alignItems: "center" }]}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable 
+            <Pressable
               onPress={pickImages}
-              style={[styles.imageUploadBtn, { marginLeft: 50, }]}
+              style={[styles.imageUploadBtn, { marginLeft: 50 }]}
             >
               <Image
                 source={require("../assets/uploadImage2.png")}
@@ -311,10 +311,7 @@ const AddLostPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable
-          style={styles.btn}
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.btn} onPress={() => navigation.goBack()}>
           <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>

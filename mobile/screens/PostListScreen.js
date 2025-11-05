@@ -123,10 +123,10 @@ const PostListScreen = ({ route }) => {
     console.log("fetchPostList 호출됨 (페이징: ", pageNo, ")");
     if (pageNo > 1 && !hasNext) return;
     const isDefault =
-      !filters.state &&
-      !filters.location == [] &&
-      !filters.category == [] &&
-      filters.postType === "ALL";
+      (state === "" || state == null) &&
+      isEmptyArr(location) &&
+      isEmptyArr(category) &&
+      postType === "ALL";
     (async () => {
       setLoading(true);
       try {
@@ -142,10 +142,10 @@ const PostListScreen = ({ route }) => {
           await getPostsByTags(
             setPosts,
             pageNo,
-            filters.state,
-            filters.postType,
-            filters.location,
-            filters.category,
+            state,
+            postType,
+            location,
+            category,
             hasNext,
             setHasNext
           );
@@ -166,8 +166,8 @@ const PostListScreen = ({ route }) => {
   };
   // 필터링 초기화
   const resetFilter = () => {
-    setCategory(null);
-    setLocation(null);
+    setCategory([]);
+    setLocation([]);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
   // state 토글, 업데이트
@@ -222,7 +222,7 @@ const PostListScreen = ({ route }) => {
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: category ? "darkGray" : "#a8a8a8" },
+                    { color: category != [] ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
                   카테고리
