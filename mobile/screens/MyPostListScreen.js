@@ -4,7 +4,13 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   FlatList,
   Modal,
@@ -26,9 +32,12 @@ const MyPostListScreen = () => {
   const myInfo = useSelector((state) => state.my.info);
   const [posts, setPosts] = useState([]);
   const [pageNo, setPageNo] = useState(1);
-  const [postType, setPostType] = useState("acquired");
   const [delVisible, setDelVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
+  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const bottomSheetModalRef = useRef(null);
   const navigation = useNavigation();
@@ -52,9 +61,34 @@ const MyPostListScreen = () => {
   const closeModal = () => setDelVisible(false);
 
   useEffect(() => {
-    getMyPosts(setPosts, pageNo);
+    if (pageNo > 1 && !hasNext) return;
+    (async () => {
+      setLoading(true);
+      try {
+        await getMyPosts(setPosts, pageNo);
+      } catch (e) {
+        console.error("게시글 목록 조회 오류:", e.message);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [pageNo]);
-
+  const onEndReached = () => {
+    if (loading || !hasNext) return; // 중복/무한루프 방지
+    setPageNo((p) => p + 1);
+  };
+  const handleState = (v) => {
+    if (state == "") {
+      setState(v);
+    } else {
+      setState(state === v ? "" : v);
+    }
+  };
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter((p) => (postType === "ALL" ? true : p.type === postType))
+      .filter((p) => (state ? p.status === state : true));
+  }, [posts, postType, state]);
 
   return (
     <GestureHandlerRootView>
@@ -64,23 +98,74 @@ const MyPostListScreen = () => {
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
 
-            <View style={styles.filterBtnContent}>
-              <Pressable style={[styles.filterBtn]}>
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+            <View style={[styles.filterBtnContent]}>
+              <Pressable
+                onPress={() => handleState("UNCOMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor:
+                      state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor: state === "UNCOMPLETED" ? "#d9d9d9" : "",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   미완료
                 </Text>
               </Pressable>
-              <Pressable style={[styles.filterBtn]}>
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>완료</Text>
+              <Pressable
+                onPress={() => handleState("COMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor: state === "COMPLETED" ? "#d9d9d9" : "",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
+                  완료
+                </Text>
               </Pressable>
-              <Pressable style={[styles.filterBtn]}>
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+              <Pressable
+                onPress={() => handleState("POLICE")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    backgroundColor: state === "POLICE" ? "#d9d9d9" : "",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   인계됨
                 </Text>
               </Pressable>
             </View>
             <FlatList
-              data={posts}
+              data={filteredPosts}
               keyExtractor={(item) => item.postId.toString()}
               renderItem={({ item }) => (
                 <MyPostListItem
@@ -89,8 +174,8 @@ const MyPostListScreen = () => {
                 />
               )}
               showsVerticalScrollIndicator={false}
-              onEndReached={() => setPageNo((prev) => prev + 1)}
-              onEndReachedThreshold={0.8}
+              onEndReached={onEndReached}
+              onEndReachedThreshold={0.3}
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
