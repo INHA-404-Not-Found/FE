@@ -39,7 +39,7 @@ const MainScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1, paddingBottom: 0 }} edge={["top"]}>
+        <SafeAreaView style={{ flex: 1, paddingBottom: 0 }} edge={["top", "bottom"]}>
 
           <DefaultHeader />
           
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   selectView: {
     width: 345,
-    height: 590,
+    height: 555,
     backgroundColor: "#ffffff",
     borderRadius: 10,
     borderBlockColor: "#DADEE7",
@@ -247,13 +247,8 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     paddingBottom: 20,
   },
-
   contentBottom: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff", // 배경색 지정 (투명하면 밑이 비칠 수 있음)
-    zIndex: 10,
+    backgroundColor: "#fff",
+    paddingBottom: 10, // 하단 안전 여백 추가
   },
 });
