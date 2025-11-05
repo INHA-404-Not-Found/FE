@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "next_campus",
-    "slug": "next_campus",
+    "name": "LOST INHA",
+    "slug": "LOST INHA",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
