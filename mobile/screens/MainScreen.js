@@ -8,7 +8,6 @@ import React, { useCallback, useRef, useState } from "react";
 import {
   Image,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -263,24 +262,33 @@ const MainScreen = () => {
                 ) : (
                   <Text style={styles.noneText}></Text>
                 )}
+                {state ? (
+                  <View key={state} style={styles.tag}>
+                    <Image
+                      source={require("../assets/check.png")}
+                      style={styles.checkImg}
+                    ></Image>
+                    <Text style={styles.tagText}>{state}</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.noneText}></Text>
+                )}
               </View>
 
-              <ScrollView>
-                <View>
-                  {selectType === "category" && (
-                    <CategoryList
-                      selected={selectedCate}
-                      setSelected={setSelectedCate}
-                    />
-                  )}
-                  {selectType === "location" && (
-                    <LocationMap
-                      selected={selectedLocation}
-                      setSelected={setSelectedLocation}
-                    />
-                  )}
-                </View>
-              </ScrollView>
+              <View>
+                {selectType === "category" && (
+                  <CategoryList
+                    selected={selectedCate}
+                    setSelected={setSelectedCate}
+                  />
+                )}
+                {selectType === "location" && (
+                  <LocationMap
+                    selected={selectedLocation}
+                    setSelected={setSelectedLocation}
+                  />
+                )}
+              </View>
             </View>
           </View>
 
