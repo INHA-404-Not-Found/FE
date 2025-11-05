@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { toImageSource } from "../utils/imageSource";
+import { DateFormat } from "../utils/DateFormat";
 
 const PostListItem = ({ post }) => {
   const navigation = useNavigation();
@@ -32,10 +33,13 @@ const PostListItem = ({ post }) => {
               marginVertical: 4,
             }}
           >
-            <Text style={styles.LocationText}>
-              {post.locationName} {post.locationDetail}
-            </Text>
-            <Text style={styles.LocationText}>{post.createdAt}</Text>
+            {
+            post.locationName && 
+                <Text style={styles.LocationText}>
+                {post.locationName} {post.locationDetail}
+              </Text>
+            }
+            <Text style={styles.LocationText}>{DateFormat(post.createdAt)}</Text>
           </View>
           <Text
             numberOfLines={2}

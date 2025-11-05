@@ -5,6 +5,7 @@ import { getPost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
 import StatusLabel from "../components/StatusLabel";
 import { toImageSource } from "../utils/imageSource";
+import { DateFormat } from "../utils/DateFormat";
 
 const PostScreen = (route) => {
   console.log("PostScreen의 route.route.params = postId: " + route.route.params);
@@ -32,7 +33,7 @@ const PostScreen = (route) => {
             </View>
             <StatusLabel status={post.status} />
           </View>
-          <Text style={styles.categoryText}>{post.createdAt}</Text>
+          <Text style={styles.categoryText}>{DateFormat(post.createdAt)}</Text>
           {post.type === "FIND" ? (
             <View style={styles.infoList}>
               {post.locationName && (
