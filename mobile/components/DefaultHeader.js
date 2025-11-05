@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -9,16 +9,42 @@ import {
   View,
 } from "react-native";
 import { TokenStore } from "../TokenStore.js";
+import api from "../api/api.js";
 
 const DefaultHeader = () => {
   const navigation = useNavigation();
   const route = useRoute();
+  const token = TokenStore.getToken();
+  const [isNotificationUnread, setIsNotificationUnread] = useState(true);  // 안 읽으면 true, 읽으면 false 
+
+
+  useEffect(() => {
+    const fetchNotificationList = async () => {
+      const res = await api.get(`/notifications`, {
+        params: { page: 1 },
+      });
+
+      if(res.data[0].isRead) setIsNotificationUnread(false);
+      else setIsNotificationUnread(true);
+    };
+
+    fetchNotificationList();
+  }, [token]);
+
+  useEffect(() => {
+    console.log(isNotificationUnread);
+  }, [isNotificationUnread])
+
 
   // 오른쪽 아이콘
   let imageSource = null;
   switch (route.name) {
     case "MainScreen":
-      imageSource = require("../assets/alert.png");
+      if(isNotificationUnread){  // 안 읽음
+        imageSource = require("../assets/alert_exist.png");
+      } else {  // 읽음
+        imageSource = require("../assets/alert.png");
+      }
       break;
     case "NotificationListScreen":
       imageSource = require("../assets/search.png");
@@ -31,7 +57,10 @@ const DefaultHeader = () => {
 
   // 오른쪽 아이콘 투명 처리할 화면
   const hideRightImage =
-    route.name === "UserScreen" || route.name === "AddPostScreen";
+    route.name === "UserScreen" || route.name === "AddPostScreen"
+    || route.name === "AddLostPostScreen" || route.name === "MyPostListScreen"
+    || route.name === "PostScreen" || route.name === "EditPostScreen"
+    || route.name === "NotificationListScreen";
 
   return (
     <View>
@@ -64,7 +93,8 @@ const DefaultHeader = () => {
         {/* 가운데 텍스트 */}
         <Text style={styles.headerText}>
           {route.name === "MainScreen" && "분실물 찾기"}
-          {route.name === "AddPostScreen" && "게시글 등록"}
+          {route.name === "AddPostScreen" && "습득 게시글 등록"}
+          {route.name === "AddLostPostScreen" && "분실 게시글 등록"}
           {route.name === "Notification" && "알림함"}
           {route.name === "SettingScreen" && "설정"}
           {route.name === "UserScreen" && "마이페이지"}

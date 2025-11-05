@@ -14,9 +14,15 @@ const PostListItem = ({ post }) => {
         </View>
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.postTitle}>{post.title}</Text>
+            <Text style={styles.postType}>({post.type === "FIND" ? "습득" : "분실"})</Text>
+            <Text style={styles.postTitle}> {post.title}</Text>
             <View style={styles.postState}>
-              <Text style={styles.postStateText}>{post.status}</Text>
+              { post.status === "UNCOMPLETED" && 
+                <Text style={styles.postStateText}>미완료</Text> }
+              { post.status === "COMPLETED" && 
+                <Text style={[styles.postStateText, { color: "#2563EB" }]}>완료</Text> }
+              { post.status === "POLICE" && 
+                <Text style={[styles.postStateText, { color: "#A10CF2" }]}>인계됨</Text> }
             </View>
           </View>
           <View
@@ -61,6 +67,9 @@ const styles = StyleSheet.create({
   postImg: {
     width: "100%",
     height: "100%",
+  },
+  postType: {
+    color: "gray",
   },
   postTitle: {
     fontSize: 14,

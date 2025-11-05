@@ -137,19 +137,12 @@ function AppContent() {
         <Stack.Screen name="LoginScreen" component={Login} />
         {/* 메인 화면 */}
         <Stack.Screen name="MainScreen" component={MainScreen} />
-        {/* 알림 목록 화면 */}
-        <Stack.Screen
-          name="NotificationList"
-          component={NotificationListScreen}
-        />
         {/* 게시글 리스트 화면 */}
         <Stack.Screen name="PostListScreen" component={PostListScreen} />
         {/* 습득 게시글 등록 화면 */}
         <Stack.Screen name="AddPostScreen" component={AddPostScreen} />
         {/* 분실 게시글 등록 화면 */}
         <Stack.Screen name="AddLostPostScreen" component={AddLostPostScreen} />
-        {/* 설정 화면 */}
-        <Stack.Screen name="SettingScreen" component={SettingScreen} />
         {/* 유저 화면 */}
         <Stack.Screen name="UserScreen" component={UserScreen} />
         {/* 내 게시물 리스트 화면*/}

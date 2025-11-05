@@ -194,7 +194,10 @@ const AddPostScreen = () => {
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>제목</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
+            </View>
             <TextInput
               value={title}
               onChangeText={(text) => setTitle(text)}
@@ -204,7 +207,7 @@ const AddPostScreen = () => {
           <View style={styles.flexRow}>
             <Text style={styles.textLabel}>학번 정보{"\n"}포함 유무</Text>
             <Switch
-              trackColor={{ false: "#767577", true: "#4fda61ff" }}
+              trackColor={{ false: "#767577", true: "#04bb1cff" }}
               thumbColor={"#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
@@ -214,7 +217,11 @@ const AddPostScreen = () => {
               placeholder="학번 8자리"
               style={[
                 styles.inputText,
-                { width: 200, backgroundColor: isSN ? "#ffffff" : "#f0ededff" },
+                { 
+                  width: 200,
+                  backgroundColor: isSN ? "#ffffff" : "#f0ededff",
+                  marginTop: 5,
+                },
               ]}
               editable={isSN}
               value={studentId}
@@ -222,64 +229,95 @@ const AddPostScreen = () => {
             ></TextInput>
           </View>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>물품 카테고리</Text>
-            <DropDownPicker
-              open={open}
-              value={categories}
-              items={items}
-              setItems={setItems}
-              setOpen={setOpen}
-              setValue={setCategories}
-              multiple={true} // 여러 개 선택 가능
-              min={0}
-              max={5} // 최대 5개 선택
-              placeholder="카테고리를 선택하세요"
-              mode="BADGE"
-              style={styles.dropdownPicker}
-            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text 
+                style={[styles.textLabel, { alignItems:"center" }]}
+              >
+                물품 카테고리
+              </Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={open}
+                value={categories}
+                items={items}
+                setItems={setItems}
+                setOpen={setOpen}
+                setValue={setCategories}
+                multiple={true}
+                min={0}
+                max={5}
+                placeholder="카테고리를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={3000}
+                zIndexInverse={1000}
+              />
+            </View>
           </View>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>습득 장소</Text>
-            <DropDownPicker
-              open={locationOpen}
-              value={locationId}
-              items={locationItems}
-              setItems={setLocationItems}
-              setOpen={setLocationOpen}
-              setValue={setLocationId}
-              multiple={false}
-              placeholder="장소를 선택하세요"
-              mode="BADGE"
-              style={styles.dropdownPicker}
-            />
-            <TextInput
-              placeholder="(선택)세부 장소를 입력하세요"
-              style={[styles.inputText, { width: 100 }]}
-              value={locationDetail}
-              onChangeText={(text) => setLocationDetail(text)}
-            ></TextInput>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.textLabel}>분실 장소</Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={locationOpen}
+                value={locationId}
+                items={locationItems}
+                setItems={setLocationItems}
+                setOpen={setLocationOpen}
+                setValue={setLocationId}
+                multiple={false}
+                placeholder="장소를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={2000}
+                zIndexInverse={900}
+              />
+              <TextInput
+                placeholder="(선택) 세부 장소를 입력하세요"
+                style={styles.inputText}
+                value={locationDetail}
+                onChangeText={(text) => setLocationDetail(text)}
+              ></TextInput>
+            </View>
           </View>
           <View style={styles.flexRow}>
-            <Text style={styles.textLabel}>보관 위치</Text>
+            <Text style={[styles.textLabel, { marginTop: 13, }]}>보관 위치</Text>
             <TextInput
               value={storedLocation}
               onChangeText={(text) => setStoredLocation(text)}
               style={styles.inputText}
             ></TextInput>
           </View>
-          <View style={[styles.flexRow, { alignItems: "flex-start" }]}>
-            <Text style={[styles.textLabel, { marginTop: 15 }]}>내용</Text>
+          <View style={styles.flexRow}>
+            <Text style={[styles.textLabel, { marginTop: 13, }]}>내용</Text>
             <TextInput
               value={content}
+              numberOfLines={5}
+              multiline={true}
               onChangeText={(text) => setContent(text)}
-              style={[styles.inputText, { height: 150 }]}
-            ></TextInput>
+              style={[
+                styles.inputText,
+                {
+                  minHeight: 5 * 24,
+                  height: "auto",
+                  paddingTop: 10,
+                  textAlignVertical: "top",
+                },
+              ]}
+            />
           </View>
-          <View style={styles.flexRow}>
+          <View style={[styles.flexRow, { alignItems: "center", }]}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable onPress={pickImages} style={styles.imageUploadBtn}>
+            <Pressable 
+              onPress={pickImages}
+              style={[styles.imageUploadBtn, { marginLeft: 50, }]}
+            >
               <Image
-                source={require("../assets/uploadImage.png")}
+                source={require("../assets/uploadImage2.png")}
                 style={{
                   width: 15,
                   height: 15,
@@ -311,11 +349,14 @@ const AddPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable style={styles.loginBtn}>
-          <Text style={styles.loginText}>취소하기</Text>
+        <Pressable
+          style={styles.btn}  
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
-        <Pressable onPress={handleUpload} style={styles.loginBtn}>
-          <Text style={styles.loginText}>등록하기</Text>
+        <Pressable onPress={handleUpload} style={styles.btn}>
+          <Text style={styles.btnText}>등록하기</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -337,17 +378,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 10,
+    alignItems: "flex-start",
   },
   textLabel: {
     fontSize: 13.5,
   },
+  star: {
+    color: "#fe2828ff",
+    fontSize: 13.5,
+  },
   inputText: {
     width: 244,
-    height: 27,
+    height: 40,
     paddingVertical: 0,
     lineHeight: 15,
     fontSize: 12.5,
-    textAlignVertical: "center",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
@@ -356,20 +402,22 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center", // 가운데 정렬
+    alignItems: "center",
     marginHorizontal: 30,
     position: "absolute",
     bottom: 60,
   },
-  loginBtn: {
+  btn: {
     backgroundColor: "#215294",
-    width: 170,
+    width: 160,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
+    marginHorizontal: 10, // 버튼 사이 간격
   },
-  loginText: {
+  btnText: {
     color: "white",
     fontSize: 16,
   },
@@ -378,18 +426,22 @@ const styles = StyleSheet.create({
     borderColor: "#d9d9d9",
   },
   imageUploadBtn: {
-    backgroundColor: "#215294",
-    width: 90,
-    height: 20,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5,
-    alignItems: "center",
     flexDirection: "row",
+    width: 244,
+    height: 40,
+    paddingVertical: 0,
+    fontSize: 12.5,
+    borderWidth: 2,
+    backgroundColor: "#fff",
+    borderColor: "#215294",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginVertical: 15,
   },
   imageUploadText: {
-    color: "white",
-    fontSize: 10,
-    fontWeight: "light",
+    color: "#215294",
+    fontSize: 13,
   },
 });

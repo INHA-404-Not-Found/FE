@@ -1,9 +1,38 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import { getItem } from "expo-secure-store";
+import api from "../api/api";
 
 const Notification = ({ notification }) => {
+  console.log("notification" + notification.link);
+  const navigation = useNavigation();
+  
   return (
-    <View style={styles.container}>
+    <Pressable
+      style={[
+        styles.container, 
+        { 
+          backgroundColor: notification.isRead 
+            ? "white" : "rgba(190, 222, 243, 0.27)"
+        }
+      ]}
+      onPress={async () => {
+        try {
+          const res = await api.get(notification.link);
+
+          // 알림 읽음 처리
+          // const res2 = await api.patch(`notifications/${notification.id}/read`);
+          // console.log(res.data);
+
+          console.log("getPost: ", res.data);
+          navigation.navigate("PostScreen", res.data.postId );
+
+        } catch (err) {
+          console.error("알림 클릭 에러:", err);
+        }
+      }}
+    >
       <Image
         source={require("../assets/walletF.png")}
         style={styles.categoryImg}
@@ -20,7 +49,7 @@ const Notification = ({ notification }) => {
           style={styles.nextImg}
         ></Image>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

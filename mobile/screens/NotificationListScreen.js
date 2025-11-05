@@ -61,9 +61,9 @@ const NotificationListScreen = () => {
       </View>
       <FlatList
         data={notifications}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Notification notification={item} />}
-        onEndReached={() => setPageNo((prev) => prev + 1)}
+        onEndReached={() => setPageNo((prev) => prev + 1)} // 스크롤 끝 -> 다음 페이지
         showsVerticalScrollIndicator={false}
         onEndReachedThreshold={0.3}
         style={{ flex: 1 }}

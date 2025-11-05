@@ -43,10 +43,6 @@ const MainScreen = () => {
           <ScrollView>
             <View style={styles.contentTop}>
               <View style={styles.searchBar}>
-                <Image
-                  source={require("../assets/menu.png")}
-                  style={styles.barImg}
-                ></Image>
                 <TextInput
                   placeholder="검색어 없음"
                   placeholderTextColor="#ffffffff"
@@ -176,15 +172,17 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     backgroundColor: "#2165A6",
     flexDirection: "row",
-    justifyContent: "space-between",
   },
   barImg: {
     margin: 5,
+    marginLeft: 0,
     width: 48,
     height: 48,
   },
   textInput: {
-    width: 230,
+    color: "#fff",
+    marginLeft: 20,
+    width: 265,
   },
   selectView: {
     width: 345,
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "flex-start",
     alignItems: "center",
-    marginLeft: 25,
+    marginLeft: 2,
     padding: 4,
   },
   resetImg: {
