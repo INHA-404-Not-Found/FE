@@ -218,7 +218,7 @@ export const getAllPosts = async (
     console.log(res.data);
     console.log("getAllPosts: ", "성공");
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
-    setHasNext(res.data === PAGE_SIZE);
+    setHasNext(res.data.length === PAGE_SIZE);
   } catch (err) {
     console.error("에러 발생: ", err);
     alert("getAllPosts 실패");
@@ -271,7 +271,7 @@ export const getPostsByTags = async (
     });
 
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
-    setHasNext(res.data === PAGE_SIZE);
+    setHasNext(res.data.length === PAGE_SIZE);
     console.log(res.data);
     console.log("getPostsByTags: ", "성공");
   } catch (err) {
