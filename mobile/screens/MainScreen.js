@@ -39,9 +39,10 @@ const MainScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+        <SafeAreaView style={{ flex: 1, paddingBottom: 0 }} edge={["top"]}>
+
           <DefaultHeader />
-          <ScrollView>
+          
             <View style={styles.contentTop}>
               <View style={styles.searchBar}>
                 <TextInput
@@ -112,23 +113,25 @@ const MainScreen = () => {
                     <Text style={styles.BtnText}>완료 여부</Text>
                   </Pressable>
                 </View>
-                <View>
-                  {selectType === "category" && (
-                    <CategoryList
-                      selected={selectedCate}
-                      setSelected={setSelectedCate}
-                    />
-                  )}
-                  {selectType === "location" && (
-                    <LocationMap
-                      selected={selectedLocation}
-                      setSelected={setSelectedLocation}
-                    />
-                  )}
-                </View>
+                <ScrollView>
+                  <View>
+                    {selectType === "category" && (
+                      <CategoryList
+                        selected={selectedCate}
+                        setSelected={setSelectedCate}
+                      />
+                    )}
+                    {selectType === "location" && (
+                      <LocationMap
+                        selected={selectedLocation}
+                        setSelected={setSelectedLocation}
+                      />
+                    )}
+                  </View>
+                </ScrollView>
               </View>
             </View>
-          </ScrollView>
+            
           {/* 하단 바 */}
           <View style={styles.contentBottom}>
             <BottomBar handleModalPress={handleModalPress} />
@@ -166,6 +169,7 @@ export default MainScreen;
 
 const styles = StyleSheet.create({
   contentTop: {
+    flex: 1,
     flexDirection: "column",
     alignItems: "center",
     padding: 25,
@@ -191,6 +195,7 @@ const styles = StyleSheet.create({
   },
   selectView: {
     width: 345,
+    height: 590,
     backgroundColor: "#ffffff",
     borderRadius: 10,
     borderBlockColor: "#DADEE7",
@@ -211,9 +216,10 @@ const styles = StyleSheet.create({
   },
   selectBtnRow: {
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    justifyContent: "space-between",
   },
   selectBtn: {
     borderRadius: 25,
@@ -240,5 +246,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
     paddingBottom: 20,
+  },
+
+  contentBottom: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff", // 배경색 지정 (투명하면 밑이 비칠 수 있음)
+    zIndex: 10,
   },
 });
