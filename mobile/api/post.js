@@ -282,7 +282,12 @@ export const getPostsByTags = async (
 };
 
 // 게시물 키워드로 검색
-export const getPostsByKeyword = async (setPostList, keyword, page = 1) => {
+export const getPostsByKeyword = async (
+  setPostList,
+  keyword,
+  page = 1,
+  setHasNext
+) => {
   console.log("getPostsByKeyword start: " + keyword);
 
   if (!keyword) {
@@ -299,7 +304,7 @@ export const getPostsByKeyword = async (setPostList, keyword, page = 1) => {
 
     console.log("getPostsByKeyword: " + res.data);
     console.log(res.data);
-
+    setHasNext(res.data.length === PAGE_SIZE);
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
   } catch (err) {
     console.error("에러 발생: ", err);
@@ -315,7 +320,7 @@ export const getMyPosts = async (setPostList, page = 1) => {
       params: { page: page },
     });
     console.log(res.data);
-    console.log("getMyPosts: ", "성공");
+    console.log("getMyPosts: ", page, "성공");
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
   } catch (err) {
     console.error("에러 발생: ", err);

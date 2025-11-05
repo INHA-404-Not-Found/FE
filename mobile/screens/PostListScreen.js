@@ -21,13 +21,17 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAllPosts, getPostsByTags } from "../api/post";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts, getPostsByKeyword, getPostsByTags } from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
-
+import SearchHeader from "../components/SearchHeader";
 const PostListScreen = () => {
+  const dispatch = useDispatch();
+  const keyword = useSelector((s) => s.search.keyword);
+  const isSearching = useSelector((s) => s.search.isSearching);
   const [posts, setPosts] = useState([]);
   const [pageNo, setPageNo] = useState(1); // 게시물 조회 페이징
   // bottomSheet
@@ -64,6 +68,18 @@ const PostListScreen = () => {
     setHasNext(true);
     setPosts([]);
   }, [filters]);
+
+  // 키워드 검색
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      await getPostsByKeyword(setPosts, keyword, pageNo, setHasNext);
+    } catch (e) {
+      console.error("키워드 게시물 목록 조회 오류:", e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   // 페이징넘버 바뀔 때 마다 호출.
   const fetchPostList = () => {
     console.log("fetchPostList 호출됨 (페이징: ", pageNo, ")");
@@ -76,7 +92,9 @@ const PostListScreen = () => {
     (async () => {
       setLoading(true);
       try {
-        if (isDefault) {
+        if (isSearching) {
+          await handleSearch();
+        } else if (isDefault) {
           await getAllPosts(setPosts, pageNo, hasNext, setHasNext);
         } else {
           await getPostsByTags(
@@ -101,7 +119,7 @@ const PostListScreen = () => {
     fetchPostList();
   }, [pageNo, filters]);
   const onEndReached = () => {
-    if (!hasNext) return; // 중복/무한루프 방지
+    if (loading || !hasNext) return; // 중복/무한루프 방지
     setPageNo((p) => p + 1);
   };
   // 필터링 초기화
@@ -110,11 +128,17 @@ const PostListScreen = () => {
     setLocation(null);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
+
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
-          <DefaultHeader />
+          {isSearching ? (
+            <SearchHeader onSubmit={handleSearch} />
+          ) : (
+            <DefaultHeader />
+          )}
+
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
             <View>
