@@ -161,6 +161,14 @@ const PostListScreen = () => {
     setLocation(null);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
+  // state 토글, 업데이트
+  const handleState = (v) => {
+    if (state == "") {
+      setState(v);
+    } else {
+      setState(state === v ? "" : v);
+    }
+  };
 
   return (
     <GestureHandlerRootView>
@@ -193,9 +201,20 @@ const PostListScreen = () => {
             >
               <Pressable
                 onPress={handleCategoryModalPress}
-                style={[styles.filterDownBtn]}
+                style={[
+                  styles.filterDownBtn,
+                  {
+                    borderColor: category ? "darkGray" : "#a8a8a8",
+                    backgroundColor: category ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    { color: category ? "darkGray" : "#a8a8a8" },
+                  ]}
+                >
                   카테고리
                 </Text>
                 <Image
@@ -205,33 +224,91 @@ const PostListScreen = () => {
               </Pressable>
               <Pressable
                 onPress={handleLocationModalPress}
-                style={[styles.filterDownBtn]}
+                style={[
+                  styles.filterDownBtn,
+                  {
+                    borderColor: location ? "darkGray" : "#a8a8a8",
+                    backgroundColor: location ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>위치</Text>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    { color: location ? "darkGray" : "#a8a8a8" },
+                  ]}
+                >
+                  위치
+                </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
                   style={styles.filterDownImg}
                 ></Image>
               </Pressable>
               <Pressable
-                onPress={() => setState("UNCOMPLETED")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("UNCOMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor:
+                      state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "UNCOMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   미완료
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => setState("COMPLETED")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("COMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "COMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>완료</Text>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
+                  완료
+                </Text>
               </Pressable>
               <Pressable
-                onPress={() => setState("POLICE")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("POLICE")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "POLICE" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   인계됨
                 </Text>
               </Pressable>
