@@ -27,6 +27,7 @@ const MainScreen = () => {
   const [postType, setPostType] = useState("acquired"); // ALL FIND LOST
   const [selectedCate, setSelectedCate] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [searchText, setSearchText] = useState("");
   // bottomSheet
   const bottomSheetModalRef = useRef(null);
   const handleModalPress = useCallback(() => {
@@ -44,14 +45,18 @@ const MainScreen = () => {
             <View style={styles.contentTop}>
               <View style={styles.searchBar}>
                 <TextInput
+                  value={searchText}
+                  onChangeText={(text) => setSearchText(text)}
                   placeholder="검색어 없음"
                   placeholderTextColor="#ffffffff"
                   style={styles.textInput}
                 />
-                <Image
-                  source={require("../assets/searchWhite.png")}
-                  style={styles.barImg}
-                ></Image>
+                <Pressable>
+                  <Image
+                    source={require("../assets/searchWhite.png")}
+                    style={styles.barImg}
+                  ></Image>
+                </Pressable>
               </View>
               <View style={styles.selectView}>
                 <PostTypeSelector
