@@ -11,8 +11,8 @@ const NotificationListScreen = () => {
   const [pageNo, setPageNo] = useState(1);
   const [notifications, setNotifications] = useState([]);
   const isFocused = useIsFocused();
-
-  
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchNotificationList1 = async () => {
       try {
@@ -57,7 +57,7 @@ const NotificationListScreen = () => {
         renderItem={({ item }) => <Notification notification={item} />}
         onEndReached={() => setPageNo((prev) => prev + 1)} // 스크롤 끝 -> 다음 페이지
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.8}
+        onEndReachedThreshold={0.3}
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 2 }}
       />
