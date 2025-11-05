@@ -4,7 +4,13 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   FlatList,
   Modal,
@@ -26,9 +32,21 @@ const MyPostListScreen = () => {
   const myInfo = useSelector((state) => state.my.info);
   const [posts, setPosts] = useState([]);
   const [pageNo, setPageNo] = useState(1);
-  const [postType, setPostType] = useState("acquired");
   const [delVisible, setDelVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
+  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
+  // 필터들을 하나로 묶어 의존성/비교 단순화
+  const filters = useMemo(() => ({ postType, state }), [postType, state]);
+
+  // 필터 바꿀때마다 페이지넘버 1로 초기화
+  useEffect(() => {
+    setPageNo(1);
+    setHasNext(true);
+    setPosts([]);
+  }, [filters]);
 
   const bottomSheetModalRef = useRef(null);
   const navigation = useNavigation();
@@ -54,7 +72,10 @@ const MyPostListScreen = () => {
   useEffect(() => {
     getMyPosts(setPosts, pageNo);
   }, [pageNo]);
-
+  const onEndReached = () => {
+    if (loading || !hasNext) return; // 중복/무한루프 방지
+    setPageNo((p) => p + 1);
+  };
 
   return (
     <GestureHandlerRootView>
@@ -89,8 +110,8 @@ const MyPostListScreen = () => {
                 />
               )}
               showsVerticalScrollIndicator={false}
-              onEndReached={() => setPageNo((prev) => prev + 1)}
-              onEndReachedThreshold={0.8}
+              onEndReached={onEndReached}
+              onEndReachedThreshold={0.3}
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
