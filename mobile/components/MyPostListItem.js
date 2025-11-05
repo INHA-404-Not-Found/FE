@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { DateFormat } from "../utils/DateFormat";
 
 const MyPostListItem = ({ post, handleModalPress }) => {
   const navigation = useNavigation();
@@ -31,11 +32,14 @@ const MyPostListItem = ({ post, handleModalPress }) => {
               marginVertical: 4,
             }}
           >
-            <Text style={styles.LocationText}>
-              {post.locationName} {post.locationDetail}
-            </Text>
-            <Text style={styles.LocationText}>{post.date}</Text>
-          </View>
+            {
+              post.locationName && 
+                  <Text style={styles.LocationText}>
+                  {post.locationName} {post.locationDetail}
+                </Text>
+              }
+              <Text style={styles.LocationText}>{DateFormat(post.createdAt)}</Text>
+            </View>
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
