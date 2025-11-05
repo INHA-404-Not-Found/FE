@@ -9,7 +9,8 @@ const NotificationListScreen = () => {
   const [filter, setFilter] = useState("all"); // all read yet
   const [pageNo, setPageNo] = useState(1);
   const [notifications, setNotifications] = useState([]);
-
+  const [hasNext, setHasNext] = useState(true);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchNotificationList = async () => {
       try {
@@ -31,6 +32,7 @@ const NotificationListScreen = () => {
       <DefaultHeader />
       <View style={styles.filterBtnContainer}>
         <Pressable
+          onPress={() => setFilter("all")}
           style={[
             styles.filterBtn,
             { backgroundColor: filter === "all" ? "#d9d9d9" : "white" },
@@ -39,6 +41,7 @@ const NotificationListScreen = () => {
           <Text style={[styles.BtnText]}>전체</Text>
         </Pressable>
         <Pressable
+          onPress={() => setFilter("read")}
           style={[
             styles.filterBtn,
             { backgroundColor: filter === "read" ? "#d9d9d9" : "white" },
@@ -47,6 +50,7 @@ const NotificationListScreen = () => {
           <Text style={[styles.BtnText, {}]}>읽음</Text>
         </Pressable>
         <Pressable
+          onPress={() => setFilter("yet")}
           style={[
             styles.filterBtn,
             { backgroundColor: filter === "yet" ? "#d9d9d9" : "white" },
@@ -61,7 +65,7 @@ const NotificationListScreen = () => {
         renderItem={({ item }) => <Notification notification={item} />}
         onEndReached={() => setPageNo((prev) => prev + 1)}
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.8}
+        onEndReachedThreshold={0.3}
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 2 }}
       />
