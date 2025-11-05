@@ -1,12 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { Provider, useDispatch } from "react-redux";
 import { store } from "./Redux/store";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Platform, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
 import { setLocation } from "./Redux/slices/locationSlice";
@@ -19,9 +17,9 @@ import MyPostListScreen from "./screens/MyPostListScreen";
 import NotificationListScreen from "./screens/NotificationListScreen";
 import PostListScreen from "./screens/PostListScreen";
 import PostScreen from "./screens/PostScreen";
-import SettingScreen from "./screens/SettingScreen";
 import UserScreen from "./screens/UserScreen";
 
+/*
 // 앱이 꺼져있을때 알림이 도착하면(Background 알림) 어떻게 처리할 지 설정
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -92,7 +90,7 @@ const sendTokenToServer = async (token) => {
     );
   }
 };
-
+*/
 const Stack = createNativeStackNavigator();
 
 function AppContent() {
@@ -162,6 +160,7 @@ function AppContent() {
 }
 
 export default function App() {
+  /*
   const [notification, setNotification] = useState(null);
   const notificationListener = useRef(null);
   const responseListener = useRef(null);
@@ -193,6 +192,7 @@ export default function App() {
       responseListener.current?.remove();
     };
   }, []);
+  */
 
   return (
     <Provider store={store}>

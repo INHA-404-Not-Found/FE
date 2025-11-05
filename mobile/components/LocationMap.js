@@ -205,7 +205,7 @@ const LocationMap = ({ selected, setSelected }) => {
   }));
 
   const handlePress = (z) => {
-    setSelected(z.id === selected ? null : z.id);
+    setSelected(z.id === selected.id ? null : z);
   };
 
   return (

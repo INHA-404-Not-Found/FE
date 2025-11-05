@@ -7,12 +7,12 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearKeyword, setKeyword } from "../Redux/slices/keywordSlice";
 
-const SearchHeader = ({ onSubmit }) => {
+const SearchHeader = ({ onSubmit, resetPageNo }) => {
   const dispatch = useDispatch();
-
+  const keyword = useSelector((s) => s.search.keyword);
   return (
     <View>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -27,12 +27,18 @@ const SearchHeader = ({ onSubmit }) => {
 
         {/* 가운데 텍스트 */}
         <TextInput
+          value={keyword}
           onChangeText={(text) => dispatch(setKeyword(text))}
           style={styles.searchInput}
         ></TextInput>
 
         {/* 오른쪽 아이콘 */}
-        <Pressable onPress={() => onSubmit()}>
+        <Pressable
+          onPress={() => {
+            onSubmit();
+            resetPageNo();
+          }}
+        >
           <Image
             source={require("../assets/search.png")}
             style={styles.headerImg}

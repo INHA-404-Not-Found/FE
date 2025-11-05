@@ -231,8 +231,8 @@ export const getPostsByTags = async (
   page,
   status,
   type,
-  locationId,
-  categoryId,
+  location,
+  category,
   hasNext,
   setHasNext
 ) => {
@@ -249,13 +249,13 @@ export const getPostsByTags = async (
   } else {
     FilterData.type = "";
   }
-  if (locationId != null) {
-    FilterData.location_id = locationId;
-    console.log("필터링 위치ID: ", locationId);
+  if (location != []) {
+    FilterData.location_id = location.id;
+    console.log("필터링 위치ID: ", location.id);
   }
-  if (categoryId != null) {
-    FilterData.category_id = categoryId;
-    console.log("필터링 카테고리ID: ", categoryId);
+  if (category != []) {
+    FilterData.category_id = category.id;
+    console.log("필터링 카테고리ID: ", category.id);
   }
 
   try {
@@ -309,6 +309,61 @@ export const getPostsByKeyword = async (
   } catch (err) {
     console.error("에러 발생: ", err);
     alert("getPostsByKeyword 실패");
+    return null;
+  }
+};
+
+// 게시물 키워드 + 필터링 조회
+export const getPostsByKeywordFilter = async (
+  setPostList,
+  keyword,
+  page = 1,
+  status,
+  type,
+  location,
+  category,
+  setHasNext
+) => {
+  console.log("getPostsByKeywordFilter start: " + keyword);
+
+  if (!keyword) {
+    alert("검색어를 입력해주세요.");
+  }
+  var FilterData = {
+    keyword: keyword,
+    page: page,
+  };
+  console.log("필터링 페이지: ", page);
+  if (status != "") {
+    FilterData.status = status;
+    console.log("필터링 상태: ", status);
+  }
+  if (type != "ALL") {
+    FilterData.type = type;
+    console.log("필터링 타입: ", type);
+  } else {
+    FilterData.type = "";
+  }
+  if (location != []) {
+    FilterData.location_id = location.id;
+    console.log("필터링 위치ID: ", location.id);
+  }
+  if (category != []) {
+    FilterData.category_id = category.id;
+    console.log("필터링 카테고리ID: ", category.id);
+  }
+
+  try {
+    const res = await api.get("/posts/search/tags", {
+      params: FilterData,
+    });
+
+    console.log("getPostsByKeywordFilter: " + res.data);
+    setHasNext(res.data.length === PAGE_SIZE);
+    setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
+  } catch (err) {
+    console.error("에러 발생: ", err);
+    alert("getPostsByKeywordFilter 실패");
     return null;
   }
 };

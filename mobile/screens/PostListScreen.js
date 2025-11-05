@@ -22,13 +22,30 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPosts, getPostsByKeyword, getPostsByTags } from "../api/post";
+import {
+  getAllPosts,
+  getPostsByKeyword,
+  getPostsByKeywordFilter,
+  getPostsByTags,
+} from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
 import SearchHeader from "../components/SearchHeader";
-const PostListScreen = () => {
+const PostListScreen = ({ route }) => {
+  const {
+    category: initialCategory = [],
+    location: initialLocation = [],
+    state: initialStatus = "", // "" | "UNCOMPLETED" | "COMPLETED" | "POLICE"
+    postType: initialPostType = "ALL", // "ALL" | "FIND" | "LOST"
+  } = route?.params ?? {};
+
+  // 화면 내부 상태에 반영(필요하면)
+  const [category, setCategory] = useState(initialCategory);
+  const [location, setLocation] = useState(initialLocation);
+  const [state, setState] = useState(initialStatus);
+  const [postType, setPostType] = useState(initialPostType);
   const dispatch = useDispatch();
   const keyword = useSelector((s) => s.search.keyword);
   const isSearching = useSelector((s) => s.search.isSearching);
@@ -49,10 +66,7 @@ const PostListScreen = () => {
   const handleLocationSheetChanges = useCallback((index) => {
     console.log("bottomSheetLocationChanges", index);
   }, []);
-  const [postType, setPostType] = useState("ALL"); // ALL FIND LOST
-  const [category, setCategory] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [state, setState] = useState(""); // "" UNCOMPLETED COMPLETED POLICE
+
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -61,12 +75,16 @@ const PostListScreen = () => {
     () => ({ postType, state, location, category }),
     [postType, state, location, category]
   );
-
-  // 필터 바꿀때마다 페이지넘버 1로 초기화
-  useEffect(() => {
+  // 페이지넘버 1로 초기화
+  const resetPageNo = () => {
     setPageNo(1);
     setHasNext(true);
     setPosts([]);
+  };
+
+  // 필터 바꿀때마다 페이지넘버 1로 초기화
+  useEffect(() => {
+    resetPageNo();
   }, [filters]);
 
   // 키워드 검색
@@ -80,20 +98,44 @@ const PostListScreen = () => {
       setLoading(false);
     }
   };
+  // 키워드+필터 검색
+  const handleSearchFilter = async () => {
+    setLoading(true);
+    try {
+      await getPostsByKeywordFilter(
+        setPosts,
+        keyword,
+        pageNo,
+        state,
+        postType,
+        location,
+        category,
+        setHasNext
+      );
+    } catch (e) {
+      console.error("키워드 게시물 목록 조회 오류:", e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   // 페이징넘버 바뀔 때 마다 호출.
   const fetchPostList = () => {
     console.log("fetchPostList 호출됨 (페이징: ", pageNo, ")");
     if (pageNo > 1 && !hasNext) return;
     const isDefault =
       !filters.state &&
-      !filters.location &&
-      !filters.category &&
+      !filters.location == [] &&
+      !filters.category == [] &&
       filters.postType === "ALL";
     (async () => {
       setLoading(true);
       try {
         if (isSearching) {
-          await handleSearch();
+          if (isDefault) {
+            await handleSearch();
+          } else {
+            await handleSearchFilter();
+          }
         } else if (isDefault) {
           await getAllPosts(setPosts, pageNo, hasNext, setHasNext);
         } else {
@@ -128,13 +170,21 @@ const PostListScreen = () => {
     setLocation(null);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
+  // state 토글, 업데이트
+  const handleState = (v) => {
+    if (state == "") {
+      setState(v);
+    } else {
+      setState(state === v ? "" : v);
+    }
+  };
 
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <SafeAreaView style={{ flex: 1, backgroundColor:"white", }} edge={["top"]}>
           {isSearching ? (
-            <SearchHeader onSubmit={handleSearch} />
+            <SearchHeader onSubmit={handleSearch} resetPageNo={resetPageNo} />
           ) : (
             <DefaultHeader />
           )}
@@ -160,9 +210,21 @@ const PostListScreen = () => {
             >
               <Pressable
                 onPress={handleCategoryModalPress}
-                style={[styles.filterDownBtn]}
+                style={[
+                  styles.filterDownBtn,
+                  {
+                    borderColor: category != [] ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      category != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    { color: category ? "darkGray" : "#a8a8a8" },
+                  ]}
+                >
                   카테고리
                 </Text>
                 <Image
@@ -172,33 +234,92 @@ const PostListScreen = () => {
               </Pressable>
               <Pressable
                 onPress={handleLocationModalPress}
-                style={[styles.filterDownBtn]}
+                style={[
+                  styles.filterDownBtn,
+                  {
+                    borderColor: location != [] ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      location != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>위치</Text>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    { color: location != [] ? "darkGray" : "#a8a8a8" },
+                  ]}
+                >
+                  위치
+                </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
                   style={styles.filterDownImg}
                 ></Image>
               </Pressable>
               <Pressable
-                onPress={() => setState("UNCOMPLETED")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("UNCOMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor:
+                      state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "UNCOMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   미완료
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => setState("COMPLETED")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("COMPLETED")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "COMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>완료</Text>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
+                  완료
+                </Text>
               </Pressable>
               <Pressable
-                onPress={() => setState("POLICE")}
-                style={[styles.filterBtn]}
+                onPress={() => handleState("POLICE")}
+                style={[
+                  styles.filterBtn,
+                  {
+                    borderColor: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    backgroundColor:
+                      state === "POLICE" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                  },
+                ]}
               >
-                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                <Text
+                  style={[
+                    styles.BtnText,
+                    {
+                      color: state === "POLICE" ? "darkGray" : "#a8a8a8",
+                    },
+                  ]}
+                >
                   인계됨
                 </Text>
               </Pressable>
