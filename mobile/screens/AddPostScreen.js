@@ -127,7 +127,7 @@ const AddPostScreen = () => {
     return newPostId; // 호출자에게 즉시 id를 반환
   };
 
-const registerPostImage = async (targetPostId, files) => {
+  const registerPostImage = async (targetPostId, files) => {
     console.log("targetPostId:", targetPostId);
 
     try {
@@ -267,7 +267,7 @@ const registerPostImage = async (targetPostId, files) => {
           </View>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.textLabel}>분실 장소</Text>
+              <Text style={styles.textLabel}>습득 장소</Text>
               <Text style={styles.star}> *</Text>
             </View>
             <View style={styles.dropdownContainer}>
