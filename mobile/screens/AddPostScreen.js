@@ -369,10 +369,10 @@ const AddPostScreen = () => {
       </ScrollView>
       <View style={styles.buttonView}>
         <Pressable
-          style={styles.btn}  
+          style={styles.btn2}  
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.btnText}>취소하기</Text>
+          <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
           <Text style={styles.btnText}>등록하기</Text>
@@ -438,6 +438,21 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "white",
+    fontSize: 16,
+  },
+  btn2: {
+    backgroundColor: "white",
+    borderColor: "#215294",
+    borderWidth: 2,
+    width: 160,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+    marginHorizontal: 10, // 버튼 사이 간격
+  },
+  btnText2: {
+    color: "#215294",
     fontSize: 16,
   },
   dropdownPicker: {
