@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
-
 import {
   Image,
   Pressable,
@@ -9,20 +10,17 @@ import {
   TextInput,
   View,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import * as ImageManipulator from "expo-image-manipulator";
+import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
-import { getPost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
 import { toImageSource } from "../utils/imageSource";
 
-import { useNavigation } from "@react-navigation/native";
-
-import * as ImageManipulator from "expo-image-manipulator";
-
 import { mime } from "react-native-mime-types";
 import api from "../api/api";
+import { getPost } from "../api/post"; // 기존 파일 사용 가정
 import { TokenStore } from "../TokenStore";
 
 const EditPostScreen = ({ route }) => {
@@ -132,8 +130,6 @@ const EditPostScreen = ({ route }) => {
     return "image/jpeg";
   };
 
-  /*
-
   // 이미지를 upload를 해야하는지 false => 이미지 변경 안 함. true => 이미지 변경함
   const [changeImage, setChangeImage] = useState(false);
 
@@ -154,7 +150,7 @@ const EditPostScreen = ({ route }) => {
     });
     console.log(result);
 
-  if (!result.canceled) {
+    if (!result.canceled) {
       setChangeImage(true);
       let selected = result.assets;
 
@@ -174,7 +170,7 @@ const EditPostScreen = ({ route }) => {
 
       setFile(next);
     }
-  };*/
+  };
 
   const toggleSwitch = () => {
     setIsSN((prev) => {
@@ -439,8 +435,8 @@ const EditPostScreen = ({ route }) => {
       )}
 
       <View style={styles.buttonView}>
-        <Pressable style={styles.btn} onPress={() => navigation.goBack()}>
-          <Text style={styles.btnText}>취소하기</Text>
+        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
+          <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
           <Text style={styles.btnText}>등록하기</Text>
@@ -506,6 +502,21 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "white",
+    fontSize: 16,
+  },
+  btn2: {
+    backgroundColor: "white",
+    borderColor: "#215294",
+    borderWidth: 2,
+    width: 160,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+    marginHorizontal: 10, // 버튼 사이 간격
+  },
+  btnText2: {
+    color: "#215294",
     fontSize: 16,
   },
   dropdownPicker: {

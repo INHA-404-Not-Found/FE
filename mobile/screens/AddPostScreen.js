@@ -1,127 +1,65 @@
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-import * as ImageManipulator from "expo-image-manipulator";
 import DropDownPicker from "react-native-dropdown-picker";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import DefaultHeader from "../components/DefaultHeader";
-import { toImageSource } from "../utils/imageSource";
-
-import { mime } from "react-native-mime-types";
 import api from "../api/api";
-import { getPost } from "../api/post"; // 기존 파일 사용 가정
+import DefaultHeader from "../components/DefaultHeader";
 import { TokenStore } from "../TokenStore";
 
-const EditPostScreen = ({ route }) => {
+const AddPostScreen = () => {
   const navigation = useNavigation();
-
-  const routePostId = route?.params?.postId ?? route?.params ?? null;
-  const [postId, setPostId] = useState(routePostId);
-
-  // post는 객체가 더 적절
-  const [post, setPost] = useState(null);
-
-  // form fields (초기값은 빈값; post 로드되면 채움)
-  const [title, setTitle] = useState("");
-  const [storedLocation, setStoredLocation] = useState("");
-  const [content, setContent] = useState("");
-  const [isSN, setIsSN] = useState(false);
-  const [studentId, setStudentId] = useState("");
-  const [file, setFile] = useState([]); // 항상 배열로 처리
-
-  // image preview source helper
-  const imageSource = toImageSource(post?.imagePath);
-
-  // DropDownPicker 관련 상태
+  const myInfo = useSelector((state) => state.my.info);
+  // DropDownPicker 상태 관리
   const [open, setOpen] = useState(false);
-  const categoryList = useSelector((state) => state.category?.categories ?? []);
-  const [items, setItems] = useState([]);
-  const [categories, setCategories] = useState([]); // 선택된 카테고리 값들
-
+  const [categories, setCategories] = useState([]);
+  const categoryList = useSelector((state) => state.category.categories);
+  const [items, setItems] = useState(
+    categoryList.map((c) => ({
+      label: c.name,
+      value: c.id,
+    }))
+  );
   const [locationOpen, setLocationOpen] = useState(false);
-  const locationList = useSelector((state) => state.location?.locations ?? []);
-  const [locationItems, setLocationItems] = useState([]);
+  const locationList = useSelector((state) => state.location.locations);
+  const [locationItems, setLocationItems] = useState(
+    locationList.map((l) => ({
+      label: l.name,
+      value: l.id,
+    }))
+  );
   const [locationId, setLocationId] = useState(null);
   const [locationDetail, setLocationDetail] = useState("");
 
-  // 카테고리/장소 items는 redux 값이 바뀔 때 세팅
-  useEffect(() => {
-    if (Array.isArray(categoryList)) {
-      setItems(
-        categoryList.map((c) => ({
-          label: c.name,
-          value: c.id,
-        }))
-      );
+  const [title, setTitle] = useState("");
+  const [storedLocation, setStoredLocation] = useState("");
+  const [content, setContent] = useState("");
+  const [isPersonal, setIsPersonal] = useState(false);
+  const togglePersonalSwitch = () => setIsPersonal((prev) => !prev);
+
+  const [isSN, setIsSN] = useState(false);
+  const [studentId, setStudentId] = useState("");
+  const toggleSwitch = () => {
+    setIsSN((prev) => !prev);
+    if (!isSN) {
+      studentId = "";
     }
-  }, [categoryList]);
+  };
 
-  useEffect(() => {
-    if (Array.isArray(locationList)) {
-      setLocationItems(
-        locationList.map((l) => ({
-          label: l.name,
-          value: l.id,
-        }))
-      );
-    }
-  }, [locationList]);
-
-  // postId가 있으면 post 불러오기
-  useEffect(() => {
-    if (!postId) return;
-    console.log("postId: " + postId);
-    getPost(setPost, postId);
-  }, [postId]);
-
-  // post가 로드되면 각 form 상태 동기화
-  useEffect(() => {
-    if (!post) return;
-    setTitle(post.title ?? "");
-    setStoredLocation(post.storedLocation ?? "");
-    setContent(post.content ?? "");
-    setIsSN(Boolean(post.isPersonal));
-    setStudentId(post.studentId ?? "");
-    // imagePath가 문자열이면 배열로, 이미 배열이면 그대로 사용
-    if (!post.imagePath) {
-      setFile([]);
-    } else if (Array.isArray(post.imagePath)) {
-      setFile(
-        post.imagePath.map((p, idx) =>
-          typeof p === "string"
-            ? { uri: p, fileName: `image_${idx}.jpg`, mimeType: "image/jpeg" }
-            : p
-        )
-      );
-    } else if (typeof post.imagePath === "string") {
-      setFile([
-        {
-          uri: post.imagePath,
-          fileName: "image_0.jpg",
-          mimeType: "image/jpeg",
-        },
-      ]);
-    } else {
-      setFile([]);
-    }
-    // 카테고리, location 관련 초기값이 있다면 설정
-    if (post.categories) setCategories(post.categories);
-    if (post.locationId) setLocationId(post.locationId);
-    if (post.locationDetail) setLocationDetail(post.locationDetail);
-  }, [post]);
-
-  // mimeType 추정 (간단)
+  const [file, setFile] = useState([]); // [{ uri, fileName, mimeType }] 형태로 보관
+  // mimeType 추정
   const guessMime = (uri) => {
     const ext = uri.split(".").pop()?.toLowerCase();
     if (ext === "png") return "image/png";
@@ -129,9 +67,6 @@ const EditPostScreen = ({ route }) => {
     if (ext === "heic") return "image/heic";
     return "image/jpeg";
   };
-
-  // 이미지를 upload를 해야하는지 false => 이미지 변경 안 함. true => 이미지 변경함
-  const [changeImage, setChangeImage] = useState(false);
 
   const pickImages = async () => {
     // 갤러리 접근 권한 요청
@@ -151,7 +86,6 @@ const EditPostScreen = ({ route }) => {
     console.log(result);
 
     if (!result.canceled) {
-      setChangeImage(true);
       let selected = result.assets;
 
       // 2장까지만 허용
@@ -172,30 +106,28 @@ const EditPostScreen = ({ route }) => {
     }
   };
 
-  const toggleSwitch = () => {
-    setIsSN((prev) => {
-      const next = !prev;
-      if (!next) {
-        // 비활성화하면 학번 비움
-        setStudentId("");
-      }
-      return next;
-    });
-  };
-
-  // 업로드 함수들: 실제 API에 맞춰 구현 필요
+  // 폼 데이터 업로드
+  const [postId, setPostId] = useState("");
   const uploadPost = async () => {
-    // 예시 플레이스홀더: 서버에 post 수정/생성 요청 후 id 반환
-    // 실제로는 PUT /posts/:id 또는 POST /posts 등으로 구현되어 있을 것
-    // 아래는 단순 플레이스홀더
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(postId ?? 12345); // 실제로는 응답에서 postId 받아옴
-      }, 300);
+    console.log("장소 Id", locationId);
+    const res = await api.post(`/posts`, {
+      locationId,
+      locationDetail,
+      title,
+      content,
+      storedLocation,
+      status: "UNCOMPLETED",
+      type: "FIND",
+      isPersonal: isSN,
+      categories,
+      studentId,
     });
+    const newPostId = res.data.postId;
+    setPostId(newPostId); // state도 갱신
+    return newPostId; // 호출자에게 즉시 id를 반환
   };
 
-  const uploadImage = async (targetPostId, files) => {
+  const registerPostImage = async (targetPostId, files) => {
     console.log("targetPostId:", targetPostId);
 
     try {
@@ -215,7 +147,7 @@ const EditPostScreen = ({ route }) => {
       const tok = TokenStore.getToken();
       console.log("token:", tok);
 
-      const res = await api.patch(`/posts/${targetPostId}/images`, formData, {
+      const res = await api.post(`/posts/${targetPostId}/images`, formData, {
         headers: {
           Authorization: `Bearer ${tok}`,
           "Content-Type": "multipart/form-data",
@@ -246,197 +178,194 @@ const EditPostScreen = ({ route }) => {
 
   const handleUpload = async () => {
     try {
-      /*
-      const id = await uploadPost(); // post 업데이트/생성해서 id 확보
-      console.log("post 업로드 성공, id:", id);
-      */
-      if (changeImage && file && file.length > 0) {
-        console.log(file);
-        await uploadImage(postId, file);
-      }
-      console.log("업로드 전체 완료");
+      const id = await uploadPost(); // 대기해서 postId 확보
+      console.log("post업로드성공");
+      console.log(file, file.length);
 
-      navigation.navigate("PostScreen", { postId: postId });
+      if (file.length > 0 && file) {
+        await registerPostImage(id, file); // id를 명시적으로 전달
+      }
+      console.log("사진 업로드 전체 완료");
+
+      // 네비게이션 이동
+      console.log("postId" + id);
+      navigation.navigate("PostScreen", id);
     } catch (e) {
-      console.error("업로드 실패:", e?.response?.status ?? "", e?.message ?? e);
-      alert("업로드 중 오류가 발생했습니다.");
+      console.error("업로드 실패:", e);
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edge={["top"]}>
       <DefaultHeader />
-      {post && (
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.content}>
-            <View style={styles.flexRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
-                <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
-              </View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.content}>
+          <View style={styles.flexRow}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
+            </View>
+            <TextInput
+              value={title}
+              onChangeText={(text) => setTitle(text)}
+              style={styles.inputText}
+            />
+          </View>
+          <View style={styles.flexRow}>
+            <Text style={styles.textLabel}>학번 정보{"\n"}포함 유무</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#04bb1cff" }}
+              thumbColor={"#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isSN}
+            />
+            <TextInput
+              placeholder="학번 8자리"
+              style={[
+                styles.inputText,
+                {
+                  width: 200,
+                  backgroundColor: isSN ? "#ffffff" : "#f0ededff",
+                  marginTop: 5,
+                },
+              ]}
+              editable={isSN}
+              value={studentId}
+              onChangeText={(text) => setStudentId(text)}
+            ></TextInput>
+          </View>
+          <View style={styles.flexRow}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={[styles.textLabel, { alignItems: "center" }]}>
+                물품 카테고리
+              </Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={open}
+                value={categories}
+                items={items}
+                setItems={setItems}
+                setOpen={setOpen}
+                setValue={setCategories}
+                multiple={true}
+                min={0}
+                max={5}
+                placeholder="카테고리를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={3000}
+                zIndexInverse={1000}
+              />
+            </View>
+          </View>
+          <View style={styles.flexRow}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.textLabel}>습득 장소</Text>
+              <Text style={styles.star}> *</Text>
+            </View>
+            <View style={styles.dropdownContainer}>
+              <DropDownPicker
+                open={locationOpen}
+                value={locationId}
+                items={locationItems}
+                setItems={setLocationItems}
+                setOpen={setLocationOpen}
+                setValue={setLocationId}
+                multiple={false}
+                placeholder="장소를 선택하세요"
+                mode="BADGE"
+                style={styles.dropdownPicker}
+                zIndex={2000}
+                zIndexInverse={900}
+              />
               <TextInput
-                value={title}
-                onChangeText={(text) => setTitle(text)}
+                placeholder="(선택) 세부 장소를 입력하세요"
                 style={styles.inputText}
+                value={locationDetail}
+                onChangeText={(text) => setLocationDetail(text)}
+              ></TextInput>
+            </View>
+          </View>
+          <View style={styles.flexRow}>
+            <Text style={[styles.textLabel, { marginTop: 13 }]}>보관 위치</Text>
+            <TextInput
+              value={storedLocation}
+              onChangeText={(text) => setStoredLocation(text)}
+              style={styles.inputText}
+            ></TextInput>
+          </View>
+          <View style={styles.flexRow}>
+            <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
+            <TextInput
+              value={content}
+              numberOfLines={5}
+              multiline={true}
+              onChangeText={(text) => setContent(text)}
+              style={[
+                styles.inputText,
+                {
+                  minHeight: 5 * 24,
+                  height: "auto",
+                  paddingTop: 10,
+                  textAlignVertical: "top",
+                },
+              ]}
+            />
+          </View>
+          <View style={[styles.flexRow, { alignItems: "center" }]}>
+            <Text style={styles.textLabel}>사진 등록</Text>
+            <Pressable
+              onPress={pickImages}
+              style={({ pressed }) => [
+                styles.imageUploadBtn,
+                {
+                  marginLeft: 50,
+                  backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
+                  transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
+                },
+              ]}
+            >
+              <Image
+                source={require("../assets/uploadImage2.png")}
+                style={{
+                  width: 15,
+                  height: 15,
+                  marginRight: 4,
+                }}
               />
-            </View>
+              <Text style={styles.imageUploadText}>upload</Text>
+            </Pressable>
+          </View>
 
-            <View style={styles.flexRow}>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={[styles.textLabel, { alignItems: "center" }]}>
-                  물품 카테고리
-                </Text>
-                <Text style={styles.star}> *</Text>
-              </View>
-              <View style={styles.dropdownContainer}>
-                <DropDownPicker
-                  open={open}
-                  value={categories}
-                  items={items}
-                  setItems={setItems}
-                  setOpen={setOpen}
-                  setValue={setCategories}
-                  multiple={true}
-                  min={0}
-                  max={5}
-                  placeholder="카테고리를 선택하세요"
-                  mode="BADGE"
-                  style={styles.dropdownPicker}
-                  zIndex={3000}
-                  zIndexInverse={1000}
-                />
-              </View>
-            </View>
-
-            {post.type === "FIND" ? (
-              <>
-                <View style={styles.flexRow}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text style={styles.textLabel}>습득 장소</Text>
-                    <Text style={styles.star}> *</Text>
-                  </View>
-                  <View style={styles.dropdownContainer}>
-                    <DropDownPicker
-                      open={locationOpen}
-                      value={locationId}
-                      items={locationItems}
-                      setItems={setLocationItems}
-                      setOpen={setLocationOpen}
-                      setValue={setLocationId}
-                      multiple={false}
-                      placeholder="장소를 선택하세요"
-                      mode="BADGE"
-                      style={styles.dropdownPicker}
-                      zIndex={2000}
-                      zIndexInverse={900}
-                    />
-                    <TextInput
-                      placeholder="(선택) 세부 장소를 입력하세요"
-                      style={styles.inputText}
-                      value={locationDetail}
-                      onChangeText={(text) => setLocationDetail(text)}
-                    ></TextInput>
-                  </View>
-                </View>
-                <View style={styles.flexRow}>
-                  <Text style={[styles.textLabel, { marginTop: 13 }]}>
-                    보관 위치
-                  </Text>
-                  <TextInput
-                    value={storedLocation}
-                    onChangeText={(text) => setStoredLocation(text)}
-                    style={styles.inputText}
-                  />
-                </View>
-              </>
-            ) : (
-              <></>
-            )}
-            <View style={styles.flexRow}>
-              <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
-              <TextInput
-                value={content}
-                numberOfLines={5}
-                multiline={true}
-                onChangeText={(text) => setContent(text)}
-                style={[
-                  styles.inputText,
-                  {
-                    minHeight: 5 * 24,
-                    height: "auto",
-                    paddingTop: 10,
-                    textAlignVertical: "top",
-                  },
-                ]}
-              />
-            </View>
-
-            <View style={[styles.flexRow, { alignItems: "center" }]}>
-              <Text style={styles.textLabel}>사진 등록</Text>
-              <Pressable
-                onPress={pickImages}
-                style={({ pressed }) => [
-                  styles.imageUploadBtn,
-                  {
-                    marginLeft: 50,
-                    backgroundColor: pressed ? "#BEDEF3" : "#fff",
-                    transform: [{ scale: pressed ? 0.98 : 1 }],
-                  },
-                ]}
-              >
+          {file.length > 0 && (
+            <ScrollView
+              horizontal
+              nestedScrollEnabled={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingVertical: 8 }}
+            >
+              {file.map((img) => (
                 <Image
-                  source={require("../assets/uploadImage2.png")}
+                  key={img.uri}
+                  source={{ uri: img.uri }}
                   style={{
-                    width: 15,
-                    height: 15,
-                    marginRight: 4,
+                    width: 80,
+                    height: 80,
+                    borderRadius: 8,
+                    marginRight: 8,
                   }}
                 />
-                <Text style={styles.imageUploadText}>upload</Text>
-              </Pressable>
-            </View>
-
-            {(file.length > 0 || post?.imagePath?.length > 0) && (
-              <ScrollView
-                horizontal
-                nestedScrollEnabled={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 8 }}
-              >
-                {changeImage
-                  ? file.map((img, index) => (
-                      <Image
-                        key={index}
-                        source={{ uri: img.uri }}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 8,
-                          marginRight: 8,
-                        }}
-                      />
-                    ))
-                  : post.imagePath.map((img) => (
-                      <Image
-                        key={img}
-                        source={{ uri: `https://lost-inha.kro.kr${img}` }}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 8,
-                          marginRight: 8,
-                        }}
-                      />
-                    ))}
-              </ScrollView>
-            )}
-          </View>
-        </ScrollView>
-      )}
-
+              ))}
+            </ScrollView>
+          )}
+        </View>
+      </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
-          <Text style={styles.btnText2}>취소하기</Text>
+        <Pressable style={styles.btn} onPress={() => navigation.goBack()}>
+          <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
           <Text style={styles.btnText}>등록하기</Text>
@@ -446,7 +375,7 @@ const EditPostScreen = ({ route }) => {
   );
 };
 
-export default EditPostScreen;
+export default AddPostScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -502,21 +431,6 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "white",
-    fontSize: 16,
-  },
-  btn2: {
-    backgroundColor: "white",
-    borderColor: "#215294",
-    borderWidth: 2,
-    width: 160,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: "center",
-    marginHorizontal: 10, // 버튼 사이 간격
-  },
-  btnText2: {
-    color: "#215294",
     fontSize: 16,
   },
   dropdownPicker: {
