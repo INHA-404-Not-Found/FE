@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.9)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -191,15 +191,16 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     top: 50,
-    right: 25,
+    right: 15,
     zIndex: 2,
-    backgroundColor: "rgb(255,255,255, 0.5)",
+    backgroundColor: "rgb(255,255,255, 0.7)",
     borderRadius: 20,
     padding: 8,
   },
   closeButtonImage: {
     width: 24,
     height: 24,
+    tintColor: "#000",
   },
   ContentContainer: {
     marginTop: 20,
