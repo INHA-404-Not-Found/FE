@@ -1,5 +1,3 @@
-import { tokenStorage } from "../tokenStorage.js";
-import { TokenStore } from "../TokenStore.js";
 import api from "./api.js";
 
 // 게시물 등록
@@ -147,41 +145,6 @@ export const modifyPostImage = async (post_id, files) => {
   } catch (err) {
     console.error("registerPostImage 에러:", err);
     alert("registerPostImage 실패");
-  }
-};
-
-// 게시물 인계 여부 일괄 수정
-export const modifyPosts = async (ids, status) => {
-  console.log("modifyPosts start");
-  console.log(ids, status);
-
-  const token = await TokenStore.getToken();
-  console.log("token:", token);
-
-  try {
-    const res = await api.patch(
-      "/posts/update", // ✅ 백엔드 매핑에 맞게 수정
-      {
-        postIds: ids, // ✅ key 이름 꼭 postIds로
-        status,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ JWT 필수
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("modifyPosts success:", res.data);
-    return res.data;
-
-  } catch (err) {
-    console.error(
-      "에러 발생:",
-      err.response?.data || err.message
-    );
-    alert("modifyPosts 실패");
   }
 };
 

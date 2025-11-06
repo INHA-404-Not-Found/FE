@@ -46,12 +46,22 @@ const EditPostScreen = ({ route }) => {
   // DropDownPicker 관련 상태
   const [open, setOpen] = useState(false);
   const categoryList = useSelector((state) => state.category?.categories ?? []);
-  const [items, setItems] = useState([]);
-  const [categories, setCategories] = useState([]); // 선택된 카테고리 값들
+  const [items, setItems] = useState(
+    categoryList.map((c) => ({
+      label: c.name,
+      value: c.id,
+    }))
+  );
+  const [categories, setCategories] = useState([]); // 선택된 카테고리 값들 String List
 
   const [locationOpen, setLocationOpen] = useState(false);
   const locationList = useSelector((state) => state.location?.locations ?? []);
-  const [locationItems, setLocationItems] = useState([]);
+  const [locationItems, setLocationItems] = useState(
+    locationList.map((l) => ({
+      label: l.name,
+      value: l.id,
+    }))
+  );
   const [locationId, setLocationId] = useState(null);
   const [locationDetail, setLocationDetail] = useState("");
 
@@ -116,8 +126,18 @@ const EditPostScreen = ({ route }) => {
       setFile([]);
     }
     // 카테고리, location 관련 초기값이 있다면 설정
-    if (post.categories) setCategories(post.categories);
-    if (post.locationId) setLocationId(post.locationId);
+    if (Array.isArray(post?.categories)) {
+      setCategories(
+        categoryList
+          .filter((c) => post.categories.includes(c.name))
+          .map((c) => c.id)
+      );
+    }
+    if (post.locationName) {
+      const match = locationList.find((l) => l.name === post.locationName);
+      if (match) setLocationId(match.id);
+      else setLocationId(null); // 없으면 초기화
+    }
     if (post.locationDetail) setLocationDetail(post.locationDetail);
   }, [post]);
 
@@ -185,6 +205,23 @@ const EditPostScreen = ({ route }) => {
 
   // 업로드 함수들: 실제 API에 맞춰 구현 필요
   const uploadPost = async () => {
+    try {
+      const res = await api.patch(`/posts/${postId}`, {
+        locationId,
+        locationDetail,
+        title,
+        content,
+        storedLocation,
+        state: post.status,
+        type: post.type,
+        isPersonal: post.isPersonal,
+        categories,
+      });
+      console.log("게시글 수정 성공:", res.data);
+    } catch (e) {
+      console.error("에러 발생: ", e);
+      alert("게시글 수정 실패");
+    }
     // 예시 플레이스홀더: 서버에 post 수정/생성 요청 후 id 반환
     // 실제로는 PUT /posts/:id 또는 POST /posts 등으로 구현되어 있을 것
     // 아래는 단순 플레이스홀더
@@ -234,7 +271,7 @@ const EditPostScreen = ({ route }) => {
   const compressImage = async (uri) => {
     try {
       const result = await ImageManipulator.manipulateAsync(uri, [], {
-        compress: 0.5,
+        compress: 0.1,
         format: ImageManipulator.SaveFormat.JPEG,
       });
       return result.uri;
@@ -246,17 +283,15 @@ const EditPostScreen = ({ route }) => {
 
   const handleUpload = async () => {
     try {
-      /*
-      const id = await uploadPost(); // post 업데이트/생성해서 id 확보
-      console.log("post 업로드 성공, id:", id);
-      */
+      await uploadPost();
+
       if (changeImage && file && file.length > 0) {
         console.log(file);
         await uploadImage(postId, file);
       }
       console.log("업로드 전체 완료");
 
-      navigation.navigate("PostScreen", { postId: postId });
+      navigation.navigate("PostScreen", postId);
     } catch (e) {
       console.error("업로드 실패:", e?.response?.status ?? "", e?.message ?? e);
       alert("업로드 중 오류가 발생했습니다.");
@@ -435,10 +470,7 @@ const EditPostScreen = ({ route }) => {
       )}
 
       <View style={styles.buttonView}>
-        <Pressable
-          style={styles.btn2}  
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
           <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
