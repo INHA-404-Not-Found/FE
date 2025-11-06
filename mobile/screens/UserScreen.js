@@ -130,10 +130,19 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   ProfileImg: {
-    marginTop: 5,
-    backgroundColor: "#D9D9D9",
     width: 120,
     height: 150,
+    backgroundColor: "#F5F9FF",      // 살짝 푸른 톤 배경
+    borderWidth: 1.5,
+    borderColor: "#215294",          // 인하대 블루로 테두리
+    borderRadius: 6,                // 모서리 둥글게
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,                    // Android 그림자
   },
   logoutText: {
     color: "#215294",
