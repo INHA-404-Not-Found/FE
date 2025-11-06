@@ -105,7 +105,10 @@ const MyPostListScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor:"white", }} edge={["top", 'bottom']}>
+        <SafeAreaView
+          style={{ flex: 1, backgroundColor: "white" }}
+          edge={["top"]}
+        >
           <DefaultHeader />
           <View style={styles.listContainer}>
             <PostTypeSelector postType={postType} setPostType={setPostType} />
@@ -120,7 +123,6 @@ const MyPostListScreen = () => {
                       state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
                     backgroundColor:
                       state === "UNCOMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
-
                   },
                 ]}
               >
@@ -141,8 +143,8 @@ const MyPostListScreen = () => {
                   styles.filterBtn,
                   {
                     borderColor: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
-      backgroundColor: state === "COMPLETED" ? "#d9d9d9" : "white",
-
+                    backgroundColor:
+                      state === "COMPLETED" ? "#d9d9d9" : "white",
                   },
                 ]}
               >
@@ -163,7 +165,7 @@ const MyPostListScreen = () => {
                   styles.filterBtn,
                   {
                     borderColor: state === "POLICE" ? "darkGray" : "#a8a8a8",
-       backgroundColor: state === "POLICE" ? "#d9d9d9" : "white",
+                    backgroundColor: state === "POLICE" ? "#d9d9d9" : "white",
                   },
                 ]}
               >
@@ -195,7 +197,6 @@ const MyPostListScreen = () => {
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
-
 
             <BottomSheetModal
               ref={bottomSheetModalRef}
@@ -245,7 +246,6 @@ const MyPostListScreen = () => {
                 </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
-
 
             <Modal
               visible={delVisible}

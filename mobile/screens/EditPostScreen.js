@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import React, { useEffect, useState } from "react";
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   View,
-  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import * as ImagePicker from "expo-image-picker";
 
+import * as ImageManipulator from "expo-image-manipulator";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useSelector } from "react-redux";
 import DefaultHeader from "../components/DefaultHeader";
 import { toImageSource } from "../utils/imageSource";
-import { useSelector } from "react-redux";
-import DropDownPicker from "react-native-dropdown-picker";
-import * as ImageManipulator from "expo-image-manipulator";
 
+import { mime } from "react-native-mime-types";
+import api from "../api/api";
 import { getPost } from "../api/post"; // 기존 파일 사용 가정
 import { TokenStore } from "../TokenStore";
-import api from "../api/api";
-import { mime } from 'react-native-mime-types';
 
 const EditPostScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -100,11 +99,19 @@ const EditPostScreen = ({ route }) => {
     } else if (Array.isArray(post.imagePath)) {
       setFile(
         post.imagePath.map((p, idx) =>
-          typeof p === "string" ? { uri: p, fileName: `image_${idx}.jpg`, mimeType: "image/jpeg" } : p
+          typeof p === "string"
+            ? { uri: p, fileName: `image_${idx}.jpg`, mimeType: "image/jpeg" }
+            : p
         )
       );
     } else if (typeof post.imagePath === "string") {
-      setFile([{ uri: post.imagePath, fileName: "image_0.jpg", mimeType: "image/jpeg" }]);
+      setFile([
+        {
+          uri: post.imagePath,
+          fileName: "image_0.jpg",
+          mimeType: "image/jpeg",
+        },
+      ]);
     } else {
       setFile([]);
     }
@@ -143,7 +150,7 @@ const EditPostScreen = ({ route }) => {
     });
     console.log(result);
 
-  if (!result.canceled) {
+    if (!result.canceled) {
       setChangeImage(true);
       let selected = result.assets;
 
@@ -226,11 +233,10 @@ const EditPostScreen = ({ route }) => {
   // 이미지 압축 함수 (이미 있는 함수 그대로 재사용 가능)
   const compressImage = async (uri) => {
     try {
-      const result = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
-      );
+      const result = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.5,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
       return result.uri;
     } catch (error) {
       console.log("이미지 압축 중 오류:", error);
@@ -260,13 +266,13 @@ const EditPostScreen = ({ route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edges={["top"]}>
       <DefaultHeader />
-      { post && ( 
+      {post && (
         <ScrollView style={styles.scrollView}>
           <View style={styles.content}>
             <View style={styles.flexRow}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
-                <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
+                <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
+                <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
               </View>
               <TextInput
                 value={title}
@@ -277,9 +283,7 @@ const EditPostScreen = ({ route }) => {
 
             <View style={styles.flexRow}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text 
-                  style={[styles.textLabel, { alignItems:"center" }]}
-                >
+                <Text style={[styles.textLabel, { alignItems: "center" }]}>
                   물품 카테고리
                 </Text>
                 <Text style={styles.star}> *</Text>
@@ -304,7 +308,7 @@ const EditPostScreen = ({ route }) => {
               </View>
             </View>
 
-            { post.type === "FIND" ? (
+            {post.type === "FIND" ? (
               <>
                 <View style={styles.flexRow}>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -335,17 +339,19 @@ const EditPostScreen = ({ route }) => {
                   </View>
                 </View>
                 <View style={styles.flexRow}>
-                  <Text style={[styles.textLabel, { marginTop: 13, }]}>보관 위치</Text>
+                  <Text style={[styles.textLabel, { marginTop: 13 }]}>
+                    보관 위치
+                  </Text>
                   <TextInput
                     value={storedLocation}
                     onChangeText={(text) => setStoredLocation(text)}
                     style={styles.inputText}
                   />
                 </View>
-              </> ) : (
-                <></>
-              )
-            }
+              </>
+            ) : (
+              <></>
+            )}
             <View style={styles.flexRow}>
               <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
               <TextInput
@@ -365,13 +371,13 @@ const EditPostScreen = ({ route }) => {
               />
             </View>
 
-            <View style={[styles.flexRow, { alignItems: "center", }]}>
+            <View style={[styles.flexRow, { alignItems: "center" }]}>
               <Text style={styles.textLabel}>사진 등록</Text>
-              <Pressable 
+              <Pressable
                 onPress={pickImages}
                 style={({ pressed }) => [
                   styles.imageUploadBtn,
-                  { 
+                  {
                     marginLeft: 50,
                     backgroundColor: pressed ? "#BEDEF3" : "#fff",
                     transform: [{ scale: pressed ? 0.98 : 1 }],

@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
@@ -17,7 +18,6 @@ import { useSelector } from "react-redux";
 import api from "../api/api";
 import DefaultHeader from "../components/DefaultHeader";
 import { TokenStore } from "../TokenStore";
-import * as ImageManipulator from "expo-image-manipulator";
 
 const AddPostScreen = () => {
   const navigation = useNavigation();
@@ -85,7 +85,7 @@ const AddPostScreen = () => {
     });
     console.log(result);
 
-  if (!result.canceled) {
+    if (!result.canceled) {
       let selected = result.assets;
 
       // 2장까지만 허용
@@ -106,10 +106,10 @@ const AddPostScreen = () => {
     }
   };
 
-
   // 폼 데이터 업로드
   const [postId, setPostId] = useState("");
   const uploadPost = async () => {
+    console.log("장소 Id", locationId);
     const res = await api.post(`/posts`, {
       locationId,
       locationDetail,
@@ -165,18 +165,16 @@ const AddPostScreen = () => {
   // 이미지 압축 함수 (이미 있는 함수 그대로 재사용 가능)
   const compressImage = async (uri) => {
     try {
-      const result = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
-      );
+      const result = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.5,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
       return result.uri;
     } catch (error) {
       console.log("이미지 압축 중 오류:", error);
       return uri;
     }
   };
-
 
   const handleUpload = async () => {
     try {
@@ -204,8 +202,8 @@ const AddPostScreen = () => {
         <View style={styles.content}>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
-              <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
+              <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
             </View>
             <TextInput
               value={title}
@@ -226,7 +224,7 @@ const AddPostScreen = () => {
               placeholder="학번 8자리"
               style={[
                 styles.inputText,
-                { 
+                {
                   width: 200,
                   backgroundColor: isSN ? "#ffffff" : "#f0ededff",
                   marginTop: 5,
@@ -239,9 +237,7 @@ const AddPostScreen = () => {
           </View>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text 
-                style={[styles.textLabel, { alignItems:"center" }]}
-              >
+              <Text style={[styles.textLabel, { alignItems: "center" }]}>
                 물품 카테고리
               </Text>
               <Text style={styles.star}> *</Text>
@@ -294,7 +290,7 @@ const AddPostScreen = () => {
             </View>
           </View>
           <View style={styles.flexRow}>
-            <Text style={[styles.textLabel, { marginTop: 13, }]}>보관 위치</Text>
+            <Text style={[styles.textLabel, { marginTop: 13 }]}>보관 위치</Text>
             <TextInput
               value={storedLocation}
               onChangeText={(text) => setStoredLocation(text)}
@@ -302,7 +298,7 @@ const AddPostScreen = () => {
             ></TextInput>
           </View>
           <View style={styles.flexRow}>
-            <Text style={[styles.textLabel, { marginTop: 13, }]}>내용</Text>
+            <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
             <TextInput
               value={content}
               numberOfLines={5}
@@ -319,13 +315,13 @@ const AddPostScreen = () => {
               ]}
             />
           </View>
-          <View style={[styles.flexRow, { alignItems: "center", }]}>
+          <View style={[styles.flexRow, { alignItems: "center" }]}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable 
+            <Pressable
               onPress={pickImages}
               style={({ pressed }) => [
                 styles.imageUploadBtn,
-                { 
+                {
                   marginLeft: 50,
                   backgroundColor: pressed ? "#BEDEF3" : "#fff",
                   transform: [{ scale: pressed ? 0.98 : 1 }],
@@ -343,7 +339,7 @@ const AddPostScreen = () => {
               <Text style={styles.imageUploadText}>upload</Text>
             </Pressable>
           </View>
-          
+
           {file.length > 0 && (
             <ScrollView
               horizontal
@@ -364,7 +360,7 @@ const AddPostScreen = () => {
                 />
               ))}
             </ScrollView>
-          )} 
+          )}
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
