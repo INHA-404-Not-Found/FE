@@ -291,7 +291,7 @@ const EditPostScreen = ({ route }) => {
       }
       console.log("업로드 전체 완료");
 
-      navigation.navigate("PostScreen", { postId: postId });
+      navigation.navigate("PostScreen", postId);
     } catch (e) {
       console.error("업로드 실패:", e?.response?.status ?? "", e?.message ?? e);
       alert("업로드 중 오류가 발생했습니다.");
@@ -470,10 +470,7 @@ const EditPostScreen = ({ route }) => {
       )}
 
       <View style={styles.buttonView}>
-        <Pressable
-          style={styles.btn2}  
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
           <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>

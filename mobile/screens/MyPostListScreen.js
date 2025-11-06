@@ -23,7 +23,8 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import { getMyPosts, getPost, modifyPosts, removePost } from "../api/post";
+import api from "../api/api";
+import { getMyPosts, getPost, removePost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
 import MyPostListItem from "../components/MyPostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
@@ -50,10 +51,10 @@ const MyPostListScreen = () => {
   }, []);
 
   useEffect(() => {
-    if(!selectedPostId) return;
-    
+    if (!selectedPostId) return;
+
     getPost(setSelectedPost, selectedPostId);
-  }, [selectedPostId])
+  }, [selectedPostId]);
 
   const handleSheetChanges = useCallback(
     (index) => {
@@ -93,6 +94,24 @@ const MyPostListScreen = () => {
       setState(v);
     } else {
       setState(state === v ? "" : v);
+    }
+  };
+
+  const modifyPost = async () => {
+    if (state === "COMPLETED") {
+      return;
+    }
+    try {
+      const res = await api.patch(`/posts/${selectedPostId}`, {
+        status: "COMPLETED",
+      });
+
+      getMyPosts(setPosts, 1); // 1페이지부터 다시 불러오기
+      setPageNo(1);
+      console.log("게시글 상태 변경 성공:", res.data);
+    } catch (e) {
+      console.error("에러 발생: ", e);
+      alert("게시글 상태 변경 실패");
     }
   };
 
@@ -207,21 +226,24 @@ const MyPostListScreen = () => {
             >
               <BottomSheetView style={styles.contentContainer}>
                 <SafeAreaView edges={["bottom"]}>
-                  {selectedPost?.status !== "COMPLETED" && selectedPost?.status !== "POLICE" && (
-                    <Pressable
-                      style={({ pressed }) => [
-                        styles.bottomModalBtn,
-                        { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
-                      ]}
-                      onPress={() =>
-                        navigation.navigate("EditPostScreen", {
-                          postId: selectedPostId,
-                        })
-                      }
-                    >
-                      <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
-                    </Pressable>
-                  )}
+                  {selectedPost?.status !== "COMPLETED" &&
+                    selectedPost?.status !== "POLICE" && (
+                      <Pressable
+                        style={({ pressed }) => [
+                          styles.bottomModalBtn,
+                          { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
+                        ]}
+                        onPress={() =>
+                          navigation.navigate("EditPostScreen", {
+                            postId: selectedPostId,
+                          })
+                        }
+                      >
+                        <Text style={styles.bottomModalBtnText}>
+                          게시글 수정
+                        </Text>
+                      </Pressable>
+                    )}
                   <Pressable
                     style={({ pressed }) => [
                       styles.bottomModalBtn,
@@ -231,18 +253,19 @@ const MyPostListScreen = () => {
                   >
                     <Text style={styles.bottomModalBtnText}>삭제하기</Text>
                   </Pressable>
-                  
-                  {selectedPost?.status !== "COMPLETED" && selectedPost?.status !== "POLICE" && (
-                    <Pressable
-                      style={({ pressed }) => [
-                        styles.bottomModalBtn,
-                        { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
-                      ]}
-                      onPress={() => setChangeStateVisible(true)}
-                    >
-                      <Text style={styles.bottomModalBtnText}>상태 변경</Text>
-                    </Pressable>
-                  )}
+
+                  {selectedPost?.status !== "COMPLETED" &&
+                    selectedPost?.status !== "POLICE" && (
+                      <Pressable
+                        style={({ pressed }) => [
+                          styles.bottomModalBtn,
+                          { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
+                        ]}
+                        onPress={() => setChangeStateVisible(true)}
+                      >
+                        <Text style={styles.bottomModalBtnText}>상태 변경</Text>
+                      </Pressable>
+                    )}
                 </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
@@ -289,7 +312,6 @@ const MyPostListScreen = () => {
               </TouchableWithoutFeedback>
             </Modal>
 
-
             <Modal
               visible={delVisible2}
               transparent
@@ -304,7 +326,8 @@ const MyPostListScreen = () => {
                         게시글을 완료 처리하시겠어요?
                       </Text>
                       <Text style={styles.modalContentText}>
-                        완료된 게시글은 이후에{"\n"}수정하거나 되돌릴 수 없습니다.
+                        완료된 게시글은 이후에{"\n"}수정하거나 되돌릴 수
+                        없습니다.
                       </Text>
                       <View style={styles.modalBtnContainer}>
                         <Pressable
@@ -317,8 +340,8 @@ const MyPostListScreen = () => {
                         <Pressable
                           onPress={async () => {
                             console.log("상태 완료로 변경");
-                            await modifyPosts([selectedPostId], "COMPLETED");
-                            closeModal();
+                            await modifyPost();
+                            closeModal2();
                           }}
                           style={styles.modalSubmitBtn}
                         >
@@ -330,8 +353,6 @@ const MyPostListScreen = () => {
                 </View>
               </TouchableWithoutFeedback>
             </Modal>
-
-
           </View>
         </SafeAreaView>
       </BottomSheetModalProvider>
