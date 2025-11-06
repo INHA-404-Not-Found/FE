@@ -132,17 +132,17 @@ const styles = StyleSheet.create({
   ProfileImg: {
     width: 120,
     height: 150,
-    backgroundColor: "#F5F9FF",      // 살짝 푸른 톤 배경
+    backgroundColor: "#F5F9FF",
     borderWidth: 1.5,
-    borderColor: "#215294",          // 인하대 블루로 테두리
-    borderRadius: 6,                // 모서리 둥글게
+    borderColor: "#215294",
+    borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 5,                    // Android 그림자
+    elevation: 5,
   },
   logoutText: {
     color: "#215294",
