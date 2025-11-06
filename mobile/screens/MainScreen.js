@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
-import LocationMap from "../components/LocationMap";
+import LocationViewBox from "../components/LocationViewBox";
 import PostTypeSelector from "../components/PostTypeSelector";
 import { setKeyword } from "../Redux/slices/keywordSlice";
 const MainScreen = () => {
@@ -151,7 +151,7 @@ const MainScreen = () => {
                 )}
                 {selectType === "location" && (
                   <View style={{ height: 250 }}>
-                    <LocationMap
+                    <LocationViewBox
                       selected={selectedLocation}
                       setSelected={setSelectedLocation}
                     />

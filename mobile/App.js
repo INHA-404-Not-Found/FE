@@ -5,6 +5,7 @@ import { store } from "./Redux/store";
 
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
 import { setLocation } from "./Redux/slices/locationSlice";
@@ -195,9 +196,11 @@ export default function App() {
   */
 
   return (
-    <Provider store={store}>
-      <AppContent />
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={store}>
+        <AppContent />
+      </Provider>
+    </GestureHandlerRootView>
   );
 }
 
