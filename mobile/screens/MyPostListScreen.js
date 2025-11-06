@@ -185,6 +185,7 @@ const MyPostListScreen = () => {
               style={{ flex: 1 }}
               contentContainerStyle={{ padding: 2 }}
             />
+
             <BottomSheetModal
               ref={bottomSheetModalRef}
               onChange={handleSheetChanges}
@@ -192,27 +193,41 @@ const MyPostListScreen = () => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <Pressable
-                  style={styles.bottomModalBtn}
-                  onPress={() =>
-                    navigation.navigate("EditPostScreen", {
-                      postId: selectedPostId,
-                    })
-                  }
-                >
-                  <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setDelVisible(true)}
-                  style={styles.bottomModalBtn}
-                >
-                  <Text style={styles.bottomModalBtnText}>삭제하기</Text>
-                </Pressable>
-                <Pressable style={styles.bottomModalBtn}>
-                  <Text style={styles.bottomModalBtnText}>상태 변경</Text>
-                </Pressable>
+                <SafeAreaView edges={["bottom"]}>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.bottomModalBtn,
+                      { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                    ]}
+                    onPress={() =>
+                      navigation.navigate("EditPostScreen", {
+                        postId: selectedPostId,
+                      })
+                    }
+                  >
+                    <Text style={styles.bottomModalBtnText}>게시글 수정</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.bottomModalBtn,
+                      { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                    ]}
+                    onPress={() => setDelVisible(true)}
+                  >
+                    <Text style={styles.bottomModalBtnText}>삭제하기</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.bottomModalBtn,
+                      { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                    ]}
+                  >
+                    <Text style={styles.bottomModalBtnText}>상태 변경</Text>
+                  </Pressable>
+                </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
+
             <Modal
               visible={delVisible}
               transparent
@@ -319,7 +334,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   contentContainer: {
-    padding: 20,
     paddingTop: 10,
   },
   bottomModalContentTitle: {
@@ -364,7 +378,7 @@ const styles = StyleSheet.create({
   },
   bottomModalBtn: {
     alignItems: "center",
-    padding: 10,
+    padding: 15,
   },
   bottomModalBtnText: {
     fontSize: 18,
