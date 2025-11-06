@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getPost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
@@ -15,6 +15,8 @@ const PostScreen = (route) => {
   const postId = route.route.params;
   const [post, setPost] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!postId) return;
@@ -44,12 +46,19 @@ const PostScreen = (route) => {
             post.imagePath.map((img, index) => {
               const fullUri = `https://lost-inha.kro.kr${img}`;
               return (
-                <Image
+                <Pressable
                   key={index}
-                  source={{ uri: fullUri }}
-                  style={[styles.UploadedImg, { width: screenWidth }]}
-                  resizeMode="cover"
-                />
+                  onPress={() => {
+                    setSelectedImage(fullUri);
+                    setModalVisible(true);
+                  }}
+                >
+                  <Image
+                    source={{ uri: fullUri }}
+                    style={[styles.UploadedImg, { width: screenWidth }]}
+                    resizeMode="cover"
+                  />
+                </Pressable>
               );
             })
           ) : (
@@ -67,6 +76,25 @@ const PostScreen = (route) => {
             </Text>
           </View>
         )}
+
+        {/* 사진 크게 보는 화면 */}
+        <Modal visible={modalVisible} transparent={true}>
+          <View style={styles.modalBackground}>
+            {/* 닫기 버튼 */}
+            <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Image 
+                style={styles.closeButtonImage}
+                source={require("../assets/close.png")}
+              />
+            </Pressable>
+
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
+          </View>
+        </Modal>
 
         {/* 게시물 내용 */}
         <View style={styles.ContentContainer}>
@@ -149,6 +177,29 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 13,
     fontWeight: "500",
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fullImage: {
+    width: "100%",
+    height: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 50,
+    right: 25,
+    zIndex: 2,
+    backgroundColor: "rgb(255,255,255, 0.5)",
+    borderRadius: 20,
+    padding: 8,
+  },
+  closeButtonImage: {
+    width: 24,
+    height: 24,
   },
   ContentContainer: {
     marginTop: 20,
