@@ -295,7 +295,7 @@ const MainScreen = () => {
                   onPress={() => navigation.navigate("AddPostScreen")}
                   style={({ pressed }) => [
                     styles.bottomModalBtn,
-                    { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                    { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
                   ]}
                 >
                   <Text style={styles.bottomModalContentTitleText}>
@@ -307,7 +307,7 @@ const MainScreen = () => {
                   onPress={() => navigation.navigate("AddLostPostScreen")}
                   style={({ pressed }) => [
                     styles.bottomModalBtn,
-                    { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                    { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
                   ]}
                 >
                   <Text style={styles.bottomModalContentTitleText}>

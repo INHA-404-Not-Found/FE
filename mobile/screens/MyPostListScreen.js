@@ -201,6 +201,7 @@ const MyPostListScreen = () => {
               ref={bottomSheetModalRef}
               onChange={handleSheetChanges}
               enableDynamicSizing
+              backgroundStyle={{ backgroundColor: "#DADEE7" }}
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
@@ -209,7 +210,7 @@ const MyPostListScreen = () => {
                     <Pressable
                       style={({ pressed }) => [
                         styles.bottomModalBtn,
-                        { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                        { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
                       ]}
                       onPress={() =>
                         navigation.navigate("EditPostScreen", {
@@ -223,7 +224,7 @@ const MyPostListScreen = () => {
                   <Pressable
                     style={({ pressed }) => [
                       styles.bottomModalBtn,
-                      { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                      { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
                     ]}
                     onPress={() => setDelVisible(true)}
                   >
@@ -234,7 +235,7 @@ const MyPostListScreen = () => {
                     <Pressable
                       style={({ pressed }) => [
                         styles.bottomModalBtn,
-                        { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                        { backgroundColor: pressed ? "#f2f6ff" : "#DADEE7" },
                       ]}
                       onPress={() => setChangeStateVisible(true)}
                     >
