@@ -283,14 +283,21 @@ const MainScreen = () => {
           <View style={styles.contentBottom}>
             <BottomBar handleModalPress={handleModalPress} />
           </View>
+
           <BottomSheetModal
             ref={bottomSheetModalRef}
             onChange={handleSheetChanges}
             style={styles.bottomSheetModal}
           >
             <BottomSheetView style={styles.contentContainer}>
-              <View style={styles.bottomModalContentTitle}>
-                <Pressable onPress={() => navigation.navigate("AddPostScreen")}>
+              <SafeAreaView edges={["bottom"]}>
+                <Pressable
+                  onPress={() => navigation.navigate("AddPostScreen")}
+                  style={({ pressed }) => [
+                    styles.bottomModalBtn,
+                    { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                  ]}
+                >
                   <Text style={styles.bottomModalContentTitleText}>
                     습득 게시글 등록
                   </Text>
@@ -298,12 +305,16 @@ const MainScreen = () => {
 
                 <Pressable
                   onPress={() => navigation.navigate("AddLostPostScreen")}
+                  style={({ pressed }) => [
+                    styles.bottomModalBtn,
+                    { backgroundColor: pressed ? "#D9D9D9" : "#FFFFFF" },
+                  ]}
                 >
                   <Text style={styles.bottomModalContentTitleText}>
                     분실 게시글 등록
                   </Text>
                 </Pressable>
-              </View>
+              </SafeAreaView>
             </BottomSheetView>
           </BottomSheetModal>
         </SafeAreaView>
@@ -349,7 +360,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 5,
   },
-
   filterResetBtn: {
     flexDirection: "row",
     alignSelf: "flex-start",
@@ -382,19 +392,21 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   contentContainer: {
-    padding: 20,
     paddingTop: 10,
   },
   bottomModalContentTitle: {
     alignItem: "center",
     padding: 10,
   },
+  bottomModalBtn: {
+    alignItems: "center",
+    padding: 10,
+  },
   bottomModalContentTitleText: {
     fontSize: 18,
     fontWeight: 600,
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
-
   tagWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
