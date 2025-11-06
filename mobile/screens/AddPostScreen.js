@@ -110,6 +110,7 @@ const AddPostScreen = () => {
   const [postId, setPostId] = useState("");
   const uploadPost = async () => {
     console.log("장소 Id", locationId);
+    console.log("카테고리 ", categories);
     const res = await api.post(`/posts`, {
       locationId,
       locationDetail,
