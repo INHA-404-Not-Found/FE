@@ -59,7 +59,7 @@ const NotificationListScreen = () => {
   // }, [isFocused])
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <DefaultHeader />
       
       <FlatList
