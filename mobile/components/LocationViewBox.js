@@ -5,11 +5,12 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+
 import Animated, {
   useAnimatedProps,
   useSharedValue,
 } from "react-native-reanimated";
-import { G, Path, Svg, Image as SvgImage, Text } from "react-native-svg";
+import { G, Path, Svg, Image as SvgImage } from "react-native-svg";
 
 // 위치 선택 맵 구역 좌표
 export const CAMPUS_ZONES = [
@@ -145,9 +146,12 @@ const MAP_IMAGE = require("../assets/inhaMap.png");
 const ORIGINAL_WIDTH = 1520;
 const ORIGINAL_HEIGHT = 918;
 
+// 고정 확대 배율 (원하는 값으로 조절: 1=원본, 2=2배 확대)
+const INITIAL_SCALE = 2;
+
 const AnimatedG = Animated.createAnimatedComponent(G);
 
-const LocationMap = ({ selected, setSelected }) => {
+const LocationViewBox = ({ selected, setSelected }) => {
   // 줌/팬 상태
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
@@ -265,7 +269,7 @@ const LocationMap = ({ selected, setSelected }) => {
   );
 };
 
-export default LocationMap;
+export default LocationViewBox;
 
 const styles = StyleSheet.create({
   locationSelectMask: {

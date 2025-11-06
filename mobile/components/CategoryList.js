@@ -16,7 +16,7 @@ const CategoryList = ({ selected, setSelected }) => {
             style={styles.checkboxContainer}
           >
             <Checkbox
-              value={item.id === selected.id ? true : false}
+              value={item.id === selected?.id ? true : false}
               onValueChange={() => setSelected(item)}
             />
             <Text style={styles.label}>{item.name}</Text>
@@ -31,14 +31,20 @@ export default CategoryList;
 
 const styles = StyleSheet.create({
   listContainer: {
-    padding: 20,
+    height: 300,
+    paddingVertical: 20,
   },
   section: {
     paddingHorizontal: 10,
+    flexDirection: "column",
+    flexWrap: "wrap",
   },
   checkboxContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    marginLeft: 20,
+    marginBottom: 6,
+    alignItems: "center",
   },
   tagWrap: {
     flexDirection: "row",
@@ -58,5 +64,8 @@ const styles = StyleSheet.create({
     width: 15,
     height: 10,
     marginRight: 5,
+  },
+  label: {
+    marginLeft: 5,
   },
 });

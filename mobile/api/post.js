@@ -249,11 +249,11 @@ export const getPostsByTags = async (
   } else {
     FilterData.type = "";
   }
-  if (location != []) {
+  if (location?.id) {
     FilterData.location_id = location.id;
     console.log("필터링 위치ID: ", location.id);
   }
-  if (category != []) {
+  if (category?.id) {
     FilterData.category_id = category.id;
     console.log("필터링 카테고리ID: ", category.id);
   }
@@ -344,11 +344,11 @@ export const getPostsByKeywordFilter = async (
   } else {
     FilterData.type = "";
   }
-  if (location != []) {
+  if (location) {
     FilterData.location_id = location.id;
     console.log("필터링 위치ID: ", location.id);
   }
-  if (category != []) {
+  if (category) {
     FilterData.category_id = category.id;
     console.log("필터링 카테고리ID: ", category.id);
   }
@@ -358,12 +358,13 @@ export const getPostsByKeywordFilter = async (
       params: FilterData,
     });
 
-    console.log("getPostsByKeywordFilter: " + res.data);
+    console.log("getPostsByKeyword: " + res.data);
+    console.log(res.data);
     setHasNext(res.data.length === PAGE_SIZE);
     setPostList((prev) => (page === 1 ? res.data : [...prev, ...res.data]));
   } catch (err) {
     console.error("에러 발생: ", err);
-    alert("getPostsByKeywordFilter 실패");
+    alert("getPostsByKeyword 실패");
     return null;
   }
 };

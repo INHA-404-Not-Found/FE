@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import {
@@ -11,13 +12,12 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import mime from "react-native-mime-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import api from "../api/api";
 import DefaultHeader from "../components/DefaultHeader";
-import mime from "react-native-mime-types";
 import { TokenStore } from "../TokenStore";
-import * as ImageManipulator from "expo-image-manipulator";
 
 const AddLostPostScreen = () => {
   const navigation = useNavigation();
@@ -32,7 +32,6 @@ const AddLostPostScreen = () => {
       value: c.id,
     }))
   );
-
 
   const [title, setTitle] = useState("");
   const [storedLocation, setStoredLocation] = useState("");
@@ -76,7 +75,7 @@ const AddLostPostScreen = () => {
     });
     console.log(result);
 
-  if (!result.canceled) {
+    if (!result.canceled) {
       let selected = result.assets;
 
       // 2장까지만 허용
@@ -96,7 +95,6 @@ const AddLostPostScreen = () => {
       setFile(next);
     }
   };
-
 
   // 폼 데이터 업로드
   const [postId, setPostId] = useState(null);
@@ -151,11 +149,10 @@ const AddLostPostScreen = () => {
   // 이미지 압축 함수 (이미 있는 함수 그대로 재사용 가능)
   const compressImage = async (uri) => {
     try {
-      const result = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
-      );
+      const result = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.5,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
       return result.uri;
     } catch (error) {
       console.log("이미지 압축 중 오류:", error);
@@ -184,14 +181,14 @@ const AddLostPostScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white", }} edge={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} edge={["top"]}>
       <DefaultHeader />
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={[styles.textLabel, { marginTop: 13, }]}>제목</Text>
-              <Text style={[styles.star, { marginTop: 13, }]}> *</Text>
+              <Text style={[styles.textLabel, { marginTop: 13 }]}>제목</Text>
+              <Text style={[styles.star, { marginTop: 13 }]}> *</Text>
             </View>
             <TextInput
               value={title}
@@ -205,7 +202,7 @@ const AddLostPostScreen = () => {
               <Text style={styles.textLabel}>물품 카테고리</Text>
               <Text style={styles.star}> *</Text>
             </View>
-            <View style={[styles.dropdownContainer, {zIndex: 3000}]}>
+            <View style={[styles.dropdownContainer, { zIndex: 3000 }]}>
               <DropDownPicker
                 open={open}
                 value={categories}
@@ -222,7 +219,6 @@ const AddLostPostScreen = () => {
               />
             </View>
           </View>
-          
 
           <View style={styles.flexRow}>
             <Text style={[styles.textLabel, { marginTop: 13 }]}>내용</Text>
@@ -242,13 +238,13 @@ const AddLostPostScreen = () => {
               ]}
             />
           </View>
-          <View style={[styles.flexRow, { alignItems: "center", }]}>
+          <View style={[styles.flexRow, { alignItems: "center" }]}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable 
+            <Pressable
               onPress={pickImages}
               style={({ pressed }) => [
                 styles.imageUploadBtn,
-                { 
+                {
                   marginLeft: 50,
                   backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
                   transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
@@ -287,14 +283,11 @@ const AddLostPostScreen = () => {
                 />
               ))}
             </ScrollView>
-            )}
+          )}
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable
-          style={styles.btn}
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.btn} onPress={() => navigation.goBack()}>
           <Text style={styles.btnText}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
