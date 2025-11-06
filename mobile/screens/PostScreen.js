@@ -14,12 +14,19 @@ const PostScreen = (route) => {
   console.log("PostScreen의 route.route.params = postId: " + route.route.params);
   const postId = route.route.params;
   const [post, setPost] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (!postId) return;
     console.log("postId: " + postId);
     getPost(setPost, postId);
   }, [postId]);
+
+  const handleScroll = (e) => {
+    const offsetX = e.nativeEvent.contentOffset.x;
+    const index = Math.round(offsetX / screenWidth);
+    setCurrentIndex(index);
+  };
 
   return (
     <SafeAreaView style={styles.safe} edge={["top"]}>
@@ -31,6 +38,7 @@ const PostScreen = (route) => {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           style={styles.imageScroll}
+          onScroll={handleScroll}
         >
           {Array.isArray(post.imagePath) && post.imagePath.length > 0 ? (
             post.imagePath.map((img, index) => {
@@ -51,6 +59,16 @@ const PostScreen = (route) => {
           )}
         </ScrollView>
 
+        {/* 하단 이미지 갯수 표시 */}
+        {Array.isArray(post.imagePath) && post.imagePath.length > 1 && (
+          <View style={styles.imageCountBox}>
+            <Text style={styles.imageCountText}>
+              {currentIndex + 1}/{post.imagePath.length}
+            </Text>
+          </View>
+        )}
+
+        {/* 게시물 내용 */}
         <View style={styles.ContentContainer}>
           <View style={styles.headerRow}>
             <View style={{ flexShrink: 1, paddingRight: 12 }}>
@@ -117,6 +135,20 @@ const styles = StyleSheet.create({
   noImageText: {
     color: "#9CA3AF",
     fontSize: 16,
+  },
+  imageCountBox: {
+    position: "absolute",
+    top: 10,
+    right: 15,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  },
+  imageCountText: {
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "500",
   },
   ContentContainer: {
     marginTop: 20,
