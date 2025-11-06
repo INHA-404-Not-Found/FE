@@ -327,8 +327,8 @@ const AddPostScreen = () => {
                 styles.imageUploadBtn,
                 { 
                   marginLeft: 50,
-                  backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
-                  transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
+                  backgroundColor: pressed ? "#BEDEF3" : "#fff",
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
                 },
               ]}
             >
