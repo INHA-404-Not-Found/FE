@@ -344,12 +344,15 @@ const PostListScreen = ({ route }) => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <View style={styles.bottomModalContentTitle}>
-                  <Text style={styles.bottomModalContentTitleText}>
-                    물품 카테고리
-                  </Text>
-                </View>
-                <CategoryList selected={category} setSelected={setCategory} />
+                <SafeAreaView edges={['bottom']}>
+                  <View style={styles.bottomModalContentTitle}>
+                    <Text style={styles.bottomModalContentTitleText}>
+                      물품 카테고리
+                    </Text>
+                  </View>
+
+                  <CategoryList selected={category} setSelected={setCategory} />
+                </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
             <BottomSheetModal
@@ -358,18 +361,20 @@ const PostListScreen = ({ route }) => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <View style={styles.bottomModalContentTitle}>
-                  <Text style={styles.bottomModalContentTitleText}>위치</Text>
-                </View>
-                <LocationMap selected={location} setSelected={setLocation} />
-                <View style={styles.bottomModalBtnContainer}>
-                  <Pressable style={styles.bottomModalResetBtn}>
-                    <Text>초기화</Text>
-                  </Pressable>
-                  <Pressable style={styles.bottomModalSubmitBtn}>
-                    <Text style={styles.submitBtnText}>적용</Text>
-                  </Pressable>
-                </View>
+                <SafeAreaView edges={['bottom']}>
+                  <View style={styles.bottomModalContentTitle}>
+                    <Text style={styles.bottomModalContentTitleText}>위치</Text>
+                  </View>
+                  <LocationMap selected={location} setSelected={setLocation} />
+                  <View style={styles.bottomModalBtnContainer}>
+                    <Pressable style={styles.bottomModalResetBtn}>
+                      <Text>초기화</Text>
+                    </Pressable>
+                    <Pressable style={styles.bottomModalSubmitBtn}>
+                      <Text style={styles.submitBtnText}>적용</Text>
+                    </Pressable>
+                  </View>
+                </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
           </View>
