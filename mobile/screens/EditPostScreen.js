@@ -470,7 +470,10 @@ const EditPostScreen = ({ route }) => {
       )}
 
       <View style={styles.buttonView}>
-        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
+        <Pressable
+          style={styles.btn2}  
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>

@@ -59,39 +59,31 @@ const NotificationListScreen = () => {
   // }, [isFocused])
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edge={["top"]}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <DefaultHeader />
-
+      
       <FlatList
         data={notifications}
-        keyExtractor={(item, index) => `${index}-{item.notificationId}`}
+        keyExtractor={(item, index) => `${index}-${item.notificationId}`}
         renderItem={({ item }) => <Notification notification={item} />}
         onEndReached={onEndReached}
-        showsVerticalScrollIndicator={false}
         onEndReachedThreshold={0.3}
-        style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 2 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContent}
       />
     </SafeAreaView>
+
   );
 };
 
 export default NotificationListScreen;
 
 const styles = StyleSheet.create({
-  filterBtn: {
-    borderWidth: 1,
-    borderRadius: 16,
-    borderColor: "#dbdbdb",
-    flexDirection: "row",
-    alignSelf: "flex-start",
-    alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 13,
-    marginRight: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f8f8",
   },
-  filterBtnContainer: {
-    flexDirection: "row",
-    padding: 15,
+  flatListContent: {
+    paddingVertical: 8,
   },
 });
