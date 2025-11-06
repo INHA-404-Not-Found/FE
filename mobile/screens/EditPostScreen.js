@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -8,9 +8,13 @@ import {
   TextInput,
   View,
 } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 import { getPost } from "../api/post";
 import DefaultHeader from "../components/DefaultHeader";
+import { toImageSource } from "../utils/imageSource";
+
 const EditPostScreen = ({ route }) => {
   const [postId, setPostId] = useState(route.params);
   const [post, setPost] = useState([]);
@@ -60,7 +64,7 @@ const EditPostScreen = ({ route }) => {
     if (ext === "heic") return "image/heic";
     return "image/jpeg";
   };
-
+  /*
   const pickImages = async () => {
     // 갤러리 접근 권한 요청
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -88,7 +92,7 @@ const EditPostScreen = ({ route }) => {
       });
       setFile(next);
     }
-  };
+  };*/
 
   const handleUpload = async () => {
     try {
@@ -193,36 +197,12 @@ const EditPostScreen = ({ route }) => {
           </View>
           <View style={styles.flexRow}>
             <Text style={styles.textLabel}>사진 등록</Text>
-            <Pressable onPress={pickImages} style={styles.imageUploadBtn}>
-              <Image
-                source={require("../assets/uploadImage.png")}
-                style={{
-                  width: 15,
-                  height: 15,
-                  marginRight: 4,
-                }}
-              />
-              <Text style={styles.imageUploadText}>upload</Text>
-            </Pressable>
 
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingVertical: 8 }}
-            >
-              {file.map((img) => (
-                <Image
-                  key={img.uri}
-                  source={{ uri: img.uri }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 8,
-                    marginRight: 8,
-                  }}
-                />
-              ))}
-            </ScrollView>
+            ></ScrollView>
           </View>
         </View>
       </ScrollView>
