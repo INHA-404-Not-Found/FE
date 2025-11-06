@@ -14,7 +14,7 @@ const Notification = ({ notification }) => {
         styles.container, 
         { 
           backgroundColor: notification.isRead 
-            ? "white" : "rgba(190, 222, 243, 0.27)"
+            ? "white" : "#dadee7"
         }
       ]}
       onPress={async () => {
@@ -61,23 +61,41 @@ export default Notification;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    padding: 15,
     alignItems: "center",
-    justifyContent: "center",
+    padding: 12,
+    marginVertical: 4,
+    marginHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   categoryImg: {
-    width: 45,
-    height: 45,
-  },
-  nextImg: {
-    width: 24,
-    height: 24,
-  },
-  contentText: {
-    fontSize: 9,
-    fontWeight: "regular",
+    width: 40,
+    height: 40,
+    borderRadius: 8,
   },
   contentContainer: {
-    paddingHorizontal: 8,
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  titleText: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 2,
+    color: "#333",
+  },
+  contentText: {
+    fontSize: 12,
+    color: "#666",
+    lineHeight: 16,
+  },
+  nextImg: {
+    width: 20,
+    height: 20,
+    tintColor: "black",
   },
 });

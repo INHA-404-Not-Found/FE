@@ -323,8 +323,8 @@ const AddPostScreen = () => {
                 styles.imageUploadBtn,
                 {
                   marginLeft: 50,
-                  backgroundColor: pressed ? "#BEDEF3" : "#fff", // 👈 눌렀을 때 색 변경
-                  transform: [{ scale: pressed ? 0.98 : 1 }], // 👈 살짝 눌린 느낌 추가 (선택)
+                  backgroundColor: pressed ? "#BEDEF3" : "#fff",
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
                 },
               ]}
             >
@@ -364,8 +364,11 @@ const AddPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable style={styles.btn} onPress={() => navigation.goBack()}>
-          <Text style={styles.btnText}>취소하기</Text>
+        <Pressable
+          style={styles.btn2}  
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>
           <Text style={styles.btnText}>등록하기</Text>
@@ -388,33 +391,41 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     marginBottom: 10,
-    alignItems: "flex-start",
   },
   textLabel: {
-    fontSize: 13.5,
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#333",
   },
   star: {
-    color: "#fe2828ff",
-    fontSize: 13.5,
+    color: "#fe2828",
+    fontSize: 14,
+    fontWeight: "500",
   },
   inputText: {
     width: 244,
     height: 40,
-    paddingVertical: 0,
-    lineHeight: 15,
-    fontSize: 12.5,
+    fontSize: 13,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
     paddingHorizontal: 12,
-    marginVertical: 15,
+    marginVertical: 10,
+    color: "#333",
+    backgroundColor: "#fff",
+  },
+  dropdownPicker: {
+    width: 244,
+    borderColor: "#d9d9d9",
+    borderRadius: 8,
+    backgroundColor: "#fff",
   },
   buttonView: {
     flexDirection: "row",
-    justifyContent: "center", // 가운데 정렬
+    justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 30,
     position: "absolute",
@@ -424,18 +435,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#215294",
     width: 160,
     paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
-    marginHorizontal: 10, // 버튼 사이 간격
+    marginHorizontal: 10,
   },
   btnText: {
-    color: "white",
+    color: "#fff",
     fontSize: 16,
+    fontWeight: "500",
   },
-  dropdownPicker: {
-    width: 244,
-    borderColor: "#d9d9d9",
+  btn2: {
+    backgroundColor: "#fff",
+    borderColor: "#215294",
+    borderWidth: 2,
+    width: 160,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  btnText2: {
+    color: "#215294",
+    fontSize: 16,
+    fontWeight: "500",
   },
   imageUploadBtn: {
     alignItems: "center",
@@ -443,17 +465,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: 244,
     height: 40,
-    paddingVertical: 0,
-    fontSize: 12.5,
     borderWidth: 2,
-    backgroundColor: "#fff",
     borderColor: "#215294",
     borderRadius: 8,
+    backgroundColor: "#fff",
     paddingHorizontal: 12,
-    marginVertical: 15,
+    marginVertical: 10,
   },
   imageUploadText: {
     color: "#215294",
     fontSize: 13,
+    fontWeight: "500",
   },
 });

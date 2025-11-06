@@ -11,7 +11,7 @@ const PostListItem = ({ post }) => {
     <Pressable onPress={() => navigation.navigate("PostScreen", post.postId)}>
       <View style={styles.postContainer}>
         <View style={styles.postImgWrapper}>
-          <Image source={imageSource} style={styles.postImg}></Image>
+          <Image source={imageSource} style={styles.postImg} />
         </View>
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -72,11 +72,23 @@ const styles = StyleSheet.create({
   postImgWrapper: {
     width: 90,
     height: 90,
+    borderRadius: 12,
     overflow: "hidden",
+    backgroundColor: "#DADEE7",
+    borderWidth: 1.5,
+    borderColor: "#DADEE7",
+    justifyContent: "center",
+    alignItems: "center",
+
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 3,
+    elevation: 3,
   },
   postImg: {
     width: "100%",
     height: "100%",
+    resizeMode: "cover",
   },
   postType: {
     color: "gray",
