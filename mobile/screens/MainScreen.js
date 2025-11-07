@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "flex-start",
     alignItems: "center",
-    marginLeft: 2,
+    marginLeft: 22,
     padding: 4,
   },
   resetImg: {
