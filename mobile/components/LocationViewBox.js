@@ -5,13 +5,8 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-
-import Animated, {
-  useAnimatedProps,
-  useSharedValue,
-} from "react-native-reanimated";
+import { runOnJS, useSharedValue } from "react-native-reanimated";
 import { G, Path, Svg, Image as SvgImage } from "react-native-svg";
-
 // 위치 선택 맵 구역 좌표
 export const CAMPUS_ZONES = [
   {
@@ -146,67 +141,40 @@ const MAP_IMAGE = require("../assets/inhaMap.png");
 const ORIGINAL_WIDTH = 1520;
 const ORIGINAL_HEIGHT = 918;
 
-// 고정 확대 배율 (원하는 값으로 조절: 1=원본, 2=2배 확대)
-const INITIAL_SCALE = 2;
+const FIXED_SCALE = 2;
+const vbW = ORIGINAL_WIDTH / FIXED_SCALE;
+const vbH = ORIGINAL_HEIGHT / FIXED_SCALE;
 
-const AnimatedG = Animated.createAnimatedComponent(G);
+const SPEED = 3; // 원하는 배율 (1 = 기본속도, 2 = 두배 빠름)
 
 const LocationViewBox = ({ selected, setSelected }) => {
-  // 줌/팬 상태
-  const scale = useSharedValue(1);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
+  // viewBox 좌상단을 React state로
+  const [vb, setVb] = React.useState({ x: 0, y: 0 });
 
-  // 제스처 시작 시 기준값 저장 (누적 대신 덮어쓰기 기반)
-  const startScale = useSharedValue(1);
-  const startX = useSharedValue(0);
-  const startY = useSharedValue(0);
+  // 제스처 시작점(SharedValue는 계산용으로만)
+  const startVbX = useSharedValue(0);
+  const startVbY = useSharedValue(0);
 
-  // 제스처 정의 (pinch + drag)
   const pan = Gesture.Pan()
     .onStart(() => {
-      startX.value = translateX.value;
-      startY.value = translateY.value;
+      startVbX.value = vb.x;
+      startVbY.value = vb.y;
     })
     .onUpdate((e) => {
-      // 확대 상태에서도 손가락 움직인 만큼 움직이게 보정
-      translateX.value = startX.value + e.translationX * (scale.value + 1);
-      translateY.value = startY.value + e.translationY * (scale.value + 1);
+      const dx = (e.translationX / FIXED_SCALE) * SPEED;
+      const dy = (e.translationY / FIXED_SCALE) * SPEED;
+
+      const minX = 0;
+      const minY = 0;
+      const maxX = ORIGINAL_WIDTH - vbW;
+      const maxY = ORIGINAL_HEIGHT - vbH;
+
+      const nx = Math.max(minX, Math.min(maxX, startVbX.value - dx));
+      const ny = Math.max(minY, Math.min(maxY, startVbY.value - dy));
+
+      // JS 상태로 반영 (여기가 핵심)
+      runOnJS(setVb)({ x: nx, y: ny });
     });
-
-  // 핀치 (focal 고정)
-  const MIN = 1,
-    MAX = 4;
-
-  const pinch = Gesture.Pinch()
-    .onStart((e) => {
-      startScale.value = scale.value;
-    })
-    .onUpdate((e) => {
-      // 새 스케일
-      const next = Math.min(MAX, Math.max(MIN, startScale.value * e.scale));
-
-      // focal(화면 좌표)을 기준으로 확대/축소 시, 그 지점이 화면상 고정되도록 보정
-      const ds = next / scale.value; // 스케일 변화비
-      const fx = e.focalX; // 화면 X
-      const fy = e.focalY; // 화면 Y
-
-      // 현재 translate 기준에서 focal을 고정하려면:
-      translateX.value = fx - (fx - translateX.value) * ds;
-      translateY.value = fy - (fy - translateY.value) * ds;
-
-      scale.value = next;
-    });
-
-  const composed = Gesture.Simultaneous(pan, pinch);
-
-  const animatedProps = useAnimatedProps(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-      { scale: scale.value },
-    ],
-  }));
 
   const handlePress = (z) => {
     setSelected(z.id === selected?.id ? null : z);
@@ -215,53 +183,39 @@ const LocationViewBox = ({ selected, setSelected }) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <GestureDetector gesture={composed}>
+        <GestureDetector gesture={pan}>
           <Svg
-            viewBox={`0 0 ${ORIGINAL_WIDTH} ${ORIGINAL_HEIGHT}`}
+            // 고정 2배 확대: vbW/vbH로 구현
+            viewBox={`${vb.x} ${vb.y} ${vbW} ${vbH}`}
             width="100%"
             style={{ aspectRatio: ORIGINAL_WIDTH / ORIGINAL_HEIGHT }}
-            pointerEvents="box-none"
           >
-            <AnimatedG
-              animatedProps={animatedProps}
-              originX={ORIGINAL_WIDTH / 2}
-              originY={ORIGINAL_HEIGHT / 2}
-            >
-              <SvgImage
-                href={MAP_IMAGE}
-                x="0"
-                y="0"
-                width={ORIGINAL_WIDTH}
-                height={ORIGINAL_HEIGHT}
-                preserveAspectRatio="xMidYMid meet"
-              />
-              {CAMPUS_ZONES.map((z) => {
-                const active = z.id === selected?.id;
-                return z.d ? (
-                  <G key={z.id} onPress={() => handlePress(z)}>
-                    <Path
-                      d={z.d}
-                      fill={
-                        active ? "rgba(33,143,202,0.4)" : "rgba(33,143,202,0)"
-                      }
-                      stroke="#218FCA"
-                      strokeWidth={active ? 3 : 1}
-                    />
-                    {z.label && (
-                      <Text
-                        x={z.label.x}
-                        y={z.label.y}
-                        fontSize={12}
-                        fontWeight="bold"
-                        fill="#0b3a56"
-                      >
-                        {z.name}
-                      </Text>
-                    )}
-                  </G>
-                ) : null;
-              })}
-            </AnimatedG>
+            <SvgImage
+              href={MAP_IMAGE}
+              x="0"
+              y="0"
+              width={ORIGINAL_WIDTH}
+              height={ORIGINAL_HEIGHT}
+              preserveAspectRatio="xMidYMid meet"
+            />
+            {CAMPUS_ZONES.map((z) =>
+              z.d ? (
+                <G key={z.id}>
+                  <Path
+                    onPress={() => handlePress(z)}
+                    d={z.d}
+                    fill={
+                      z.id === selected?.id
+                        ? "rgba(33,143,202,0.4)"
+                        : "rgba(33,143,202,0)"
+                    }
+                    stroke="#218FCA"
+                    strokeWidth={2}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </G>
+              ) : null
+            )}
           </Svg>
         </GestureDetector>
       </View>

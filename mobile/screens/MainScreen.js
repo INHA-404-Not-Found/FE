@@ -13,7 +13,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import BottomBar from "../components/BottomBar";
@@ -54,272 +53,264 @@ const MainScreen = () => {
     }
   };
   return (
-    <GestureHandlerRootView>
-      <BottomSheetModalProvider>
-        <SafeAreaView
-          style={{ flex: 1, paddingBottom: 0 }}
-          edge={["top", "bottom"]}
-        >
-          <DefaultHeader />
+    <BottomSheetModalProvider>
+      <SafeAreaView
+        style={{ flex: 1, paddingBottom: 0 }}
+        edge={["top", "bottom"]}
+      >
+        <DefaultHeader />
 
-          <View style={styles.contentTop}>
-            <View style={styles.searchBar}>
-              <TextInput
-                value={keyword}
-                onChangeText={(text) => dispatch(setKeyword(text))}
-                placeholder="검색어 없음"
-                placeholderTextColor="#ffffffff"
-                style={styles.textInput}
-              />
-              <Pressable
-                onPress={() =>
-                  navigation.navigate("PostListScreen", {
-                    category: selectedCate,
-                    location: selectedLocation,
-                    state: state,
-                    postType: postType,
-                  })
-                }
-              >
+        <View style={styles.contentTop}>
+          <View style={styles.searchBar}>
+            <TextInput
+              value={keyword}
+              onChangeText={(text) => dispatch(setKeyword(text))}
+              placeholder="검색어 없음"
+              placeholderTextColor="#ffffffff"
+              style={styles.textInput}
+            />
+            <Pressable
+              onPress={() =>
+                navigation.navigate("PostListScreen", {
+                  category: selectedCate,
+                  location: selectedLocation,
+                  state: state,
+                  postType: postType,
+                })
+              }
+            >
+              <Image
+                source={require("../assets/searchWhite.png")}
+                style={styles.barImg}
+              ></Image>
+            </Pressable>
+          </View>
+          <View style={styles.selectView}>
+            <PostTypeSelector postType={postType} setPostType={setPostType} />
+            <View>
+              <Pressable onPress={resetFilter} style={[styles.filterResetBtn]}>
                 <Image
-                  source={require("../assets/searchWhite.png")}
-                  style={styles.barImg}
+                  source={require("../assets/filterReset.png")}
+                  style={styles.resetImg}
                 ></Image>
+                <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
+                  필터 초기화
+                </Text>
               </Pressable>
             </View>
-            <View style={styles.selectView}>
-              <PostTypeSelector postType={postType} setPostType={setPostType} />
-              <View>
-                <Pressable
-                  onPress={resetFilter}
-                  style={[styles.filterResetBtn]}
-                >
-                  <Image
-                    source={require("../assets/filterReset.png")}
-                    style={styles.resetImg}
-                  ></Image>
-                  <Text style={[styles.BtnText, { color: "#a8a8a8" }]}>
-                    필터 초기화
-                  </Text>
-                </Pressable>
-              </View>
-              <View style={styles.selectBtnRow}>
-                <Pressable
-                  onPress={() => setSelectType("category")}
-                  style={[
-                    styles.selectBtn,
-                    {
-                      backgroundColor:
-                        selectType === "category" ? "#D9D9D9" : "#ffffff",
-                    },
-                  ]}
-                >
-                  <Text style={styles.BtnText}>물품 카테고리</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setSelectType("location")}
-                  style={[
-                    styles.selectBtn,
-                    {
-                      backgroundColor:
-                        selectType === "location" ? "#D9D9D9" : "#ffffff",
-                    },
-                  ]}
-                >
-                  <Text style={styles.BtnText}>습득/분실 위치</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setSelectType("status")}
-                  style={[
-                    styles.selectBtn,
-                    {
-                      backgroundColor:
-                        selectType === "status" ? "#D9D9D9" : "#ffffff",
-                    },
-                  ]}
-                >
-                  <Text style={styles.BtnText}>완료 여부</Text>
-                </Pressable>
-              </View>
+            <View style={styles.selectBtnRow}>
+              <Pressable
+                onPress={() => setSelectType("category")}
+                style={[
+                  styles.selectBtn,
+                  {
+                    backgroundColor:
+                      selectType === "category" ? "#D9D9D9" : "#ffffff",
+                  },
+                ]}
+              >
+                <Text style={styles.BtnText}>물품 카테고리</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setSelectType("location")}
+                style={[
+                  styles.selectBtn,
+                  {
+                    backgroundColor:
+                      selectType === "location" ? "#D9D9D9" : "#ffffff",
+                  },
+                ]}
+              >
+                <Text style={styles.BtnText}>습득/분실 위치</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setSelectType("status")}
+                style={[
+                  styles.selectBtn,
+                  {
+                    backgroundColor:
+                      selectType === "status" ? "#D9D9D9" : "#ffffff",
+                  },
+                ]}
+              >
+                <Text style={styles.BtnText}>완료 여부</Text>
+              </Pressable>
+            </View>
 
-              <View>
-                {selectType === "category" && (
-                  <CategoryList
-                    selected={selectedCate}
-                    setSelected={setSelectedCate}
+            <View>
+              {selectType === "category" && (
+                <CategoryList
+                  selected={selectedCate}
+                  setSelected={setSelectedCate}
+                />
+              )}
+              {selectType === "location" && (
+                <View style={{ height: 250 }}>
+                  <LocationViewBox
+                    selected={selectedLocation}
+                    setSelected={setSelectedLocation}
                   />
-                )}
-                {selectType === "location" && (
-                  <View style={{ height: 250 }}>
-                    <LocationViewBox
-                      selected={selectedLocation}
-                      setSelected={setSelectedLocation}
-                    />
-                  </View>
-                )}
-                {selectType === "status" && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingVertical: 10,
-                      paddingHorizontal: 30,
-                    }}
+                </View>
+              )}
+              {selectType === "status" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingVertical: 10,
+                    paddingHorizontal: 30,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => handleState("UNCOMPLETED")}
+                    style={[
+                      styles.filterBtn,
+                      {
+                        borderColor:
+                          state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
+                        backgroundColor:
+                          state === "UNCOMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                      },
+                    ]}
                   >
-                    <Pressable
-                      onPress={() => handleState("UNCOMPLETED")}
+                    <Text
                       style={[
-                        styles.filterBtn,
+                        styles.BtnText,
                         {
-                          borderColor:
+                          color:
                             state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
-                          backgroundColor:
-                            state === "UNCOMPLETED"
-                              ? "#d9d9d9"
-                              : "rgba(0,0,0,0)",
                         },
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.BtnText,
-                          {
-                            color:
-                              state === "UNCOMPLETED" ? "darkGray" : "#a8a8a8",
-                          },
-                        ]}
-                      >
-                        미완료
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => handleState("COMPLETED")}
+                      미완료
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => handleState("COMPLETED")}
+                    style={[
+                      styles.filterBtn,
+                      {
+                        borderColor:
+                          state === "COMPLETED" ? "darkGray" : "#a8a8a8",
+                        backgroundColor:
+                          state === "COMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                      },
+                    ]}
+                  >
+                    <Text
                       style={[
-                        styles.filterBtn,
+                        styles.BtnText,
                         {
-                          borderColor:
-                            state === "COMPLETED" ? "darkGray" : "#a8a8a8",
-                          backgroundColor:
-                            state === "COMPLETED" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                          color: state === "COMPLETED" ? "darkGray" : "#a8a8a8",
                         },
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.BtnText,
-                          {
-                            color:
-                              state === "COMPLETED" ? "darkGray" : "#a8a8a8",
-                          },
-                        ]}
-                      >
-                        완료
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={() => handleState("POLICE")}
+                      완료
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => handleState("POLICE")}
+                    style={[
+                      styles.filterBtn,
+                      {
+                        borderColor:
+                          state === "POLICE" ? "darkGray" : "#a8a8a8",
+                        backgroundColor:
+                          state === "POLICE" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                      },
+                    ]}
+                  >
+                    <Text
                       style={[
-                        styles.filterBtn,
+                        styles.BtnText,
                         {
-                          borderColor:
-                            state === "POLICE" ? "darkGray" : "#a8a8a8",
-                          backgroundColor:
-                            state === "POLICE" ? "#d9d9d9" : "rgba(0,0,0,0)",
+                          color: state === "POLICE" ? "darkGray" : "#a8a8a8",
                         },
                       ]}
                     >
-                      <Text
-                        style={[
-                          styles.BtnText,
-                          {
-                            color: state === "POLICE" ? "darkGray" : "#a8a8a8",
-                          },
-                        ]}
-                      >
-                        인계됨
-                      </Text>
-                    </Pressable>
-                  </View>
-                )}
-              </View>
-              <View style={styles.tagWrap}>
-                {selectedCate ? (
-                  <View key={selectedCate.id} style={styles.tag}>
-                    <Image
-                      source={require("../assets/check.png")}
-                      style={styles.checkImg}
-                    ></Image>
-                    <Text style={styles.tagText}>{selectedCate.name}</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.noneText}></Text>
-                )}
-                {selectedLocation ? (
-                  <View key={selectedLocation.id} style={styles.tag}>
-                    <Image
-                      source={require("../assets/check.png")}
-                      style={styles.checkImg}
-                    ></Image>
-                    <Text style={styles.tagText}>{selectedLocation.name}</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.noneText}></Text>
-                )}
-                {state ? (
-                  <View key={state} style={styles.tag}>
-                    <Image
-                      source={require("../assets/check.png")}
-                      style={styles.checkImg}
-                    ></Image>
-                    <Text style={styles.tagText}>{state}</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.noneText}></Text>
-                )}
-              </View>
+                      인계됨
+                    </Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
+            <View style={styles.tagWrap}>
+              {selectedCate ? (
+                <View key={selectedCate.id} style={styles.tag}>
+                  <Image
+                    source={require("../assets/check.png")}
+                    style={styles.checkImg}
+                  ></Image>
+                  <Text style={styles.tagText}>{selectedCate.name}</Text>
+                </View>
+              ) : (
+                <Text style={styles.noneText}></Text>
+              )}
+              {selectedLocation ? (
+                <View key={selectedLocation.id} style={styles.tag}>
+                  <Image
+                    source={require("../assets/check.png")}
+                    style={styles.checkImg}
+                  ></Image>
+                  <Text style={styles.tagText}>{selectedLocation.name}</Text>
+                </View>
+              ) : (
+                <Text style={styles.noneText}></Text>
+              )}
+              {state ? (
+                <View key={state} style={styles.tag}>
+                  <Image
+                    source={require("../assets/check.png")}
+                    style={styles.checkImg}
+                  ></Image>
+                  <Text style={styles.tagText}>{state}</Text>
+                </View>
+              ) : (
+                <Text style={styles.noneText}></Text>
+              )}
             </View>
           </View>
+        </View>
 
-          {/* 하단 바 */}
-          <View style={styles.contentBottom}>
-            <BottomBar handleModalPress={handleModalPress} />
-          </View>
+        {/* 하단 바 */}
+        <View style={styles.contentBottom}>
+          <BottomBar handleModalPress={handleModalPress} />
+        </View>
 
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            onChange={handleSheetChanges}
-            style={styles.bottomSheetModal}
-          >
-            <BottomSheetView style={styles.contentContainer}>
-              <SafeAreaView edges={["bottom"]}>
-                <Pressable
-                  onPress={() => navigation.navigate("AddPostScreen")}
-                  style={({ pressed }) => [
-                    styles.bottomModalBtn,
-                    { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
-                  ]}
-                >
-                  <Text style={styles.bottomModalContentTitleText}>
-                    습득 게시글 등록
-                  </Text>
-                </Pressable>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          onChange={handleSheetChanges}
+          style={styles.bottomSheetModal}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <SafeAreaView edges={["bottom"]}>
+              <Pressable
+                onPress={() => navigation.navigate("AddPostScreen")}
+                style={({ pressed }) => [
+                  styles.bottomModalBtn,
+                  { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
+                ]}
+              >
+                <Text style={styles.bottomModalContentTitleText}>
+                  습득 게시글 등록
+                </Text>
+              </Pressable>
 
-                <Pressable
-                  onPress={() => navigation.navigate("AddLostPostScreen")}
-                  style={({ pressed }) => [
-                    styles.bottomModalBtn,
-                    { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
-                  ]}
-                >
-                  <Text style={styles.bottomModalContentTitleText}>
-                    분실 게시글 등록
-                  </Text>
-                </Pressable>
-              </SafeAreaView>
-            </BottomSheetView>
-          </BottomSheetModal>
-        </SafeAreaView>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+              <Pressable
+                onPress={() => navigation.navigate("AddLostPostScreen")}
+                style={({ pressed }) => [
+                  styles.bottomModalBtn,
+                  { backgroundColor: pressed ? "#f2f6ff" : "#FFFFFF" },
+                ]}
+              >
+                <Text style={styles.bottomModalContentTitleText}>
+                  분실 게시글 등록
+                </Text>
+              </Pressable>
+            </SafeAreaView>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   );
 };
 
