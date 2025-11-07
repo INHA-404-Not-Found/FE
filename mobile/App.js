@@ -4,7 +4,7 @@ import { Provider, useDispatch } from "react-redux";
 import { store } from "./Redux/store";
 
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import api from "./api/api";
 import { setCategory } from "./Redux/slices/categorySlice";
@@ -19,7 +19,6 @@ import NotificationListScreen from "./screens/NotificationListScreen";
 import PostListScreen from "./screens/PostListScreen";
 import PostScreen from "./screens/PostScreen";
 import UserScreen from "./screens/UserScreen";
-
 /*
 // 앱이 꺼져있을때 알림이 도착하면(Background 알림) 어떻게 처리할 지 설정
 Notifications.setNotificationHandler({
@@ -206,8 +205,9 @@ export default function App() {
   }, []);
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#ffffff" }}>
       <Provider store={store}>
+        <StatusBar style="dark-content" backgroundColor="#ffffff" />
         <AppContent />
       </Provider>
     </GestureHandlerRootView>
