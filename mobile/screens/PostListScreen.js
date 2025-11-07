@@ -234,19 +234,18 @@ const PostListScreen = ({ route }) => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: category != [] ? "darkGray" : "#a8a8a8",
-                    backgroundColor:
-                      category != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: category ? "darkGray" : "#a8a8a8",
+                    backgroundColor: category ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: category != [] ? "darkGray" : "#a8a8a8" },
+                    { color: category ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
-                  카테고리
+                  {category ? category.name : "카테고리"}
                 </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
@@ -258,19 +257,18 @@ const PostListScreen = ({ route }) => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: location != [] ? "darkGray" : "#a8a8a8",
-                    backgroundColor:
-                      location != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: location ? "darkGray" : "#a8a8a8",
+                    backgroundColor: location ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: location != [] ? "darkGray" : "#a8a8a8" },
+                    { color: location ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
-                  위치
+                  {location ? location.name : "위치"}
                 </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
