@@ -19,6 +19,19 @@ const DefaultHeader = () => {
   const token = TokenStore.getToken();
   const [isNotificationUnread, setIsNotificationUnread] = useState(true); // 안 읽으면 true, 읽으면 false
   const dispatch = useDispatch();
+
+  // 로그인 여부 확인
+  const checkLogin = async (onSuccess) => {
+    const token = await TokenStore.getToken();
+    console.log("token: " + token);
+
+    if (!token) {
+      navigation.navigate("LoginScreen");
+    } else {
+      onSuccess();
+    }
+  };
+
   useEffect(() => {
     const fetchNotificationList = async () => {
       const res = await api.get(`/notifications`, {
@@ -113,7 +126,7 @@ const DefaultHeader = () => {
         <Pressable
           onPress={() => {
             if (route.name === "MainScreen") {
-              navigation.navigate("NotificationListScreen");
+              checkLogin(() =>  navigation.navigate("NotificationListScreen"));
             } else if (route.name === "PostListScreen") {
               dispatch(onIsSearching());
             }
