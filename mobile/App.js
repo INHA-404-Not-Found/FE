@@ -194,6 +194,16 @@ export default function App() {
     };
   }, []);
   */
+  useEffect(() => {
+    const boot = async () => {
+      const access = await tokenStorage.getAccessTStorage();
+      if (access) {
+        TokenStore.setToken(access);
+        console.log("기존 토큰 복원 완료:", access);
+      }
+    };
+    boot();
+  }, []);
 
   return (
     <GestureHandlerRootView>

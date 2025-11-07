@@ -1,6 +1,17 @@
 import axios from "axios";
 import api from "./api.js";
 
+// ✅ 순수 HTTP API 래퍼
+export const loginApi = (studentId, password) =>
+  axios.post("https://lost-inha.kro.kr/auth/login", {
+    studentId,
+    password,
+    isWeb: false,
+  });
+export const logoutApi = (studentId) => api.post("/auth/logout", { studentId });
+export const fetchMyInfoApi = () => api.get("/auth/profile");
+
+/*
 export async function loginApi(studentId, password) {
   if (!studentId && !password) {
     alert("studentId와 password를 입력하세요.");
