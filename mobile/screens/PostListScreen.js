@@ -30,7 +30,7 @@ import {
 } from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
-import LocationMap from "../components/LocationMap";
+import LocationViewBox from "../components/LocationViewBox";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
 import SearchHeader from "../components/SearchHeader";
@@ -344,7 +344,7 @@ const PostListScreen = ({ route }) => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <SafeAreaView edges={['bottom']}>
+                <SafeAreaView edges={["bottom"]}>
                   <View style={styles.bottomModalContentTitle}>
                     <Text style={styles.bottomModalContentTitleText}>
                       물품 카테고리
@@ -361,19 +361,14 @@ const PostListScreen = ({ route }) => {
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <SafeAreaView edges={['bottom']}>
+                <SafeAreaView edges={["bottom"]}>
                   <View style={styles.bottomModalContentTitle}>
                     <Text style={styles.bottomModalContentTitleText}>위치</Text>
                   </View>
-                  <LocationMap selected={location} setSelected={setLocation} />
-                  <View style={styles.bottomModalBtnContainer}>
-                    <Pressable style={styles.bottomModalResetBtn}>
-                      <Text>초기화</Text>
-                    </Pressable>
-                    <Pressable style={styles.bottomModalSubmitBtn}>
-                      <Text style={styles.submitBtnText}>적용</Text>
-                    </Pressable>
-                  </View>
+                  <LocationViewBox
+                    selected={location}
+                    setSelected={setLocation}
+                  />
                 </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>

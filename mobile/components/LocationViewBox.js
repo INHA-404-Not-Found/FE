@@ -200,14 +200,13 @@ const LocationViewBox = ({ selected, setSelected }) => {
             />
             {CAMPUS_ZONES.map((z) =>
               z.d ? (
-                <G key={z.id}>
+                <G key={z.id} onPress={() => handlePress(z)}>
                   <Path
-                    onPress={() => handlePress(z)}
                     d={z.d}
                     fill={
                       z.id === selected?.id
                         ? "rgba(33,143,202,0.4)"
-                        : "rgba(33,143,202,0)"
+                        : "rgba(33,143,202,0.01)"
                     }
                     stroke="#218FCA"
                     strokeWidth={2}
