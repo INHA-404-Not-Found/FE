@@ -9,12 +9,13 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Image,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useDispatch, useSelector } from "react-redux";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
@@ -41,8 +42,8 @@ const MainScreen = () => {
   }, []);
   // 필터링 초기화
   const resetFilter = () => {
-    setSelectedCate([]);
-    setSelectedLocation([]);
+    setSelectedCate(null);
+    setSelectedLocation(null);
     setState(""); // "" UNCOMPLETED COMPLETED POLICE
   };
   // state 토글, 업데이트
@@ -173,7 +174,8 @@ const MainScreen = () => {
                 <View
                   style={{
                     flexDirection: "row",
-                    paddingVertical: 10,
+                    paddingTop: 15,
+                    paddingBottom: 25,
                     paddingHorizontal: 30,
                   }}
                 >
@@ -362,12 +364,14 @@ const styles = StyleSheet.create({
   },
   selectView: {
     width: 345,
-    height: 555,
+    height: "content",
     backgroundColor: "#ffffff",
     borderRadius: 10,
     borderBlockColor: "#DADEE7",
     marginTop: 25,
     padding: 5,
+
+    paddingBottom: 30,
   },
   filterResetBtn: {
     flexDirection: "row",
@@ -420,8 +424,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    paddingTop: 10,
-    paddingHorizontal: 30,
+    paddingHorizontal: 25,
   },
   tag: {
     flexDirection: "row",
@@ -450,5 +453,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 13,
     marginRight: 8,
+  },
+  noneText: {
+    display: "none",
   },
 });
