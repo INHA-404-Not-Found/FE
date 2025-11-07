@@ -75,7 +75,7 @@ const UserScreen = () => {
               <Text style={styles.ProfileDetailContent}>{myInfo.email}</Text>
             </View>
             <View>
-              <Pressable onPress={() => logout()}>
+              <Pressable onPress={() => logout()} style={styles.logoutBtn}>
                 <Text style={styles.logoutText}>Log out</Text>
               </Pressable>
             </View>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 40,
-    marginTop: 40, 
+    marginTop: 40,
   },
   ProfileDetailContainer: {
     flexDirection: "column",
@@ -156,5 +156,17 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
     opacity: 0.2,
+  },
+  logoutBtn: {
+    backgroundColor: "#215294",
+    width: 100,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  logoutText: {
+    color: "white",
+    fontSize: 16,
   },
 });

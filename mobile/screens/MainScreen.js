@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    paddingTop: 20,
+    paddingTop: 10,
+    paddingHorizontal: 30,
   },
   tag: {
     flexDirection: "row",

@@ -205,11 +205,11 @@ const LocationViewBox = ({ selected, setSelected }) => {
                     d={z.d}
                     fill={
                       z.id === selected?.id
-                        ? "rgba(33,143,202,0.4)"
+                        ? "rgba(33,143,202,0.5)"
                         : "rgba(33,143,202,0.01)"
                     }
                     stroke="#218FCA"
-                    strokeWidth={2}
+                    strokeWidth={z.id === selected?.id ? 2 : 0}
                     vectorEffect="non-scaling-stroke"
                   />
                 </G>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  container: { padding: 16, alignItems: "center" },
+  container: { paddingTop: 18, paddingHorizontal: 5, alignItems: "center" },
   title: { marginBottom: 12, fontSize: 16, fontWeight: "600" },
   // 화면 너비에 맞춰 자동 비율: 289/152
   mapWrap: { width: "100%", aspectRatio: ORIGINAL_WIDTH / ORIGINAL_HEIGHT },
