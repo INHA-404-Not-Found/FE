@@ -1,4 +1,5 @@
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
@@ -67,6 +68,22 @@ const PostListScreen = ({ route }) => {
   const handleLocationSheetChanges = useCallback((index) => {
     console.log("bottomSheetLocationChanges", index);
   }, []);
+
+  // snap points (모달 높이)
+  const snapPoints = useMemo(() => ["40%"], []);
+
+  // backdrop 생성 함수
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close" // ← 이게 핵심! 눌렀을 때 닫힘
+      />
+    ),
+    []
+  );
 
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -341,6 +358,7 @@ const PostListScreen = ({ route }) => {
             <BottomSheetModal
               ref={bottomSheetCategoryModalRef}
               onChange={handleCategorySheetChanges}
+              backdropComponent={renderBackdrop}
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
@@ -358,6 +376,7 @@ const PostListScreen = ({ route }) => {
             <BottomSheetModal
               ref={bottomSheetLocationModalRef}
               onChange={handleLocationSheetChanges}
+              backdropComponent={renderBackdrop}
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
