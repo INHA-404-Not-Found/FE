@@ -64,7 +64,7 @@ api.interceptors.response.use(
       // ⚠️ studentId가 이 스코프에 없다면 제거하거나, 토큰에서 디코드해서 채우세요.
       // const studentId = decoded?.studentId ?? decoded?.sub;
       const { data } = await api.post("/auth/refresh", {
-        // studentId,
+        studentId,
         refreshToken,
       });
 
