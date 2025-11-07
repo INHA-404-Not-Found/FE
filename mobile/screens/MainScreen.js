@@ -1,10 +1,11 @@
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Image,
   Pressable,
@@ -52,6 +53,22 @@ const MainScreen = () => {
       setState(state === v ? "" : v);
     }
   };
+  // snap points (모달 높이)
+  const snapPoints = useMemo(() => ["40%"], []);
+
+  // backdrop 생성 함수
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close" // ← 이게 핵심! 눌렀을 때 닫힘
+      />
+    ),
+    []
+  );
+
   return (
     <BottomSheetModalProvider>
       <SafeAreaView
@@ -280,6 +297,7 @@ const MainScreen = () => {
           ref={bottomSheetModalRef}
           onChange={handleSheetChanges}
           style={styles.bottomSheetModal}
+          backdropComponent={renderBackdrop}
         >
           <BottomSheetView style={styles.contentContainer}>
             <SafeAreaView edges={["bottom"]}>
