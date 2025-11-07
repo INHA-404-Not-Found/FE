@@ -12,12 +12,14 @@ const CategoryList = ({ selected, setSelected }) => {
         {categories.map((item) => (
           <TouchableOpacity
             key={item.id}
-            onPress={() => setSelected(item)}
+            onPress={() => setSelected(item.id === selected?.id ? null : item)}
             style={styles.checkboxContainer}
           >
             <Checkbox
               value={item.id === selected?.id ? true : false}
-              onValueChange={() => setSelected(item)}
+              onValueChange={() =>
+                setSelected(item.id === selected?.id ? null : item)
+              }
             />
             <Text style={styles.label}>{item.name}</Text>
           </TouchableOpacity>

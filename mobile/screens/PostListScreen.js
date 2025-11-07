@@ -1,4 +1,5 @@
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
@@ -30,7 +31,7 @@ import {
 } from "../api/post";
 import CategoryList from "../components/CategoryList";
 import DefaultHeader from "../components/DefaultHeader";
-import LocationMap from "../components/LocationMap";
+import LocationViewBox from "../components/LocationViewBox";
 import PostListItem from "../components/PostListItem";
 import PostTypeSelector from "../components/PostTypeSelector";
 import SearchHeader from "../components/SearchHeader";
@@ -67,6 +68,22 @@ const PostListScreen = ({ route }) => {
   const handleLocationSheetChanges = useCallback((index) => {
     console.log("bottomSheetLocationChanges", index);
   }, []);
+
+  // snap points (모달 높이)
+  const snapPoints = useMemo(() => ["40%"], []);
+
+  // backdrop 생성 함수
+  const renderBackdrop = useCallback(
+    (props) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close" // ← 이게 핵심! 눌렀을 때 닫힘
+      />
+    ),
+    []
+  );
 
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -217,19 +234,18 @@ const PostListScreen = ({ route }) => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: category != [] ? "darkGray" : "#a8a8a8",
-                    backgroundColor:
-                      category != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: category ? "darkGray" : "#a8a8a8",
+                    backgroundColor: category ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: category != [] ? "darkGray" : "#a8a8a8" },
+                    { color: category ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
-                  카테고리
+                  {category ? category.name : "카테고리"}
                 </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
@@ -241,19 +257,18 @@ const PostListScreen = ({ route }) => {
                 style={[
                   styles.filterDownBtn,
                   {
-                    borderColor: location != [] ? "darkGray" : "#a8a8a8",
-                    backgroundColor:
-                      location != [] ? "#d9d9d9" : "rgba(0,0,0,0)",
+                    borderColor: location ? "darkGray" : "#a8a8a8",
+                    backgroundColor: location ? "#d9d9d9" : "rgba(0,0,0,0)",
                   },
                 ]}
               >
                 <Text
                   style={[
                     styles.BtnText,
-                    { color: location != [] ? "darkGray" : "#a8a8a8" },
+                    { color: location ? "darkGray" : "#a8a8a8" },
                   ]}
                 >
-                  위치
+                  {location ? location.name : "위치"}
                 </Text>
                 <Image
                   source={require("../assets/downArrow.png")}
@@ -341,10 +356,11 @@ const PostListScreen = ({ route }) => {
             <BottomSheetModal
               ref={bottomSheetCategoryModalRef}
               onChange={handleCategorySheetChanges}
+              backdropComponent={renderBackdrop}
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <SafeAreaView edges={['bottom']}>
+                <SafeAreaView edges={["bottom"]}>
                   <View style={styles.bottomModalContentTitle}>
                     <Text style={styles.bottomModalContentTitleText}>
                       물품 카테고리
@@ -358,22 +374,18 @@ const PostListScreen = ({ route }) => {
             <BottomSheetModal
               ref={bottomSheetLocationModalRef}
               onChange={handleLocationSheetChanges}
+              backdropComponent={renderBackdrop}
               style={styles.bottomSheetModal}
             >
               <BottomSheetView style={styles.contentContainer}>
-                <SafeAreaView edges={['bottom']}>
+                <SafeAreaView edges={["bottom"]}>
                   <View style={styles.bottomModalContentTitle}>
                     <Text style={styles.bottomModalContentTitleText}>위치</Text>
                   </View>
-                  <LocationMap selected={location} setSelected={setLocation} />
-                  <View style={styles.bottomModalBtnContainer}>
-                    <Pressable style={styles.bottomModalResetBtn}>
-                      <Text>초기화</Text>
-                    </Pressable>
-                    <Pressable style={styles.bottomModalSubmitBtn}>
-                      <Text style={styles.submitBtnText}>적용</Text>
-                    </Pressable>
-                  </View>
+                  <LocationViewBox
+                    selected={location}
+                    setSelected={setLocation}
+                  />
                 </SafeAreaView>
               </BottomSheetView>
             </BottomSheetModal>
