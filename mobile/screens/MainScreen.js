@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 
+import { StatusBar } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import BottomBar from "../components/BottomBar";
 import CategoryList from "../components/CategoryList";
@@ -72,8 +73,9 @@ const MainScreen = () => {
 
   return (
     <BottomSheetModalProvider>
+      <StatusBar style="dark-content" backgroundColor="#ffffff" />
       <SafeAreaView
-        style={{ flex: 1, paddingBottom: 0 }}
+        style={{ flex: 1, paddingBottom: 0, backgroundColor: "#ffffff" }}
         edge={["top", "bottom"]}
       >
         <DefaultHeader />
