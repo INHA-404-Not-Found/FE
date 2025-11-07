@@ -17,12 +17,15 @@ const BottomBar = ({ handleModalPress }) => {
       onSuccess();
     }
   };
-  
 
   return (
     <View style={styles.bar}>
       {/* 내가 올린 글 */}
-      <Pressable onPress={() => checkLogin(() => navigation.navigate("MyPostListScreen"))}>
+      <Pressable
+        onPress={() =>
+          checkLogin(() => navigation.navigate("MyPostListScreen"))
+        }
+      >
         <Image
           source={require("../assets/myPost.png")}
           style={styles.image}
@@ -65,8 +68,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   image: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     marginHorizontal: 40,
     marginVertical: 9,
     resizeMode: "contain",
