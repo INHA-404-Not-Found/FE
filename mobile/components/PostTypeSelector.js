@@ -60,6 +60,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 0,
+  },
+  BtnText: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
   },
 });

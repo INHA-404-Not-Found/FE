@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Image,
   Pressable,
@@ -49,13 +49,14 @@ const AddPostScreen = () => {
   const [isPersonal, setIsPersonal] = useState(false);
   const togglePersonalSwitch = () => setIsPersonal((prev) => !prev);
 
+  const inputRef = useRef(null);
   const [isSN, setIsSN] = useState(false);
   const [studentId, setStudentId] = useState("");
   const toggleSwitch = () => {
-    setIsSN((prev) => !prev);
-    if (!isSN) {
-      studentId = "";
+    if (isSN) {
+      setStudentId("");
     }
+    setIsSN((prev) => !prev);
   };
 
   const [file, setFile] = useState([]); // [{ uri, fileName, mimeType }] 형태로 보관
@@ -233,8 +234,8 @@ const AddPostScreen = () => {
               ]}
               editable={isSN}
               value={studentId}
-              onChangeText={(text) => setStudentId(text)}
-            ></TextInput>
+              onChangeText={(t) => isSN && setStudentId(t)}
+            />
           </View>
           <View style={styles.flexRow}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -365,10 +366,7 @@ const AddPostScreen = () => {
         </View>
       </ScrollView>
       <View style={styles.buttonView}>
-        <Pressable
-          style={styles.btn2}  
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.btn2} onPress={() => navigation.goBack()}>
           <Text style={styles.btnText2}>취소하기</Text>
         </Pressable>
         <Pressable onPress={handleUpload} style={styles.btn}>

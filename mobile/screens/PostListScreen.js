@@ -432,8 +432,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "flex-start",
     alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 13,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     marginRight: 8,
   },
   filterDownImg: {
@@ -444,6 +444,8 @@ const styles = StyleSheet.create({
   filterBtnContainer: {
     paddingVertical: 8,
     flexGrow: 0,
+    flexDirection: "center",
+    alignItem: "center",
   },
   filterBtnContent: {
     flexDirection: "row",
